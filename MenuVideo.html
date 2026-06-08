@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Pembelajaran – Bijak Fiqh Mirath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #dce8de;
+      --card:      #ffffff;
+      --orange:    #c9884e;
+      --orange-dk: #b5703a;
+      --orange-lt: #f5e6d3;
+      --green-dk:  #3a6b3e;
+      --green-md:  #5a8f5e;
+      --green-lt:  #e8f2e9;
+      --gold:      #c8a94e;
+      --text:      #2d2d2d;
+      --text-muted:#6b6b6b;
+      --shadow:    4px 4px 0 #b5703a;
+      --shadow-sm: 3px 3px 0 #b5703a;
+      --radius:    12px;
+    }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Corner nav buttons ── */
+    .nav-btn {
+      position: fixed;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      box-shadow: 3px 3px 0 var(--orange-dk);
+      cursor: pointer;
+      z-index: 100;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+    }
+    .nav-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dk); }
+    .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dk); }
+    .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dk); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn.home { top: 18px; left: 18px; }
+    .nav-btn.exit { top: 18px; right: 18px; }
+
+    /* ── hero header ── */
+    .hero {
+      text-align: center;
+      padding: 72px 20px 20px;
+    }
+    .hero-eyebrow {
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--orange-dk);
+      margin-bottom: 10px;
+    }
+    .hero-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--green-dk);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .hero-title span {
+      color: var(--orange);
+    }
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── decorative divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 340px;
+      margin: 16px auto 24px;
+    }
+    .divider-line { flex: 1; height: 1.5px; background: var(--orange); opacity: 0.35; }
+    .divider-icon { font-size: 18px; color: var(--orange); }
+
+    /* ── topic grid ── */
+    .grid-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* ── topic card ── */
+    .card {
+      background: var(--card);
+      border: 2px solid var(--orange-dk);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      height: 100%;
+    }
+    .card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--orange-dk);
+    }
+    .card:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--orange-dk);
+    }
+
+    /* card header gradient */
+    .card-header {
+      background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card-num {
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      padding-top: 2px;
+      white-space: nowrap;
+    }
+    .card-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    /* card body */
+    .card-body {
+      padding: 14px 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* video pill */
+    .video-pills {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid var(--orange);
+      color: var(--orange-dk);
+      background: var(--orange-lt);
+    }
+    .pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* watch button */
+    .card-footer {
+      padding: 0 16px 14px;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+    .btn-watch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px 0;
+      border-radius: 8px;
+      border: 2px solid var(--orange-dk);
+      background: var(--green-lt);
+      color: var(--green-dk);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+    .btn-watch:hover {
+      background: var(--green-dk);
+      color: #fff;
+    }
+    .btn-watch svg { width: 16px; height: 16px; }
+
+    /* ── bottom bar ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 44px;
+      background: var(--orange-dk);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      z-index: 50;
+    }
+    .nav-link {
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link:hover, .nav-link.active { color: #fff; }
+    .nav-link.active {
+      border-bottom: 2px solid #fff;
+      padding-bottom: 1px;
+    }
+
+    /* ── badge "BARU" ── */
+    .badge-new {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: var(--gold);
+      color: #fff;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── decorative dots ── */
+    .dot-grid {
+      position: fixed;
+      bottom: 50px;
+      right: 18px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 1.5rem; }
+      .grid-wrap { grid-template-columns: 1fr; padding: 0 14px 70px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Home button (top-left) -->
+  <a class="nav-btn home" href="menu.html" title="Halaman Utama">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  </a>
+
+  <!-- Exit button (top-right) -->
+  <a class="nav-btn exit" href="keluar.html" title="Keluar">
+    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+  </a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1 class="hero-title">Video <span>Pembelajaran</span></h1>
+    <p class="hero-subtitle">Tonton video penerangan mengikut tajuk untuk memahami Fiqh Mirath dengan lebih mudah dan menarik.</p>
+    </div>
+  </div>
+
+  <!-- Topic grid -->
+  <div class="grid-wrap">
+
+    <!-- Tajuk 1 -->
+    <a class="card" href="Video1.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 1</span>
+        <span class="card-title">Konsep Fiqh Mirath</span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Pengenalan kepada konsep harta pusaka, hikmah ilmu faraid, dan syarat-syarat pewarisan harta.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            1 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+    <!-- Tajuk 2 -->
+    <a class="card" href="Video2.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 2</span>
+        <span class="card-title">Liabiliti dalam Harta Pusaka</span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Penjelasan tanggungjawab dan liabiliti yang perlu diselesaikan sebelum pembahagian harta pusaka dilakukan.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            1 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+    <!-- Tajuk 3 -->
+    <a class="card" href="Video3.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 3</span>
+        <span class="card-title">Ashabul Furud</span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Golongan waris yang mendapat bahagian tetap dan kadar bahagian mereka dalam al-Quran.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            1 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+    <!-- Tajuk 4 -->
+    <a class="card" href="Video4.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 4</span>
+        <span class="card-title">Al-Hajb</span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Konsep Al-Hajb dalam warisan — siapa yang menghalang dan siapa yang terhalang daripada menerima harta pusaka.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            1 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+    <!-- Tajuk 5 -->
+    <a class="card" href="Video5.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 5</span>
+        <span class="card-title">Pengiraan Pembahagian Harta Pusaka</span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Kaedah pengiraan bahagian waris termasuk Asal Masalah, Aul (peningkatan), dan Radd (lebihan) saham.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            2 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+    <!-- Tajuk 6 -->
+    <a class="card" href="Video6.html">
+      <div class="card-header">
+        <span class="card-num">Tajuk 6</span>
+        <span class="card-title">Isu Kontemporari dalam Mirath<span class="badge-new">BARU</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Perbahasan isu-isu semasa berkaitan warisan Islam: wasiat wajibah, harta sepencarian, dan isu gender kontemporari.</p>
+        <div class="video-pills">
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6l4 2-4 2V6z" fill="currentColor"/></svg>
+            1 Video
+          </span>
+          <span class="pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5.5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            ~10 min
+          </span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="btn-watch">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor"/></svg>
+          Tonton Sekarang
+        </span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Decorative dot grid -->
+  <svg class="dot-grid" width="80" height="80" viewBox="0 0 80 80">
+    <defs>
+      <pattern id="dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="4" cy="4" r="2" fill="#b5703a"/>
+      </pattern>
+    </defs>
+    <rect width="80" height="80" fill="url(#dots)"/>
+  </svg>
+
+</body>
+</html>

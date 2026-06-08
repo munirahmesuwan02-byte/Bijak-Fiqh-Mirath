@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIJAK FIQH MIRATH – Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dce8de;
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      padding: 30px;
+      position: relative;
+    }
+
+    /* ── CORNER ICON BUTTONS ── */
+    .corner-btn {
+      position: fixed;
+      top: 18px;
+      width: 46px;
+      height: 46px;
+      background: #ffffff;
+      border: 2px solid #c9884e;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #b5703a;
+      transition: transform .15s, box-shadow .15s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .corner-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+    .corner-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+    .corner-btn.home { left: 18px; }
+    .corner-btn.exit { right: 18px; }
+
+    .corner-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #b5703a;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── WOOD FRAME ── */
+    .frame {
+      width: min(700px, 92vw);
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(175deg, #c9884e 0%, #b5703a 40%, #9a5c28 100%);
+      border-radius: 10px;
+      padding: 20px 24px 30px;
+      position: relative;
+      box-shadow:
+        0 20px 50px rgba(0,0,0,.35),
+        inset 0 0 0 3px rgba(70,30,5,.35),
+        inset 0 3px 0 rgba(255,200,120,.25);
+    }
+
+    /* Wood grain */
+    .frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent, transparent 14px,
+        rgba(0,0,0,.03) 14px, rgba(0,0,0,.03) 16px
+      );
+      pointer-events: none;
+    }
+
+    /* Corner bolts */
+    .frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background:
+        radial-gradient(circle 4px at 12px 12px, rgba(60,25,5,.55) 50%, transparent 51%),
+        radial-gradient(circle 4px at calc(100% - 12px) 12px, rgba(60,25,5,.55) 50%, transparent 51%),
+        radial-gradient(circle 4px at 12px calc(100% - 12px), rgba(60,25,5,.55) 50%, transparent 51%),
+        radial-gradient(circle 4px at calc(100% - 12px) calc(100% - 12px), rgba(60,25,5,.55) 50%, transparent 51%);
+      pointer-events: none;
+    }
+
+    /* Eraser ledge */
+    .ledge {
+      position: absolute;
+      bottom: 10px;
+      left: 24px;
+      right: 24px;
+      height: 12px;
+      background: linear-gradient(180deg, #8a4e1e, #703e10);
+      border-radius: 3px;
+      box-shadow: 0 3px 6px rgba(0,0,0,.3);
+    }
+
+    /* ── CHALKBOARD ── */
+    .board {
+      height: calc(100% - 16px);
+      width: 100%;
+      border-radius: 8px;
+      background:
+        radial-gradient(ellipse at 28% 22%, rgba(255,255,255,.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 72% 78%, rgba(255,255,255,.04) 0%, transparent 48%),
+        linear-gradient(160deg, #2e3530 0%, #1e2620 60%, #161c18 100%);
+      box-shadow:
+        inset 0 0 0 4px rgba(0,0,0,.4),
+        inset 0 0 50px rgba(0,0,0,.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2.8vw, 30px);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Chalk smears */
+    .board::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 220px 55px at 18% 58%, rgba(255,255,255,.022) 0%, transparent 70%),
+        radial-gradient(ellipse 160px 40px at 68% 28%, rgba(255,255,255,.018) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Chalk noise */
+    .board::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADING ── */
+    .board-title {
+      position: relative;
+      z-index: 1;
+      color: #f0ede8;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: clamp(15px, 2.6vw, 26px);
+      text-align: center;
+      line-height: 1.35;
+      text-shadow:
+        0 0 1px rgba(255,255,255,.35),
+        1px 1px 0 rgba(0,0,0,.25);
+      filter: blur(0.25px);
+      animation: fadeInDown .6s ease both;
+    }
+
+    /* ── BUTTON GRID ── */
+    .btn-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(10px, 2vw, 22px);
+      width: min(420px, 82%);
+      animation: fadeInUp .6s ease .2s both;
+    }
+
+    /* Orange 3D pill button */
+    .menu-btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(12px, 1.7vw, 17px);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #fff;
+      padding: clamp(10px, 1.5vw, 14px) clamp(14px, 2vw, 20px);
+      border-radius: 50px;
+      background: linear-gradient(180deg, #ffcc55 0%, #f5a318 45%, #e08800 100%);
+      box-shadow:
+        0 5px 0 #a85e00,
+        0 8px 18px rgba(0,0,0,.35),
+        inset 0 2px 0 rgba(255,255,255,.45);
+      text-shadow: 0 1px 3px rgba(0,0,0,.35);
+      transition: transform .1s ease, box-shadow .1s ease;
+      position: relative;
+    }
+
+    /* Shine spot on button */
+    .menu-btn::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 18%;
+      width: 28%;
+      height: 35%;
+      border-radius: 50%;
+      background: rgba(255,255,255,.35);
+      filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .menu-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 7px 0 #a85e00,
+        0 12px 22px rgba(0,0,0,.4),
+        inset 0 2px 0 rgba(255,255,255,.45);
+    }
+
+    .menu-btn:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 #a85e00,
+        0 3px 10px rgba(0,0,0,.3),
+        inset 0 2px 0 rgba(255,255,255,.45);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 8px 16px;
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      font-size: 12px;
+      color: #5a6b5c;
+      background: rgba(220, 232, 222, 0.85);
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.5px;
+      z-index: 50;
+    }
+
+    /* ── FADE-IN (IntersectionObserver) ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── DOT BOUNCE LOADING OVERLAY ── */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(220, 232, 222, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      z-index: 9999;
+      backdrop-filter: blur(3px);
+      transition: opacity .4s ease;
+    }
+    #loading-overlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loading-dots {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .loading-dots .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #c9884e;
+      animation: dotBounce 1.2s ease-in-out infinite;
+    }
+    .loading-dots .dot:nth-child(2) {
+      background: #2da84e;
+      animation-delay: .2s;
+    }
+    .loading-dots .dot:nth-child(3) {
+      background: #b5703a;
+      animation-delay: .4s;
+    }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: .5; }
+      40%           { transform: scale(1.2); opacity: 1;  }
+    }
+    .loading-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: #3a6b3e;
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: .5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dot Bounce Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="loading-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <p class="loading-text">Memuatkan...</p>
+  </div>
+
+  <!-- Home icon (top-left) -->
+  <button class="corner-btn home" onclick="window.location.href='index.html'" title="Halaman Utama">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  </button>
+
+  <!-- Exit icon (top-right) -->
+  <button class="corner-btn exit" onclick="confirmExit()" title="Keluar">
+    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+  </button>
+
+  <!-- Chalkboard -->
+  <div class="frame">
+    <div class="board">
+
+      <p class="board-title">
+        Klik untuk Memulakan<br>Pembelajaran
+      </p>
+
+      <div class="btn-grid">
+        <button class="menu-btn" onclick="window.location.href='MenuVideo.html'">VIDEO</button>
+        <button class="menu-btn" onclick="window.location.href='topik.html'">NOTA</button>
+        <button class="menu-btn" onclick="window.location.href='MenuActivity.html'">AKTIVITI</button>
+        <button class="menu-btn" onclick="window.location.href='MenuPenilaian.html'">PENILAIAN</button>
+      </div>
+
+    </div>
+    <div class="ledge"></div>
+  </div>
+
+  <script>
+    function confirmExit() {
+      sessionStorage.setItem('keluarReturn', 'index.htmlS');
+      window.location.href = 'keluar.html';
+    }
+
+    // Hide loading overlay after 5 seconds
+    setTimeout(() => {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.classList.add('hide');
+      setTimeout(() => overlay.style.display = 'none', 400);
+    }, 5000);
+  </script>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2026 Bijak Fiqh Mirath. Hak Cipta Terpelihara.
+  </footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

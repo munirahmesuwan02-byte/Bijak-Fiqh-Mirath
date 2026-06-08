@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soalan Tahun Lepas – 930/1 (U1) 2021 / 930/1 2022</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #dce8de;
+    min-height: 100vh;
+    padding: 30px 16px 60px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* NAV ICONS */
+  .nav-home, .nav-exit {
+    position: fixed;
+    top: 18px;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid #c9884e;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 3px 3px 0 #b5703a;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 100;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-home:hover, .nav-exit:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+  .nav-home:active, .nav-exit:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+  .nav-home { left: 18px; }
+  .nav-exit { right: 18px; }
+  .nav-home svg, .nav-exit svg { width: 22px; height: 22px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* SOALAN CARD */
+  .soalan-card {
+    background: #fff;
+    border: 2px solid #c9884e;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #b5703a;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .soalan-header {
+    background: #fff;
+    padding: 18px 24px 4px 24px;
+  }
+  .soalan-header .title-main {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 15px;
+    color: #111; letter-spacing: 0.3px;
+  }
+  .soalan-header .title-sub {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 15px;
+    color: #111; margin-top: 2px;
+  }
+  .soalan-body { padding: 6px 24px 24px 24px; }
+
+  /* BAHAGIAN */
+  .bahagian { margin-bottom: 22px; }
+  .bahagian:last-child { margin-bottom: 0; }
+
+  .soalan-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .soalan-row-left { display: flex; gap: 10px; flex: 1; }
+  .bahagian-label { font-size: 15px; font-weight: 400; color: #111; white-space: nowrap; min-width: 24px; }
+  .soalan-text { font-size: 15px; color: #111; line-height: 1.75; font-weight: 400; }
+  .markah-badge { font-size: 15px; color: #111; white-space: nowrap; font-weight: 400; }
+
+  /* JAWAPAN */
+  .jawapan-label { font-size: 13px; font-weight: 700; color: #4a7c59; margin-bottom: 6px; }
+  textarea {
+    width: 100%;
+    border: 1.5px solid #b5d4bc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+    color: #2d3a2e;
+    resize: vertical;
+    min-height: 100px;
+    background: #f9fcfa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    line-height: 1.7;
+  }
+  textarea:focus { border-color: #4a7c59; background: #fff; }
+  textarea:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* TABLE INPUT */
+  .table-wrapper { overflow-x: auto; margin-top: 8px; }
+  .jadual-input { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 480px; }
+  .jadual-input th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 13px;
+  }
+  .jadual-input td { padding: 5px 7px; border: 1px solid #c9e0cc; vertical-align: middle; }
+  .jadual-input tr:nth-child(even) td { background: #f0f8f2; }
+  .jadual-input input[type="text"] {
+    width: 100%; border: 1.5px solid #c9e0cc; border-radius: 6px;
+    padding: 6px 8px; font-size: 13px;
+    font-family: 'Nunito Sans', sans-serif;
+    background: #fff; outline: none; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .jadual-input input[type="text"]:focus { border-color: #4a7c59; }
+  .jadual-input input[type="text"]:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .btn-semak {
+    background: #4a7c59; color: #fff; border: none;
+    padding: 9px 22px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 2px 2px 0 #2e5c3a;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-semak:hover { transform: translateY(-1px); box-shadow: 3px 3px 0 #2e5c3a; }
+  .btn-semak:active { transform: scale(0.97); box-shadow: 1px 1px 0 #2e5c3a; }
+  .btn-reset {
+    background: #fff; color: #b5703a;
+    border: 1.5px solid #c9884e;
+    padding: 9px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: transform 0.1s, background 0.15s;
+  }
+  .btn-reset:hover { background: #fdf3e8; }
+  .btn-reset:active { transform: scale(0.97); }
+
+  /* SKEMA BOX */
+  .skema-box {
+    display: none;
+    margin-top: 14px;
+    background: #f5faf6;
+    border: 2px dashed #4a7c59;
+    border-radius: 12px;
+    padding: 16px 18px;
+    animation: fadeIn 0.3s ease;
+  }
+  .skema-box.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .skema-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #4a7c59; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .skema-text { font-size: 14px; color: #2d3a2e; line-height: 1.75; margin-bottom: 10px; }
+
+  .skema-section { margin-bottom: 12px; }
+  .skema-section-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #b5703a; margin-bottom: 6px;
+  }
+  .skema-section ul { padding-left: 18px; }
+  .skema-section ul li { font-size: 14px; color: #2d3a2e; line-height: 1.7; margin-bottom: 3px; }
+
+  .contoh-item {
+    background: #fdf3e8;
+    border-left: 3px solid #c9884e;
+    border-radius: 0 8px 8px 0;
+    padding: 9px 14px; margin: 6px 0;
+    font-size: 14px; color: #4a3020;
+  }
+  .contoh-item b { color: #b5703a; }
+
+  /* Skema table */
+  .jadual-skema { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+  .jadual-skema th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+  }
+  .jadual-skema td { padding: 8px 10px; border: 1px solid #c9e0cc; text-align: center; color: #2d3a2e; }
+  .jadual-skema tr:nth-child(even) td { background: #edf5ef; }
+  .jadual-skema .waris-col { text-align: left; font-weight: 600; }
+  .am-cell {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 22px;
+    color: #4a7c59; vertical-align: middle;
+  }
+
+  /* Perbezaan table */
+  .jadual-beza { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+  .jadual-beza th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 12px; text-align: center;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+  }
+  .jadual-beza td { padding: 9px 12px; border: 1px solid #c9e0cc; vertical-align: top; font-size: 14px; color: #2d3a2e; line-height: 1.65; }
+  .jadual-beza tr:nth-child(even) td { background: #edf5ef; }
+  .jadual-beza td:first-child { font-weight: 600; color: #2e5c3a; }
+
+  /* BUTANG SEMAK AKHIR */
+  .btn-semak-akhir {
+    background: #4a7c59; color: #fff; border: none;
+    padding: 13px 32px; border-radius: 24px;
+    font-size: 15px; font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 3px 3px 0 #2e5c3a;
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-right: 10px;
+  }
+  .btn-semak-akhir:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 #2e5c3a; }
+  .btn-semak-akhir:active { transform: scale(0.97); box-shadow: 1px 1px 0 #2e5c3a; }
+  .btn-reset-semua {
+    background: #fff; color: #b5703a;
+    border: 1.5px solid #c9884e;
+    padding: 13px 26px; border-radius: 24px;
+    font-size: 15px; font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: transform 0.1s, background 0.15s;
+  }
+  .btn-reset-semua:hover { background: #fdf3e8; }
+  .btn-reset-semua:active { transform: scale(0.97); }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 2px dashed #c9e0cc; margin: 20px 0; }
+
+  /* ALERT MODAL */
+  .alert-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .alert-box {
+    background: #fff;
+    border: 2px solid #c9884e;
+    box-shadow: 5px 5px 0 #b5703a;
+    border-radius: 16px;
+    padding: 24px 26px;
+    max-width: 420px;
+    width: 100%;
+  }
+  .alert-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 15px;
+    color: #b5703a; margin-bottom: 12px;
+  }
+  .alert-msg {
+    font-size: 14px; color: #2d3a2e;
+    line-height: 1.75; white-space: pre-line;
+    margin-bottom: 18px;
+  }
+  .alert-close {
+    display: block; width: 100%;
+    background: #4a7c59; color: #fff; border: none;
+    padding: 10px; border-radius: 20px;
+    font-size: 14px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 2px 2px 0 #2e5c3a;
+  }
+  .alert-close:hover { background: #3a6347; }
+
+  /* TIMER */
+  .timer-bar {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 2px solid #c9884e;
+    box-shadow: 3px 3px 0 #b5703a;
+    border-radius: 24px;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99;
+    font-family: 'Nunito', sans-serif;
+  }
+  .timer-icon { font-size: 16px; }
+  .timer-label { font-size: 12px; font-weight: 700; color: #4a7c59; text-transform: uppercase; letter-spacing: 0.4px; }
+  .timer-display { font-size: 18px; font-weight: 900; color: #2d3a2e; letter-spacing: 1px; min-width: 52px; text-align: center; }
+  .timer-bar.warning .timer-display { color: #b5703a; }
+  .timer-bar.danger  .timer-display { color: #c0392b; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+  .timer-btn {
+    background: none;
+    border: 1.5px solid #c9e0cc;
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: #4a7c59;
+    transition: background 0.15s;
+    padding: 0;
+  }
+  .timer-btn:hover { background: #edf5ef; }
+</style>
+</head>
+<body>
+
+<!-- Alert Modal -->
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-box">
+    <div class="alert-title">⚠️ Jawapan Belum Lengkap</div>
+    <div class="alert-msg" id="alertMsg"></div>
+    <button class="alert-close" onclick="closeAlert()">Faham, saya akan lengkapkan dulu</button>
+  </div>
+</div>
+
+<!-- Timer -->
+<div class="timer-bar" id="timerBar">
+  <span class="timer-icon">⏱️</span>
+  <span class="timer-label">Masa</span>
+  <span class="timer-display" id="timerDisplay">30:00</span>
+</div>
+
+<!-- Nav -->
+<a href="Menupastyear.html" class="nav-home" title="Menu Soalan Lepas">
+  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+</a>
+<a href="keluar.html" class="nav-exit" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+</a>
+
+<div class="page">
+
+  <!-- ══════════ SOALAN 1 ══════════ -->
+  <div class="soalan-card">
+    <div class="soalan-header">
+      <div class="title-main">SOALAN TAHUN LEPAS &mdash; 930/1 (U1) 2021 / 930/1 2022</div>
+      <div class="title-sub">Soalan 1</div>
+    </div>
+    <div class="soalan-body">
+
+      <!-- 1a -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">a)</span>
+            <span class="soalan-text">Berikan pengertian <b>hajb nuqsan</b> beserta dengan contoh.</span>
+          </div>
+          <span class="markah-badge">[4 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-1a" placeholder="Tulis jawapan anda di sini..."></textarea>
+
+        <div class="skema-box" id="skema-1a">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="skema-section">
+            <div class="skema-section-title">I. Pengertian Hajb Nuqsan</div>
+            <p class="skema-text">Pendindingan yang mengurangkan bahagian waris — iaitu waris masih mendapat harta pusaka tetapi bahagiannya berkurangan disebabkan kehadiran waris lain.</p>
+          </div>
+          <div class="skema-section">
+            <div class="skema-section-title">II. Contoh</div>
+            <div class="contoh-item">Suami mendapat <b>1/2</b> jika si mati <b>tiada</b> anak keturunan, tetapi berkurangan kepada <b>1/4</b> jika si mati <b>ada</b> anak keturunan.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1b -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">b)</span>
+            <span class="soalan-text">Jelaskan <b>empat perbezaan</b> antara orang yang dihijab dengan orang yang dihalang daripada mewarisi harta pusaka.</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+        <div class="table-wrapper">
+          <table class="jadual-input">
+            <thead>
+              <tr>
+                <th style="width:50%;">Orang yang Dihijab</th>
+                <th style="width:50%;">Orang yang Dihalang</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" id="b-hijab-1" placeholder="Perbezaan 1..."></td>
+                <td><input type="text" id="b-halang-1" placeholder="Perbezaan 1..."></td>
+              </tr>
+              <tr>
+                <td><input type="text" id="b-hijab-2" placeholder="Perbezaan 2..."></td>
+                <td><input type="text" id="b-halang-2" placeholder="Perbezaan 2..."></td>
+              </tr>
+              <tr>
+                <td><input type="text" id="b-hijab-3" placeholder="Perbezaan 3..."></td>
+                <td><input type="text" id="b-halang-3" placeholder="Perbezaan 3..."></td>
+              </tr>
+              <tr>
+                <td><input type="text" id="b-hijab-4" placeholder="Perbezaan 4..."></td>
+                <td><input type="text" id="b-halang-4" placeholder="Perbezaan 4..."></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="skema-box" id="skema-1b">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="table-wrapper">
+            <table class="jadual-beza">
+              <thead>
+                <tr>
+                  <th style="width:50%;">Orang yang Dihijab</th>
+                  <th style="width:50%;">Orang yang Dihalang</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Tidak dapat harta pusaka kerana ada waris lain yang lebih hampir dengan si mati.</td>
+                  <td>Tidak dapat harta pusaka kerana ada salah satu daripada halangan pewarisan.</td>
+                </tr>
+                <tr>
+                  <td>Masih dianggap waris namun terhijab oleh waris lain.</td>
+                  <td>Tidak dianggap waris sama sekali.</td>
+                </tr>
+                <tr>
+                  <td>Boleh menghijab waris lain walaupun ia terdinding.</td>
+                  <td>Tidak memberi kesan kepada waris lain bahkan dianggap tidak wujud.</td>
+                </tr>
+                <tr>
+                  <td><b>Contoh:</b> Datuk dihijab oleh bapa.</td>
+                  <td><b>Contoh:</b> Waris membunuh pewaris.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1c -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">c)</span>
+            <span class="soalan-text">Huraikan pembahagian harta pusaka seorang perempuan yang meninggal dunia dengan meninggalkan <b>suami, ibu, bapa</b> dan <b>seorang saudara lelaki seibu</b>. Harta peninggalan si mati bernilai <b>RM240,000.00</b>.</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+        <div class="table-wrapper">
+          <table class="jadual-input">
+            <thead>
+              <tr>
+                <th>Waris</th>
+                <th>Fardu</th>
+                <th>Asal Masalah</th>
+                <th>Jumlah Saham</th>
+                <th>RM</th>
+                <th>Huraian</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Suami</td>
+                <td><input type="text" id="c-f1" placeholder="..."></td>
+                <td rowspan="4" style="text-align:center; vertical-align:middle;"><input type="text" id="c-am" placeholder="..." style="width:60px;"></td>
+                <td><input type="text" id="c-j1" placeholder="..."></td>
+                <td><input type="text" id="c-r1" placeholder="..."></td>
+                <td><input type="text" id="c-h1" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>Ibu</td>
+                <td><input type="text" id="c-f2" placeholder="..."></td>
+                <td><input type="text" id="c-j2" placeholder="..."></td>
+                <td><input type="text" id="c-r2" placeholder="..."></td>
+                <td><input type="text" id="c-h2" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>Bapa</td>
+                <td><input type="text" id="c-f3" placeholder="..."></td>
+                <td><input type="text" id="c-j3" placeholder="..."></td>
+                <td><input type="text" id="c-r3" placeholder="..."></td>
+                <td><input type="text" id="c-h3" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>Saudara Lelaki Seibu</td>
+                <td><input type="text" id="c-f4" placeholder="..."></td>
+                <td><input type="text" id="c-j4" placeholder="..."></td>
+                <td><input type="text" id="c-r4" placeholder="..."></td>
+                <td><input type="text" id="c-h4" placeholder="..."></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="skema-box" id="skema-1c">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="table-wrapper">
+            <table class="jadual-skema">
+              <thead>
+                <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah Saham</th><th>RM</th><th>Huraian</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="waris-col">Suami</td>
+                  <td>1/2</td>
+                  <td rowspan="4" class="am-cell">6</td>
+                  <td>3</td>
+                  <td>RM120,000.00</td>
+                  <td style="text-align:left; font-size:13px;">Tiada anak keturunan</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Ibu</td>
+                  <td>1/6</td>
+                  <td>1</td>
+                  <td>RM40,000.00</td>
+                  <td style="text-align:left; font-size:13px;">Kes umariyyatain</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Bapa</td>
+                  <td>Asabah</td>
+                  <td>2</td>
+                  <td>RM80,000.00</td>
+                  <td style="text-align:left; font-size:13px;">Tiada anak keturunan lelaki</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Saudara Lelaki Seibu</td>
+                  <td>Mahjub</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="text-align:left; font-size:13px;">Dihijab oleh bapa</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="contoh-item" style="margin-top:10px;">
+            <b>Nota:</b> Kes <i>umariyyatain</i> — ibu mendapat 1/3 daripada baki (selepas suami ambil 1/2), bukan 1/3 daripada keseluruhan harta. Baki = 1/2, maka ibu = 1/3 × 1/2 = 1/6. Bapa mengambil baki sebagai asabah.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Butang Semak Akhir -->
+  <div style="text-align:center; margin: 10px 0 40px;">
+    <button class="btn-semak-akhir" onclick="semakSemua()">✅ Semak &amp; Lihat Semua Skema Jawapan</button>
+    <button class="btn-reset-semua" onclick="resetSemua()">↺ Set Semula Semua</button>
+  </div>
+
+</div><!-- end page -->
+
+<script>
+  /* ── Timer auto-start ── */
+  var remaining = 30 * 60;
+
+  function updateDisplay() {
+    var m = Math.floor(remaining / 60);
+    var s = remaining % 60;
+    document.getElementById('timerDisplay').textContent =
+      (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    var bar = document.getElementById('timerBar');
+    bar.classList.remove('warning','danger');
+    if (remaining <= 60)       bar.classList.add('danger');
+    else if (remaining <= 300) bar.classList.add('warning');
+  }
+
+  setInterval(function() {
+    if (remaining > 0) { remaining--; updateDisplay(); }
+  }, 1000);
+
+  /* ── Semua ID yang perlu diisi ── */
+  var allTextareas = [];
+  var allJadualFields = [
+    'b-hijab-1','b-hijab-2','b-hijab-3','b-hijab-4',
+    'b-halang-1','b-halang-2','b-halang-3','b-halang-4',
+    'c-f1','c-f2','c-f3','c-f4',
+    'c-am',
+    'c-j1','c-j2','c-j3','c-j4',
+    'c-r1','c-r2','c-r3','c-r4',
+    'c-h1','c-h2','c-h3','c-h4'
+  ];
+
+  function semuaSudahDiisi() {
+    return allJadualFields.every(function(id) {
+      var el = document.getElementById(id);
+      return el && el.value.trim() !== '';
+    });
+  }
+
+  function senaraiKosong() {
+    var kosong = [];
+    var bHijabKosong = ['b-hijab-1','b-hijab-2','b-hijab-3','b-hijab-4',
+                        'b-halang-1','b-halang-2','b-halang-3','b-halang-4'].some(function(id) {
+      var el = document.getElementById(id); return !el || !el.value.trim();
+    });
+    if (bHijabKosong) kosong.push('Soalan 1(b) — Jadual Perbezaan');
+
+    var cKosong = ['c-f1','c-f2','c-f3','c-f4','c-am',
+                   'c-j1','c-j2','c-j3','c-j4',
+                   'c-r1','c-r2','c-r3','c-r4',
+                   'c-h1','c-h2','c-h3','c-h4'].some(function(id) {
+      var el = document.getElementById(id); return !el || !el.value.trim();
+    });
+    if (cKosong) kosong.push('Soalan 1(c) — Jadual Faraid');
+    return kosong;
+  }
+
+  /* ── Semak SEMUA sekaligus ── */
+  function semakSemua() {
+    if (!semuaSudahDiisi()) {
+      var kosong = senaraiKosong();
+      showAlert('⚠️ Sila lengkapkan semua jawapan terlebih dahulu.\n\nBelum dijawab:\n• ' + kosong.join('\n• '));
+      return;
+    }
+    playSound('success');
+    ['skema-1a','skema-1b','skema-1c'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('open');
+    });
+    document.getElementById('skema-1a').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function resetSemua() {
+    playSound('reset');
+    allJadualFields.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.value = ''; el.disabled = false; }
+    });
+    ['skema-1a','skema-1b','skema-1c'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Alert modal ── */
+  function showAlert(msg) {
+    playSound('warning');
+    document.getElementById('alertMsg').innerText = msg;
+    document.getElementById('alertOverlay').style.display = 'flex';
+  }
+  function closeAlert() {
+    document.getElementById('alertOverlay').style.display = 'none';
+  }
+
+  /* ── Web Audio Sound Engine ── */
+  var ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+
+  function playSound(type) {
+    var ac = getCtx();
+
+    if (type === 'warning') {
+      [0, 0.18].forEach(function(delay) {
+        var osc = ac.createOscillator();
+        var gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(520, ac.currentTime + delay);
+        osc.frequency.linearRampToValueAtTime(340, ac.currentTime + delay + 0.15);
+        gain.gain.setValueAtTime(0.35, ac.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + delay + 0.18);
+        osc.start(ac.currentTime + delay);
+        osc.stop(ac.currentTime + delay + 0.18);
+      });
+    }
+    else if (type === 'success') {
+      var notes = [523, 659, 784];
+      notes.forEach(function(freq, i) {
+        var osc = ac.createOscillator();
+        var gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        var t = ac.currentTime + i * 0.13;
+        gain.gain.setValueAtTime(0.28, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+        osc.start(t);
+        osc.stop(t + 0.22);
+      });
+    }
+    else if (type === 'reset') {
+      var osc = ac.createOscillator();
+      var gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, ac.currentTime);
+      osc.frequency.linearRampToValueAtTime(300, ac.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.25, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.22);
+      osc.start(ac.currentTime);
+      osc.stop(ac.currentTime + 0.22);
+    }
+    else if (type === 'timer-warning') {
+      [0, 0.22, 0.44].forEach(function(delay) {
+        var osc = ac.createOscillator();
+        var gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 660;
+        var t = ac.currentTime + delay;
+        gain.gain.setValueAtTime(0.2, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.start(t); osc.stop(t + 0.18);
+      });
+    }
+    else if (type === 'timer-danger') {
+      [0, 0.3].forEach(function(delay) {
+        var osc = ac.createOscillator();
+        var gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.type = 'square';
+        osc.frequency.value = 880;
+        var t = ac.currentTime + delay;
+        gain.gain.setValueAtTime(0.15, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        osc.start(t); osc.stop(t + 0.2);
+      });
+    }
+  }
+
+  /* ── Timer milestone sounds ── */
+  var warned5min = false, warned1min = false;
+  setInterval(function() {
+    if (remaining === 300 && !warned5min) { warned5min = true; playSound('timer-warning'); }
+    if (remaining === 60  && !warned1min) { warned1min = true; playSound('timer-danger'); }
+  }, 1000);
+</script>
+
+</body>
+</html>

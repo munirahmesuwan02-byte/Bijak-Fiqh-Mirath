@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu – Penilaian Fiqh Mirath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Nunito+Sans:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sage:       #dce8de;
+      --sage-dark:  #c4d9c7;
+      --brown:      #c9884e;
+      --brown-dark: #b5703a;
+      --green-btn:  #2da84e;
+      --green-hover:#4ac76e;
+      --text-dark:  #1e2620;
+      --white:      #ffffff;
+      --gold:       #f5c842;
+      --red-badge:  #e05c5c;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+      background: var(--sage);
+      color: var(--text-dark);
+    }
+
+    /* ── CORNER BUTTONS ── */
+    .corner-btn {
+      position: fixed;
+      top: 18px;
+      width: 46px; height: 46px;
+      background: var(--white);
+      border: 2px solid var(--brown);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--brown-dark);
+      transition: transform .15s, box-shadow .15s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .corner-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--brown-dark); }
+    .corner-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--brown-dark); }
+    .corner-btn.home { left: 18px; }
+    .corner-btn.exit { right: 18px; }
+    .corner-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--brown-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── PAGE WRAPPER ── */
+    .page-wrapper {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 24px 16px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      width: 100%;
+      max-width: 780px;
+      text-align: center;
+      margin-bottom: 18px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .header p {
+      margin-top: 5px;
+      font-size: 0.85rem;
+      color: #3a5040;
+      font-weight: 700;
+    }
+
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--brown);
+      border-radius: 10px;
+      margin: 8px auto 0;
+    }
+
+    /* ── LAYOUT: single row, 2 cards ── */
+    .cards-grid {
+      width: 100%;
+      max-width: 780px;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+      max-height: 340px;
+      justify-content: center;
+    }
+
+    /* ── CARD ── */
+    .level-card {
+      background: var(--white);
+      border: 2.5px solid var(--brown);
+      border-radius: 20px;
+      box-shadow: 0 6px 0 rgba(181,112,58,.25), 0 10px 30px rgba(0,0,0,.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp .45s ease forwards;
+      transition: box-shadow .2s, transform .2s;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .row-single .level-card:nth-child(1) { animation-delay: .05s; }
+    .row-single .level-card:nth-child(2) { animation-delay: .14s; }
+
+    .level-card:hover {
+      box-shadow: 0 8px 0 rgba(181,112,58,.3), 0 14px 36px rgba(0,0,0,.13);
+      transform: translateY(-3px);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CARD ICON CIRCLE ── */
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      flex-shrink: 0;
+      box-shadow: 0 3px 8px rgba(0,0,0,.12);
+    }
+    .icon-green  { background: #d6f5e0; }
+    .icon-yellow { background: #fff6cc; }
+    .icon-red    { background: #fde8e8; }
+
+    /* ── CARD TEXT ── */
+    .card-title {
+      font-weight: 900;
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      text-align: center;
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #5a7060;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .diff-badge {
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 50px;
+      display: inline-block;
+    }
+    .badge-asas      { background: #d6f5e0; color: #1a7035; }
+    .badge-sederhana { background: #fff6cc; color: #9a7a00; }
+    .badge-kompleks  { background: #fde8e8; color: #b52020; }
+
+    /* ── START BUTTON inside card ── */
+    .btn-start {
+      margin-top: 2px;
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: none;
+      background: var(--green-btn);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1a7035;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-start:hover {
+      background: var(--green-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #1a7035;
+    }
+    .btn-start:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 #1a7035;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      html, body { overflow: auto; }
+      .page-wrapper { height: auto; min-height: 100vh; }
+      .row { flex-wrap: wrap; }
+      .header h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CORNER BUTTONS -->
+<button class="corner-btn home" onclick="window.location.href='menu.html'" title="Kembali ke Menu">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</button>
+<button class="corner-btn exit" onclick="window.location.href='keluar.html'" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</button>
+
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1>Penilaian Fiqh Mirath</h1>
+    <div class="divider"></div>
+  </header>
+
+  <!-- CARDS: 1 row, 2 cards -->
+  <div class="cards-grid">
+
+    <div class="row row-single">
+      <a href="Menupastyear.html" class="level-card">
+        <div class="card-icon icon-yellow">📜</div>
+        <div class="card-title">Soalan Tahun-Tahun Lepas</div>
+        <div class="card-desc">Latih diri dengan soalan peperiksaan sebenar tahun-tahun lepas bagi tajuk Fiqh Mirath.</div>
+        <span class="diff-badge badge-sederhana">Peperiksaan Lepas</span>
+        <span class="btn-start">Mulakan</span>
+      </a>
+      <a href="Menutrialnegeri.html" class="level-card">
+        <div class="card-icon icon-red">📝</div>
+        <div class="card-title">Soalan Trial Negeri 2026</div>
+        <div class="card-desc">Cuba soalan percubaan terkini dari pelbagai negeri bagi persediaan peperiksaan 2026.</div>
+        <span class="diff-badge badge-kompleks">Trial 2026</span>
+        <span class="btn-start">Mulakan</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

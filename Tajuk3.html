@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajuk 3 – Waris</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&family=Nunito:wght@400;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:    #f5a318;
+  --gold-dk: #b5703a;
+  --gold-lt: #ffe085;
+  --green:   #3aad3a;
+  --red:     #c0392b;
+  --bg:      #dce8de;
+  --cream:   #f5ede4;
+  --brown:   #7a4010;
+  --text:    #2e2e2e;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  height: 100vh;
+  background: var(--bg);
+  font-family: 'Nunito', sans-serif;
+  display: flex; flex-direction: column;
+}
+
+/* ── SCROLLABLE WRAPPER ── */
+.scroll-wrapper {
+  flex: 1; overflow-y: auto;
+  padding: 0 0 90px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dk) var(--cream);
+}
+.scroll-wrapper::-webkit-scrollbar { width: 6px; }
+.scroll-wrapper::-webkit-scrollbar-track { background: var(--cream); }
+.scroll-wrapper::-webkit-scrollbar-thumb { background: var(--gold-dk); border-radius: 3px; }
+
+/* ── NAV BUTTONS ── */
+.corner-btn, .btn-back {
+  position: fixed;
+  top: 18px;
+  width: 46px; height: 46px;
+  background: #ffffff;
+  border: 2px solid #c9884e;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #b5703a;
+  transition: transform .15s, box-shadow .15s;
+  z-index: 100;
+  text-decoration: none;
+}
+.corner-btn:hover, .btn-back:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+.corner-btn:active, .btn-back:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+.corner-btn.exit { right: 18px; }
+.btn-back { left: 18px; }
+.corner-btn svg, .btn-back svg { width: 24px; height: 24px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.btn-download {
+  position: fixed; bottom: 18px; right: 20px; z-index: 200;
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 3px 0 #9e5800, 0 5px 14px rgba(0,0,0,.25);
+  border: none; border-radius: 50px; cursor: pointer;
+  padding: 7px 16px; transition: transform .15s, box-shadow .15s;
+  text-decoration: none;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 1px; color: #3a1a00; text-shadow: 0 1px 0 rgba(255,255,255,.3);
+  white-space: nowrap;
+}
+.btn-download:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #9e5800, 0 8px 18px rgba(0,0,0,.25); }
+.btn-download:active { transform: translateY(2px); box-shadow: 0 1px 0 #9e5800; }
+.btn-download svg { width: 14px; height: 14px; fill: #3a1a00; flex-shrink: 0; }
+
+/* ══════════════════════════════════
+   AYAT BANNER
+══════════════════════════════════ */
+.ayat-banner {
+  margin: 56px 16px 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffbe8 0%, #f5ede4 100%);
+  border: 2px solid var(--gold-dk);
+  box-shadow: 3px 3px 0 var(--gold-dk);
+  padding: 18px 20px 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ayat-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0 L40 20 L20 40 L0 20Z' fill='none' stroke='%23c9884e' stroke-width='0.4' opacity='0.18'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+}
+.ayat-arabic {
+  font-size: clamp(18px, 3.5vw, 26px);
+  line-height: 2;
+  color: #3a1a00;
+  font-family: 'Amiri', 'Traditional Arabic', serif;
+  direction: rtl;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px rgba(180,100,20,.15);
+}
+.ayat-translation {
+  font-size: clamp(10px, 1.4vw, 12px);
+  color: #7a5030;
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.ayat-source {
+  display: inline-block;
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 2px 0 #9e5800;
+  border-radius: 50px; padding: 3px 14px;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(9px, 1.2vw, 11px); color: #3a1a00;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ── PAGE HEADER (no photo) ── */
+.page-header {
+  text-align: center;
+  padding: 62px 20px 16px;
+  background: var(--bg);
+}
+.page-header-icon { font-size: 36px; margin-bottom: 6px; }
+.page-header-title {
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(20px, 4vw, 34px); text-transform: uppercase;
+  letter-spacing: 3px; color: #1a1a1a;
+  text-shadow: 0 1px 0 rgba(255,255,255,.6);
+}
+.page-header-sub {
+  margin-top: 5px;
+  font-size: clamp(11px, 1.6vw, 14px);
+  color: #4a5e4d; font-weight: 700; letter-spacing: 1.2px;
+}
+.page-header-pills {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  justify-content: center; margin-top: 12px;
+}
+.page-pill {
+  background: rgba(42,20,0,.08);
+  border: 1.5px solid var(--gold-dk);
+  border-radius: 50px; padding: 4px 14px;
+  font-size: 11px; color: var(--brown); font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── CONTAINER ── */
+.container { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(11px, 1.6vw, 13px); text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text);
+  margin: 20px 0 10px; display: flex; align-items: center; gap: 10px;
+}
+.section-title::after {
+  content: ''; flex: 1; height: 2px;
+  background: linear-gradient(to right, var(--gold-dk), transparent);
+  border-radius: 2px;
+}
+
+/* ── CARD ── */
+.card {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 3px 3px 0 var(--gold-dk), 0 6px 24px rgba(0,0,0,.09);
+  border: 2px solid var(--gold-dk); margin-bottom: 14px;
+}
+.card-header {
+  background: linear-gradient(135deg, #c9884e, var(--gold-dk));
+  padding: 10px 16px;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(10px, 1.4vw, 13px); text-transform: uppercase;
+  letter-spacing: 1px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ══════════════════════════════════
+   GRAPHIC WARIS CARDS (icon grid)
+══════════════════════════════════ */
+.waris-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 14px;
+}
+@media (max-width: 700px) {
+  .waris-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 400px) {
+  .waris-grid { grid-template-columns: 1fr; }
+}
+/* Last two cards same size, centered */
+.waris-card:nth-last-child(2) { grid-column: 2; }
+.waris-card:nth-last-child(1) { grid-column: 3; }
+@media (max-width: 700px) {
+  .waris-card:nth-last-child(2),
+  .waris-card:nth-last-child(1) { grid-column: auto; }
+}
+.waris-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 2px solid var(--gold-dk);
+  box-shadow: 2px 2px 0 var(--gold-dk);
+  overflow: hidden;
+  transition: transform .15s, box-shadow .15s;
+}
+.waris-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 4px 5px 0 var(--gold-dk);
+}
+.waris-card-top {
+  background: linear-gradient(135deg, #c9884e, var(--gold-dk));
+  padding: 12px 10px 8px;
+  text-align: center;
+  min-height: 88px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.waris-avatar {
+  width: 52px; height: 52px;
+  margin: 0 auto 6px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%; border: 2px solid rgba(255,255,255,.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.waris-name {
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.8px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  line-height: 1.3;
+}
+.waris-card-body { padding: 8px 10px; min-height: 60px; }
+.frac-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 0; border-bottom: 1px dashed #edddd0;
+  font-size: 10px; color: #555; line-height: 1.4;
+}
+.frac-row span:last-child {
+  font-size: 10px;
+}
+.frac-row:last-child { border-bottom: none; }
+
+/* ══════════════════════════════════
+   FRACTION BADGES
+══════════════════════════════════ */
+.frac {
+  display: inline-block; min-width: 44px; text-align: center;
+  font-weight: 900; font-size: 10px; flex-shrink: 0;
+  padding: 2px 8px; border-radius: 50px;
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 2px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5);
+  color: #3a1a00;
+}
+.frac.asabah {
+  background: linear-gradient(180deg, #6ecf6e 0%, #3aad3a 45%, #2a8c2a 100%);
+  box-shadow: 0 2px 0 #1a5e1a, inset 0 1px 0 rgba(255,255,255,.4);
+  color: #fff;
+}
+.frac.mahjub {
+  background: linear-gradient(180deg, #e87a7a 0%, #c0392b 45%, #a02020 100%);
+  box-shadow: 0 2px 0 #7a1010, inset 0 1px 0 rgba(255,255,255,.3);
+  color: #fff;
+}
+.frac.mixed {
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 2px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5);
+  color: #3a1a00;
+}
+
+/* ══════════════════════════════════
+   PHOTO SECTION BANNER (mid-page)
+══════════════════════════════════ */
+.photo-banner {
+  position: relative;
+  width: 100%; border-radius: 14px; overflow: hidden;
+  margin: 6px 0 14px;
+  min-height: 120px;
+  background:
+    linear-gradient(120deg, rgba(42,20,0,.8) 0%, rgba(90,40,5,.65) 100%),
+    url('https://images.unsplash.com/photo-1578760996956-f7d94d035ea5?w=900&q=80') center/cover no-repeat;
+  display: flex; align-items: center; gap: 18px;
+  padding: 18px 22px;
+  border: 2px solid var(--gold-dk);
+  box-shadow: 3px 3px 0 var(--gold-dk);
+}
+.photo-banner-icon { font-size: 40px; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+.photo-banner-text h3 {
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(12px, 2vw, 17px); color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.5);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.photo-banner-text p {
+  font-size: clamp(10px, 1.3vw, 12px); color: rgba(255,255,255,.8); margin-top: 4px; line-height: 1.5;
+}
+
+/* ══════════════════════════════════
+   TABLE (standard)
+══════════════════════════════════ */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: var(--cream); padding: 8px 14px;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(9px, 1.2vw, 11px); text-transform: uppercase;
+  letter-spacing: 1px; color: var(--brown); text-align: left;
+  border-bottom: 2px solid #e0c9b0;
+}
+tbody tr { border-bottom: 1px solid #f0e8e0; transition: background .15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #fdf6f0; }
+tbody td { padding: 8px 14px; font-size: clamp(10px, 1.3vw, 12px); color: var(--text); vertical-align: top; }
+tbody td:first-child { font-weight: 900; color: var(--brown); white-space: nowrap; }
+
+/* ── condition rows inside td ── */
+.cr { display: flex; align-items: flex-start; gap: 8px; padding: 2px 0; border-bottom: 1px dashed #edddd0; }
+.cr:last-child { border-bottom: none; }
+.cr-text { font-size: clamp(10px, 1.2vw, 11px); color: #555; line-height: 1.4; }
+
+/* ══════════════════════════════════
+   CUCU COMBINATION TABLE — colour highlight
+══════════════════════════════════ */
+.combo-table tbody tr.highlight-row { background: #fff8ef; }
+
+/* ══════════════════════════════════
+   STEPS
+══════════════════════════════════ */
+.step { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f0e8e0; align-items: flex-start; }
+.step:last-child { border-bottom: none; }
+.step-num {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 2px 0 #9e5800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 13px; color: #3a1a00;
+}
+.step-title { font-weight: 900; color: var(--brown); font-size: clamp(11px, 1.4vw, 13px); margin-bottom: 4px; }
+.step-desc { font-size: clamp(10px, 1.2vw, 11px); color: #555; line-height: 1.5; }
+.formulas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.formula {
+  background: var(--cream); border: 1px solid #e0c9b0;
+  border-radius: 50px; padding: 3px 10px;
+  font-size: clamp(9px, 1.1vw, 11px); font-weight: 700; color: #5a3010;
+}
+.formula .eq { color: #c9884e; font-weight: 900; }
+
+/* ══════════════════════════════════
+   SPLIT CARD (Saudara SS/SB)
+══════════════════════════════════ */
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.split-col { border-right: 1px solid #f0e8e0; }
+.split-col:last-child { border-right: none; }
+.split-col-header {
+  padding: 7px 12px; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: clamp(9px, 1.1vw, 11px); text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--brown); background: var(--cream); border-bottom: 1px solid #e0c9b0;
+}
+.split-col-body { padding: 8px 12px; }
+.row-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 0; border-bottom: 1px dashed #edddd0;
+  font-size: clamp(9px, 1.1vw, 11px); color: #555;
+}
+.row-item:last-child { border-bottom: none; }
+
+/* ── GRID 2 ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+@media (max-width: 580px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ── LEGEND ── */
+.legend-box {
+  background: var(--cream); border-top: 2px solid #e0c9b0;
+  padding: 8px 14px;
+  font-size: clamp(9px, 1.1vw, 10px); color: #7a5030; line-height: 1.7;
+}
+.legend-box strong { color: #5a3010; font-family: 'Nunito Sans', sans-serif; }
+
+/* ── COLOUR KEY ── */
+.colour-key {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 10px 14px; background: var(--cream);
+  border-top: 1px solid #e0c9b0;
+}
+.key-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: #5a3010; }
+
+/* ══ SINGKATAN BUTTON ══ */
+.singkatan-btn {
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 3px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5);
+  border: none; border-radius: 50px;
+  padding: 7px 20px;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 12px; color: #3a1a00;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  cursor: pointer; transition: transform .12s, box-shadow .12s;
+}
+.singkatan-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5); }
+.singkatan-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #9e5800; }
+
+/* ══ SINGKATAN MODAL ══ */
+.singkatan-overlay {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,.45); backdrop-filter: blur(3px);
+  align-items: center; justify-content: center;
+}
+.singkatan-overlay.active { display: flex; }
+.singkatan-modal {
+  background: #fff; border-radius: 18px;
+  border: 2px solid var(--gold-dk);
+  box-shadow: 4px 4px 0 var(--gold-dk), 0 12px 40px rgba(0,0,0,.2);
+  width: 90%; max-width: 480px; max-height: 80vh;
+  overflow: hidden; display: flex; flex-direction: column;
+  animation: popIn .2s ease;
+}
+@keyframes popIn { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.singkatan-modal-header {
+  background: linear-gradient(135deg, #c9884e, var(--gold-dk));
+  padding: 12px 16px;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 14px; color: #fff; text-transform: uppercase; letter-spacing: 1px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.singkatan-close {
+  background: rgba(255,255,255,.25); border: none; border-radius: 50%;
+  width: 28px; height: 28px; cursor: pointer;
+  font-size: 13px; color: #fff; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.singkatan-close:hover { background: rgba(255,255,255,.45); }
+.singkatan-modal-body { overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+.singkatan-group-title {
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--brown); margin-bottom: 8px;
+  padding-bottom: 4px; border-bottom: 2px solid #e0c9b0;
+}
+.singkatan-grid { display: flex; flex-direction: column; gap: 6px; }
+.singkatan-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: #444;
+}
+.sing-badge {
+  display: inline-block; min-width: 48px; text-align: center;
+  font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+  font-size: 11px; color: #3a1a00;
+  background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+  box-shadow: 0 2px 0 #9e5800;
+  border-radius: 50px; padding: 2px 10px; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════
+   FADE-IN ANIMATION
+══════════════════════════════════ */
+.fade-in { opacity: 0; transform: translateY(12px); animation: fadeUp .45s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: none; } }
+.fade-in:nth-child(2) { animation-delay: .05s; }
+.fade-in:nth-child(3) { animation-delay: .10s; }
+.fade-in:nth-child(4) { animation-delay: .15s; }
+.fade-in:nth-child(5) { animation-delay: .20s; }
+.fade-in:nth-child(6) { animation-delay: .25s; }
+
+  /* ── Objektif Popup ── */
+  .popup-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(20, 35, 22, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: overlayIn .3s ease forwards;
+  }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .popup-box {
+    background: #fff;
+    border-radius: 20px;
+    border: 3px solid #c9884e;
+    box-shadow: 6px 6px 0 #b5703a, 0 20px 50px rgba(0,0,0,.25);
+    max-width: 560px; width: 100%;
+    max-height: 88vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: popIn .35s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes popIn { from { opacity: 0; transform: scale(.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .popup-header {
+    background: linear-gradient(135deg, #c9884e, #b5703a);
+    padding: 18px 22px 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .popup-header .popup-icon { font-size: 34px; line-height: 1; margin-bottom: 6px; }
+  .popup-header h2 {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(13px, 2.2vw, 16px); text-transform: uppercase;
+    letter-spacing: 2px; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.3); margin: 0;
+  }
+  .popup-header p {
+    font-size: clamp(10px, 1.4vw, 12px); color: rgba(255,255,255,.8);
+    margin-top: 4px; letter-spacing: 0.08em; font-weight: 700;
+  }
+
+  .popup-body { padding: 20px 22px 14px; overflow-y: auto; flex: 1; }
+  .popup-body .obj-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(9px, 1.2vw, 11px); text-transform: uppercase;
+    letter-spacing: 1.5px; color: #b5703a; margin-bottom: 10px;
+  }
+  .obj-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 13px; border-radius: 10px;
+    background: #f9f4ef; border: 1px solid #e8d5c0;
+    margin-bottom: 8px;
+  }
+  .obj-item:last-of-type { margin-bottom: 0; }
+  .obj-badge {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 12px; color: #3a1a00;
+  }
+  .obj-text {
+    font-size: clamp(11px, 1.4vw, 12.5px); color: #2e2e2e;
+    line-height: 1.6; font-weight: 700;
+  }
+  .obj-text span { color: #7a4010; font-weight: 900; }
+
+  .popup-footer { padding: 14px 22px 20px; text-align: center; flex-shrink: 0; }
+  .btn-teruskan {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(180deg, #4ac76e 0%, #2da84e 45%, #1e8f3c 100%);
+    box-shadow: 0 4px 0 #145e28, 0 6px 16px rgba(0,0,0,.2);
+    color: #fff; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.8vw, 14px); text-transform: uppercase;
+    letter-spacing: 1.5px; text-shadow: 0 1px 2px rgba(0,0,0,.2);
+    padding: 12px 32px; border-radius: 50px; border: none; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-teruskan:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #145e28, 0 10px 22px rgba(0,0,0,.25); }
+  .btn-teruskan:active { transform: translateY(2px); box-shadow: 0 2px 0 #145e28; }
+  .btn-teruskan svg { width: 16px; height: 16px; fill: #fff; }
+
+  /* ── Popup audio player (compact) ── */
+  .popup-audio-section {
+    padding: 6px 22px 8px;
+    background: #f9f4ef;
+    border-bottom: 1px solid #e8d5c0;
+    flex-shrink: 0;
+  }
+  .popup-audio-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: #b5703a; margin-bottom: 5px; text-align: center;
+  }
+  .popup-audio-wrap { display: flex; align-items: center; gap: 10px; }
+  .popup-audio-btn {
+    width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 2px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .12s, box-shadow .12s;
+  }
+  .popup-audio-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 0 #9e5800; }
+  .popup-audio-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #9e5800; }
+  .popup-audio-btn svg { width: 13px; height: 13px; fill: #3a1a00; }
+  .popup-progress-wrap { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .popup-progress-bar {
+    width: 100%; height: 4px; border-radius: 50px;
+    background: #e0c9b0; cursor: pointer; appearance: none; accent-color: #c9884e;
+  }
+  .popup-audio-time {
+    font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 900;
+    color: #b5703a; letter-spacing: 0.08em; text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<!-- ══ POPUP OBJEKTIF PEMBELAJARAN ══ -->
+<div class="popup-overlay" id="popupObjektif">
+  <div class="popup-box">
+    <div class="popup-header">
+      <div class="popup-icon">🎯</div>
+      <h2>Objektif Pembelajaran</h2>
+      <p>Tajuk 3 · Waris</p>
+    </div>
+    <div class="popup-body">
+      <div class="obj-label">Pada akhir tajuk ini, pelajar dapat:</div>
+      <div class="obj-item">
+        <div class="obj-badge">a</div>
+        <div class="obj-text">Menjelaskan <span>pengertian waris ashab al-furud</span>;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">b</div>
+        <div class="obj-text">Mengenal pasti <span>waris ashab al-furud</span>;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">c</div>
+        <div class="obj-text">Menghuraikan <span>cara pewarisan</span> setiap waris ashab al-furud;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">d</div>
+        <div class="obj-text">Menjelaskan <span>pengertian waris 'asabah</span>;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">e</div>
+        <div class="obj-text">Mengenal pasti <span>jenis waris 'asabah</span> dan cara pewarisannya; dan</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">f</div>
+        <div class="obj-text">Membandingkan <span>waris ashab al-furud</span> dengan <span>waris 'asabah</span>.</div>
+      </div>
+    </div>
+    <div class="popup-audio-section">
+      <div class="popup-audio-label">🔊 Dengar Objektif Pembelajaran</div>
+      <div class="popup-audio-wrap">
+        <button class="popup-audio-btn" id="popupPlayBtn" onclick="togglePopupAudio()">
+          <svg id="popupPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="popup-progress-wrap">
+          <input type="range" class="popup-progress-bar" id="popupSeek" value="0" min="0" step="0.1">
+          <div class="popup-audio-time" id="popupTime">0:00 / 0:00</div>
+        </div>
+      </div>
+      <audio id="popupAudio" src="audio_popup_tajuk3.mp3" preload="auto" autoplay></audio>
+    </div>
+    <div class="popup-footer">
+      <button class="btn-teruskan" onclick="tutupPopup()">
+        Teruskan
+        <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const playPath  = 'M8 5v14l11-7z';
+  const pausePath = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+
+  function fmt(s) {
+    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return m + ':' + String(sec).padStart(2, '0');
+  }
+
+  function tutupPopup() {
+    const overlay = document.getElementById('popupObjektif');
+    const pa = document.getElementById('popupAudio');
+    if (pa) { pa.pause(); pa.currentTime = 0; }
+    overlay.style.transition = 'opacity .25s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 250);
+  }
+
+  const popupAudio = document.getElementById('popupAudio');
+  const popupSeek  = document.getElementById('popupSeek');
+  const popupTime  = document.getElementById('popupTime');
+  const popupIcon  = document.getElementById('popupPlayIcon');
+
+  function togglePopupAudio() {
+    if (popupAudio.paused) { popupAudio.play(); popupIcon.querySelector('path').setAttribute('d', pausePath); }
+    else { popupAudio.pause(); popupIcon.querySelector('path').setAttribute('d', playPath); }
+  }
+
+  popupAudio.addEventListener('play', () => {
+    popupIcon.querySelector('path').setAttribute('d', pausePath);
+  });
+
+  popupAudio.addEventListener('canplay', () => {
+    if (popupAudio.paused) {
+      
+      popupAudio.play().then(() => {
+        popupIcon.querySelector('path').setAttribute('d', pausePath);
+        
+      }).catch(() => {});
+    }
+  }, { once: true });
+
+  popupAudio.addEventListener('timeupdate', () => {
+    if (popupAudio.duration) {
+      popupSeek.max = popupAudio.duration;
+      popupSeek.value = popupAudio.currentTime;
+      popupTime.textContent = fmt(popupAudio.currentTime) + ' / ' + fmt(popupAudio.duration);
+    }
+  });
+
+  popupAudio.addEventListener('ended', () => {
+    popupIcon.querySelector('path').setAttribute('d', playPath);
+    popupSeek.value = 0;
+  });
+
+  popupSeek.addEventListener('input', () => { popupAudio.currentTime = popupSeek.value; });
+</script>
+
+<button class="corner-btn exit" onclick="window.location.href='keluar.html'" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</button>
+<button class="btn-download" title="Muat Turun Nota" onclick="
+  ['3- ashabul furud.pdf|Nota_Tajuk3_AshabuldFurud.pdf','3- Waris.pdf|Nota_Tajuk3_Waris.pdf'].forEach(function(f){
+    var p=f.split('|'), a=document.createElement('a');
+    a.href=p[0]; a.download=p[1]; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-14 9v2h14v-2H5z"/></svg>
+  Muat Turun Nota
+</button>
+<a href="topik.html" class="btn-back" title="Kembali">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</a>
+
+<div class="scroll-wrapper">
+
+  <!-- ══ PAGE TITLE ══ -->
+  <div class="page-header fade-in">
+    <h1 class="page-header-title">Tajuk 3 — Waris</h1>
+    <div class="page-header-pills">
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:10px;">
+
+    <!-- ══════════════════════════════
+         SECTION 1 — ASHABUL FURUD (Graphic Cards)
+    ══════════════════════════════ -->
+    <div class="section-title fade-in">🏛 Jadual Ashabul Furud Utama</div>
+
+    <!-- Row 1: Pasangan -->
+    <div class="waris-grid fade-in">
+
+      <!-- Suami -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👨</div>
+          <div class="waris-name">Suami</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/2</span><span>Tiada anak / cucu</span></div>
+          <div class="frac-row"><span class="frac">1/4</span><span>Ada anak / cucu</span></div>
+        </div>
+      </div>
+
+      <!-- Isteri -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👩</div>
+          <div class="waris-name">Isteri / Isteri-isteri</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/4</span><span>Tiada anak / cucu</span></div>
+          <div class="frac-row"><span class="frac">1/8</span><span>Ada anak / cucu</span></div>
+        </div>
+      </div>
+
+      <!-- Bapa -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👴</div>
+          <div class="waris-name">Bapa</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/6</span><span>Ada anak / cucu lelaki</span></div>
+          <div class="frac-row"><span class="frac mixed">1/6 + Asabah</span><span>Ada anak / cucu perempuan</span></div>
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Tiada keturunan</span></div>
+        </div>
+      </div>
+
+      <!-- Ibu -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👵</div>
+          <div class="waris-name">Ibu</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/6</span><span>Ada anak / cucu, 2+ saudara</span></div>
+          <div class="frac-row"><span class="frac">1/3</span><span>Tiada keturunan &amp; 1 saudara</span></div>
+          <div class="frac-row"><span class="frac mixed">1/3 Baki</span><span>Bersama suami / isteri &amp; bapa</span></div>
+        </div>
+      </div>
+
+      <!-- Anak Lelaki -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👦</div>
+          <div class="waris-name">Anak Lelaki</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Sentiasa asabah</span></div>
+        </div>
+      </div>
+
+      <!-- Anak Perempuan -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👧</div>
+          <div class="waris-name">Anak Perempuan</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/2</span><span>Seorang, tiada anak lelaki</span></div>
+          <div class="frac-row"><span class="frac">2/3</span><span>Lebih dari dua, tiada anak lelaki</span></div>
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Bersama anak lelaki</span></div>
+        </div>
+      </div>
+
+      <!-- Datuk -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">🧓</div>
+          <div class="waris-name">Datuk</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/6</span><span>Ada anak / cucu lelaki</span></div>
+          <div class="frac-row"><span class="frac mixed">1/6 + Asabah</span><span>Ada anak / cucu perempuan</span></div>
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Tiada keturunan</span></div>
+          <div class="frac-row"><span class="frac mahjub">Mahjub</span><span>Ada bapa</span></div>
+        </div>
+      </div>
+
+      <!-- Nenek -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👴🏻</div>
+          <div class="waris-name">Nenek</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/6</span><span>Ada anak / cucu; 2 saudara; tiada ibu</span></div>
+          <div class="frac-row"><span class="frac mahjub">Mahjub</span><span>Ada ibu</span></div>
+        </div>
+      </div>
+
+      <!-- Cucu Perempuan -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">👶</div>
+          <div class="waris-name">Cucu Perempuan (drpd Anak lelaki)</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac">1/2</span><span>Seorang, tiada anak perempuan</span></div>
+          <div class="frac-row"><span class="frac">2/3</span><span>Lebih dua, tiada anak perempuan</span></div>
+          <div class="frac-row"><span class="frac">1/6</span><span>Bersama 1 anak perempuan</span></div>
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Bersama cucu perempuan</span></div>
+          <div class="frac-row"><span class="frac mahjub">Mahjub</span><span>Ada anak lelaki; atau 2 anak perempuan</span></div>
+        </div>
+      </div>
+
+      <!-- Cucu Lelaki -->
+      <div class="waris-card">
+        <div class="waris-card-top">
+          <div class="waris-avatar">🧒</div>
+          <div class="waris-name">Cucu Lelaki (drpd Anak lelaki)</div>
+        </div>
+        <div class="waris-card-body">
+          <div class="frac-row"><span class="frac asabah">Asabah</span><span>Tiada anak lelaki</span></div>
+          <div class="frac-row"><span class="frac mahjub">Mahjub</span><span>Ada anak lelaki</span></div>
+        </div>
+      </div>
+
+    </div><!-- end waris-grid -->
+
+
+
+    <!-- ══════════════════════════════
+         PHOTO BANNER — Cucu
+    ══════════════════════════════ -->
+    <div class="photo-banner fade-in">
+      <div class="photo-banner-icon">👨‍👩‍👧‍👦</div>
+      <div class="photo-banner-text">
+        <h3>Kombinasi Cucu</h3>
+        <p>Bahagian cucu bergantung kepada siapa yang hadir bersama-sama dalam waris.</p>
+      </div>
+    </div>
+
+    <!-- TABLE 2: Kombinasi Cucu -->
+    <div class="section-title fade-in">📊 Kombinasi Cucu (CP &amp; AP)</div>
+    <div class="card fade-in">
+      <table class="combo-table">
+        <thead>
+          <tr><th>Kombinasi</th><th>Cucu Perempuan (CP)</th><th>Anak Perempuan (AP)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CP + AP</td><td><span class="frac">1/6</span></td><td><span class="frac">1/2</span></td></tr>
+          <tr><td>2CP + AP</td><td><span class="frac">1/6</span></td><td><span class="frac">1/2</span></td></tr>
+          <tr class="highlight-row"><td>CP + 2AP</td><td><span class="frac mahjub">Mahjub</span></td><td><span class="frac">2/3</span></td></tr>
+          <tr><td>2CP sahaja</td><td><span class="frac">2/3</span></td><td>—</td></tr>
+          <tr class="highlight-row"><td>CP + AL</td><td><span class="frac mahjub">Mahjub</span></td><td><span class="frac asabah">Asabah</span></td></tr>
+          <tr><td>CP + CL (Cucu Lelaki)</td><td><span class="frac asabah">Asabah</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════
+         PHOTO BANNER — Saudara
+    ══════════════════════════════ -->
+    <div class="photo-banner fade-in" style="background-image: linear-gradient(120deg,rgba(20,40,20,.85) 0%,rgba(40,80,40,.7) 100%), url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80');">
+      <div class="photo-banner-icon">🤝</div>
+      <div class="photo-banner-text">
+        <h3>Bahagian Saudara</h3>
+        <p>Saudara perempuan boleh menjadi asabah apabila bersama anak atau cucu perempuan.</p>
+      </div>
+    </div>
+
+    <!-- STEPS: Bahagian Saudara -->
+    <div class="section-title fade-in">⚖️ Langkah Bahagian Saudara</div>
+    <div class="card fade-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Semak Waris Penghijab</div>
+          <div class="step-desc">Jika ada <strong>Bapa / Datuk / Anak Lelaki / Cucu Lelaki</strong> → Saudara <span class="frac mahjub" style="font-size:10px;">Mahjub</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Asabah Maal Ghairi</div>
+          <div class="step-desc">Saudara perempuan menjadi asabah bersama anak/cucu perempuan:</div>
+          <div class="formulas">
+            <span class="formula">AP + SPSS <span class="eq">→</span> 1/2 + Asabah</span>
+            <span class="formula">CP + SPSB <span class="eq">→</span> 1/2 + Asabah</span>
+            <span class="formula">AP + SPSB <span class="eq">→</span> 1/2 + Asabah</span>
+            <span class="formula">CP + SPSS <span class="eq">→</span> 1/2 + Asabah</span>
+            <span class="formula">AP + CP + SPSS <span class="eq">→</span> 1/2 + 1/6+Asabah</span>
+            <span class="formula">AP + CP + SPSB <span class="eq">→</span> 1/2 + 1/6+Asabah</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Asabah Bil Ghairi</div>
+          <div class="step-desc">Lelaki dan perempuan berkongsi asabah bersama:</div>
+          <div class="formulas">
+            <span class="formula">AL + AP</span>
+            <span class="formula">CL + CP</span>
+            <span class="formula">SLSS + SPSS</span>
+            <span class="formula">SLSB + SPSB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 3: Saudara SS & SB -->
+    <div class="section-title fade-in">👥 Jadual Bahagian Saudara</div>
+    <div class="grid-2 fade-in">
+      <div class="card">
+        <div class="card-header">🧑‍🤝‍🧑 Saudara Seibu Sebapa (SS)</div>
+        <div class="split-grid">
+          <div class="split-col">
+            <div class="split-col-header">Lelaki</div>
+            <div class="split-col-body">
+              <div class="row-item"><span class="frac asabah" style="font-size:9px;">Asabah</span><span>Tiada penghijab</span></div>
+              <div class="row-item"><span class="frac mahjub" style="font-size:9px;">Mahjub</span><span>Ada penghijab</span></div>
+            </div>
+          </div>
+          <div class="split-col">
+            <div class="split-col-header">Perempuan</div>
+            <div class="split-col-body">
+              <div class="row-item"><span class="frac" style="font-size:9px;">1/2</span><span>Tunggal</span></div>
+              <div class="row-item"><span class="frac" style="font-size:9px;">2/3</span><span>Dua/lebih</span></div>
+              <div class="row-item"><span class="frac asabah" style="font-size:9px;">Asabah</span><span>Maal / Bil Ghairi</span></div>
+              <div class="row-item"><span class="frac mahjub" style="font-size:9px;">Mahjub</span><span>Ada penghijab</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">👫 Saudara Sebapa (SB)</div>
+        <div class="split-grid">
+          <div class="split-col">
+            <div class="split-col-header">Lelaki</div>
+            <div class="split-col-body">
+              <div class="row-item"><span class="frac asabah" style="font-size:9px;">Asabah</span><span>Tiada penghijab &amp; SLSS</span></div>
+              <div class="row-item"><span class="frac mahjub" style="font-size:9px;">Mahjub</span><span>Ada penghijab</span></div>
+            </div>
+          </div>
+          <div class="split-col">
+            <div class="split-col-header">Perempuan</div>
+            <div class="split-col-body">
+              <div class="row-item"><span class="frac" style="font-size:9px;">1/2</span><span>Tunggal (tiada SPSS)</span></div>
+              <div class="row-item"><span class="frac" style="font-size:9px;">2/3</span><span>Dua / lebih (tiada SPSS)</span></div>
+              <div class="row-item"><span class="frac" style="font-size:9px;">1/6</span><span>Bersama 1 SPSS</span></div>
+              <div class="row-item"><span class="frac asabah" style="font-size:9px;">Asabah</span><span>Maal / Bil Ghairi</span></div>
+              <div class="row-item"><span class="frac mahjub" style="font-size:9px;">Mahjub</span><span>Ada SLSS / 2 SPSS</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saudara Seibu -->
+    <div class="card fade-in">
+      <div class="card-header">🌙 Saudara Seibu (SI) — Lelaki &amp; Perempuan Sama Kadar</div>
+      <table>
+        <thead><tr><th>Kadar</th><th>Syarat</th></tr></thead>
+        <tbody>
+          <tr><td><span class="frac">1/6</span></td><td>Tiada penghijab — seorang sahaja</td></tr>
+          <tr><td><span class="frac">1/3</span></td><td>Ada dua atau lebih saudara seibu</td></tr>
+          <tr><td><span class="frac mahjub">Mahjub</span></td><td>Ada Bapa / Datuk / Anak Lelaki / Anak Perempuan / Cucu Lelaki / Cucu Perempuan</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════
+         PHOTO BANNER — Formula
+    ══════════════════════════════ -->
+    <div class="photo-banner fade-in" style="background-image: linear-gradient(120deg,rgba(0,20,60,.85) 0%,rgba(10,40,90,.7) 100%), url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=80');">
+      <div class="photo-banner-icon">📐</div>
+      <div class="photo-banner-text">
+        <h3>Formula Gabungan Saudara</h3>
+        <p>Apabila terdapat gabungan pelbagai jenis saudara, gunakan jadual berikut untuk menentukan kadar bahagian.</p>
+      </div>
+    </div>
+
+    <!-- TABLE 4: Formula -->
+    <div class="section-title fade-in">📐 Formula Gabungan Saudara</div>
+    <div class="card fade-in">
+      <table>
+        <thead><tr><th>Formula</th><th>Hasil</th></tr></thead>
+        <tbody>
+          <tr><td>SPSS + SPSB</td><td><span class="frac">1/2</span> + <span class="frac">1/6</span></td></tr>
+          <tr><td>SPSB sahaja</td><td><span class="frac">1/2</span></td></tr>
+          <tr><td>SPSS + SLSS</td><td><span class="frac asabah">Asabah</span></td></tr>
+          <tr><td>2 SPSS + SPSB</td><td><span class="frac">2/3</span> + <span class="frac mahjub">Mahjub</span></td></tr>
+          <tr><td>2 SPSS + SPSI</td><td><span class="frac">2/3</span> + <span class="frac">1/6</span></td></tr>
+          <tr><td>SPSS + SPSB + SPSI</td><td><span class="frac">1/2</span> + <span class="frac">1/6</span> + <span class="frac">1/6</span></td></tr>
+          <tr><td>2 SPSS + SPSB + SPSI</td><td><span class="frac">2/3</span> + <span class="frac mahjub">Mahjub</span> + <span class="frac">1/6</span></td></tr>
+          <tr><td>SPSS + SPSB + SLSI</td><td><span class="frac">1/2</span> + <span class="frac">1/6</span> + <span class="frac">1/6</span></td></tr>
+        </tbody>
+      </table>
+      <div class="legend-box" style="text-align:center;">
+        <button class="singkatan-btn" onclick="document.getElementById('singkatanModal').classList.add('active')">
+          📖 Senarai Singkatan
+        </button>
+      </div>
+    </div>
+
+<!-- ══ MODAL SINGKATAN ══ -->
+<div class="singkatan-overlay" id="singkatanModal">
+  <div class="singkatan-modal">
+    <div class="singkatan-modal-header">
+      <span>📖 Senarai Singkatan</span>
+      <button class="singkatan-close" onclick="document.getElementById('singkatanModal').classList.remove('active')">✕</button>
+    </div>
+    <div class="singkatan-modal-body">
+      <div class="singkatan-group">
+        <div class="singkatan-group-title">Keturunan</div>
+        <div class="singkatan-grid">
+          <div class="singkatan-item"><span class="sing-badge">AL</span><span>Anak Lelaki</span></div>
+          <div class="singkatan-item"><span class="sing-badge">AP</span><span>Anak Perempuan</span></div>
+          <div class="singkatan-item"><span class="sing-badge">CL</span><span>Cucu Lelaki</span></div>
+          <div class="singkatan-item"><span class="sing-badge">CP</span><span>Cucu Perempuan</span></div>
+        </div>
+      </div>
+      <div class="singkatan-group">
+        <div class="singkatan-group-title">Saudara Seibu Sebapa (SS)</div>
+        <div class="singkatan-grid">
+          <div class="singkatan-item"><span class="sing-badge">SLSS</span><span>Saudara Lelaki Seibu Sebapa</span></div>
+          <div class="singkatan-item"><span class="sing-badge">SPSS</span><span>Saudara Perempuan Seibu Sebapa</span></div>
+        </div>
+      </div>
+      <div class="singkatan-group">
+        <div class="singkatan-group-title">Saudara Sebapa (SB)</div>
+        <div class="singkatan-grid">
+          <div class="singkatan-item"><span class="sing-badge">SLSB</span><span>Saudara Lelaki Sebapa</span></div>
+          <div class="singkatan-item"><span class="sing-badge">SPSB</span><span>Saudara Perempuan Sebapa</span></div>
+        </div>
+      </div>
+      <div class="singkatan-group">
+        <div class="singkatan-group-title">Saudara Seibu (SI)</div>
+        <div class="singkatan-grid">
+          <div class="singkatan-item"><span class="sing-badge">SLSI</span><span>Saudara Lelaki Seibu</span></div>
+          <div class="singkatan-item"><span class="sing-badge">SPSI</span><span>Saudara Perempuan Seibu</span></div>
+        </div>
+      </div>
+      <div class="singkatan-group">
+        <div class="singkatan-group-title">Warna Badge</div>
+        <div class="singkatan-grid">
+          <div class="singkatan-item"><span class="frac asabah" style="min-width:48px;font-size:11px;">Asabah</span><span>Baki Harta</span></div>
+          <div class="singkatan-item"><span class="frac mahjub" style="min-width:48px;font-size:11px;">Mahjub</span><span>Terhalang</span></div>
+        </div>
+      </div>
+
+</div>
+</body>
+</html>

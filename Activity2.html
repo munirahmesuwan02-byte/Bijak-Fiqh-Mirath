@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aktiviti 2 – Bijak Fiqh Mirath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #dce8de;
+      --card-bg: #ffffff;
+      --orange: #c9884e;
+      --orange-dark: #b5703a;
+      --green-dark: #4a7c59;
+      --gold: #e2b54b;
+      --gold-dark: #c99a2e;
+      --text: #2d2d2d;
+      --shadow: 4px 4px 0px #a0b8a4;
+      --correct: #4caf50;
+      --wrong: #e53935;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+      position: relative;
+    }
+
+    /* ── Corner nav buttons ── */
+    .nav-btn {
+      position: fixed;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      box-shadow: 3px 3px 0 var(--orange-dark);
+      cursor: pointer;
+      z-index: 100;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+    }
+    .nav-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+    .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
+    .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn.home { top: 18px; left: 18px; }
+    .nav-btn.exit { top: 18px; right: 18px; }
+
+    /* ── Title ── */
+    .title-block {
+      text-align: center;
+      margin: 60px auto 6px;
+    }
+    .title-block h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+    .title-block p {
+      font-size: .9rem;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-wrap {
+      background: rgba(255,255,255,0.35);
+      height: 6px;
+      border-radius: 3px;
+      margin: 10px auto 0;
+      max-width: 340px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      font-size: .75rem;
+      color: #555;
+      text-align: center;
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    /* ── Main Container ── */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* ── Section Badge ── */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      margin-top: 18px;
+      box-shadow: 3px 3px 0 #a07820;
+    }
+
+    /* ── Question Card ── */
+    .question-card {
+      background: var(--card-bg);
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .question-card.correct {
+      border-color: var(--correct);
+      box-shadow: 4px 4px 0px #388e3c;
+      background: #e8f5e9;
+    }
+    .question-card.wrong {
+      border-color: var(--wrong);
+      box-shadow: 4px 4px 0px #b71c1c;
+      background: #ffebee;
+    }
+
+    .q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .q-num {
+      background: var(--orange);
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 800;
+      min-width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .q-text {
+      flex: 1;
+      font-size: .85rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.5;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      padding-left: 36px;
+    }
+    .btn-tf {
+      flex: 1;
+      padding: 7px 0;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: .82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .15s, color .15s, transform .1s;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .btn-betul {
+      background: white;
+      border-color: var(--correct);
+      color: #2e7d32;
+    }
+    .btn-betul:hover:not(:disabled) {
+      background: var(--correct);
+      color: #fff;
+    }
+    .btn-salah {
+      background: white;
+      border-color: var(--wrong);
+      color: var(--wrong);
+    }
+    .btn-salah:hover:not(:disabled) {
+      background: var(--wrong);
+      color: #fff;
+    }
+    .btn-tf:disabled { cursor: not-allowed; opacity: 0.6; }
+    .btn-tf.selected-betul {
+      background: var(--correct); color: #fff; border-color: var(--correct);
+    }
+    .btn-tf.selected-salah {
+      background: var(--wrong); color: #fff; border-color: var(--wrong);
+    }
+    .btn-tf.selected-wrong {
+      background: #9e9e9e; color: #fff; border-color: #9e9e9e;
+    }
+
+    /* ── Action buttons ── */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .btn-gold {
+      padding: 12px 28px;
+      background: #2da84e;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1a7035;
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-gold:hover { background: #4ac76e; transform: translateY(-2px); box-shadow: 0 6px 0 #1a7035; }
+    .btn-gold:active { transform: translateY(1px); box-shadow: 0 2px 0 #1a7035; }
+    .btn-gold:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-outline {
+      padding: 12px 28px;
+      background: white;
+      border: 2px solid var(--orange);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--orange-dark);
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--orange-dark);
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-outline:hover { background: #fff4eb; transform: translateY(-2px); box-shadow: 0 6px 0 var(--orange-dark); }
+    .btn-outline:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--orange-dark); }
+
+    /* ── Result modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 30px 36px;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes popIn {
+      from { transform: scale(.7); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .modal-emoji { font-size: 3rem; margin-bottom: 10px; }
+    .modal-title { font-size: 1.3rem; font-weight: 800; color: var(--green-dark); margin-bottom: 6px; }
+    .modal-sub  { font-size: .85rem; color: #555; margin-bottom: 14px; line-height: 1.5; }
+    .score-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+    }
+    .countdown-text {
+      font-size: .78rem;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* Confetti */
+    .confetti-container {
+      position: fixed; inset: 0; pointer-events: none; z-index: 999;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Retry banner */
+    .retry-banner {
+      background: #fff8e1;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      font-size: .82rem;
+      color: #7a5c10;
+      font-weight: 700;
+      text-align: center;
+      display: none;
+    }
+    .retry-banner.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Nav buttons -->
+<a class="nav-btn home" href="MenuActivity.html" title="Menu - Aktiviti">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</a>
+<a class="nav-btn exit" href="keluar.html" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</a>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modalEmoji">🎉</div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <div class="score-badge" id="modalScore">20/20</div>
+    <p class="modal-sub" id="modalSub">Semua jawapan anda betul!</p>
+    <div class="countdown-text" id="countdownText"></div>
+    <div class="modal-btns">
+      <button class="btn-outline" id="btnUlang" onclick="ulangSemula()">🔄 Ulang Semula</button>
+    </div>
+  </div>
+</div>
+
+<!-- Title -->
+<div class="title-block">
+  <h1>✅ Aktiviti 2: Memahami Konsep Mirath dan Al-Hajb</h1>
+  <p>Pilih <strong>Betul</strong> atau <strong>Salah</strong> bagi setiap pernyataan di bawah.</p>
+  <div class="progress-wrap" style="margin:10px auto 0;"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 20 dijawab</div>
+</div>
+
+<div class="container" style="max-width:760px;margin:0 auto;padding:0 16px 40px;">
+  <div class="retry-banner" id="retryBanner">
+    ⚠️ Ada jawapan yang salah. Semak semula soalan yang ditanda merah di bawah.
+  </div>
+
+  <!-- Section 1: Mirath -->
+  <div class="section-badge">📖 Bahagian A — Konsep Mirath</div>
+  <div id="sectionMirath"></div>
+
+  <!-- Section 2: Al-Hajb -->
+  <div class="section-badge">⚖️ Bahagian B — Konsep Al-Hajb</div>
+  <div id="sectionHajb"></div>
+
+  <div class="action-row">
+    <button class="btn-gold" id="btnSubmit" onclick="submitJawapan()">✅ Semak Jawapan</button>
+  </div>
+</div>
+
+<script>
+// ── All questions pool ──
+const poolMirath = [
+  { text: "Ilmu Mirath ialah kaedah fiqh dan hisabiah untuk mengetahui bahagian harta pusaka bagi setiap waris.", ans: true },
+  { text: "Mirath bermaksud pembahagian harta pusaka kepada orang yang tidak mempunyai hak.", ans: false },
+  { text: "Harta pusaka ialah segala harta kepunyaan si mati semasa hidupnya yang ditinggalkan kepada waris selepas kematian.", ans: true },
+  { text: "Harta yang sudah tidak menjadi milik si mati ketika kematiannya masih dianggap sebagai harta pusaka.", ans: false },
+  { text: "Kenderaan, wang, barang kemas dan perabot rumah termasuk dalam harta alih.", ans: true },
+  { text: "Tanah dan bangunan termasuk dalam harta tidak alih.", ans: true },
+  { text: "Khairat kematian dan pencen bulanan termasuk dalam jenis harta pusaka yang boleh diwariskan.", ans: false },
+  { text: "Antara hikmah Mirath ialah mengelakkan penganiayaan dan menjamin masa depan waris.", ans: true },
+  { text: "Rukun waris terdiri daripada pewaris, ahli waris dan harta pusaka.", ans: true },
+  { text: "Ahli waris tidak perlu hidup semasa pewaris meninggal dunia untuk menerima pusaka.", ans: false },
+  { text: "Salah satu syarat pewarisan ialah tiada halangan untuk mewarisi.", ans: true },
+  { text: "Kerabat, perkahwinan, wala' dan baitulmal merupakan sebab mendapat harta pusaka.", ans: true },
+  { text: "Isteri yang diceraikan dengan talak rajie masih berhak menerima pusaka dalam tempoh iddah.", ans: true },
+  { text: "Isteri yang diceraikan dengan talak bain layak mewarisi pusaka semasa dalam iddah.", ans: false },
+  { text: "Pembunuh, hamba dan berlainan agama ialah sebab yang menghalang seseorang mendapat pusaka.", ans: true },
+  { text: "Orang bukan Islam boleh mewarisi harta orang Islam.", ans: false },
+  { text: "Orang murtad boleh mewarisi harta orang Islam dan bukan Islam.", ans: false },
+  { text: "Menurut mazhab Syafie dan Hanbali, semua jenis pembunuhan menjadi halangan untuk mewarisi.", ans: true },
+];
+
+const poolHajb = [
+  { text: "Al-Hajb bermaksud terhalangnya seseorang waris menerima bahagian warisan kerana wujud waris lain yang lebih layak.", ans: true },
+  { text: "Dalam Al-Hajb, anak lelaki boleh mendinding cucu lelaki.", ans: true },
+  { text: "Bapa boleh mendinding datuk daripada menerima pusaka.", ans: true },
+  { text: "Ibu boleh mendinding nenek daripada menerima pusaka.", ans: true },
+  { text: "Al-Hajb dan Al-Man'u membawa maksud yang sama sepenuhnya tanpa sebarang perbezaan.", ans: false },
+  { text: "Dalam Al-Hajb, seseorang itu masih dianggap sebagai waris walaupun bahagiannya terhalang.", ans: true },
+  { text: "Dalam Al-Man'u, seseorang yang terhalang masih dianggap sebagai waris.", ans: false },
+  { text: "Al-Hajb Bil Wasfi berlaku kerana sifat tertentu seperti pembunuh, murtad, hamba dan terputus ikatan perkahwinan.", ans: true },
+  { text: "Al-Hajb bi asy-syakhsi berlaku kerana ada orang lain yang lebih layak.", ans: true },
+  { text: "Hajb Hirman bermaksud seseorang hanya mendapat bahagian yang sedikit, bukan terhalang sepenuhnya.", ans: false },
+  { text: "Datuk terhalang menerima pusaka kerana adanya bapa merupakan contoh Hajb Hirman.", ans: true },
+  { text: "Hajb Nuqsan bermaksud waris terhalang daripada mendapat bahagian yang banyak kerana ada waris lain.", ans: true },
+  { text: "Suami mendapat 1/4 kerana ada anak merupakan contoh Hajb Nuqsan.", ans: true },
+  { text: "Isteri yang mempunyai anak akan mendapat bahagian yang sama seperti isteri yang tidak mempunyai anak.", ans: false },
+  { text: "Hajb Hirman menggugurkan seluruh hak waris seseorang untuk menerima pusaka.", ans: true },
+  { text: "Hajb Nuqsan menggugurkan seluruh hak seseorang waris untuk menerima pusaka.", ans: false },
+  { text: "Cucu lelaki terhalang kerana adanya anak lelaki merupakan contoh Al-Hajb Bi Asy Syakhsi.", ans: true },
+];
+
+// ── State ──
+let selectedMirath = [];
+let selectedHajb = [];
+let userAnswers = {}; // index -> true/false
+let submitted = false;
+let countdownTimer = null;
+
+// ── Shuffle helper ──
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, n) {
+  return shuffle(pool).slice(0, n);
+}
+
+// ── Render ──
+function render() {
+  userAnswers = {};
+  submitted = false;
+  document.getElementById('retryBanner').classList.remove('show');
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressLabel').textContent = '0 / 20 dijawab';
+
+  const mDiv = document.getElementById('sectionMirath');
+  const hDiv = document.getElementById('sectionHajb');
+  mDiv.innerHTML = '';
+  hDiv.innerHTML = '';
+
+  selectedMirath.forEach((q, i) => {
+    mDiv.appendChild(buildCard(i + 1, q, i));
+  });
+  selectedHajb.forEach((q, i) => {
+    hDiv.appendChild(buildCard(i + 11, q, i + 10));
+  });
+}
+
+function buildCard(displayNum, q, idx) {
+  const card = document.createElement('div');
+  card.className = 'question-card';
+  card.id = `card-${idx}`;
+  card.innerHTML = `
+    <div class="q-row">
+      <div class="q-num">${displayNum}</div>
+      <div class="q-text">${q.text}</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn-tf btn-betul" id="btn-betul-${idx}" onclick="pilih(${idx}, true)">✔ Betul</button>
+      <button class="btn-salah btn-tf" id="btn-salah-${idx}" onclick="pilih(${idx}, false)">✘ Salah</button>
+    </div>
+  `;
+  return card;
+}
+
+function pilih(idx, val) {
+  if (submitted) return;
+  userAnswers[idx] = val;
+  playClick();
+
+  const btnB = document.getElementById(`btn-betul-${idx}`);
+  const btnS = document.getElementById(`btn-salah-${idx}`);
+  btnB.className = 'btn-tf btn-betul' + (val === true ? ' selected-betul' : '');
+  btnS.className = 'btn-tf btn-salah' + (val === false ? ' selected-salah' : '');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(userAnswers).length;
+  const pct = (answered / 20) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${answered} / 20 dijawab`;
+}
+
+// ── Submit ──
+function submitJawapan() {
+  if (Object.keys(userAnswers).length < 20) {
+    alert('Sila jawab semua 20 soalan terlebih dahulu.');
+    return;
+  }
+
+  submitted = true;
+  let score = 0;
+  const allQ = [...selectedMirath, ...selectedHajb];
+
+  allQ.forEach((q, idx) => {
+    const card = document.getElementById(`card-${idx}`);
+    const btnB = document.getElementById(`btn-betul-${idx}`);
+    const btnS = document.getElementById(`btn-salah-${idx}`);
+    const userAns = userAnswers[idx];
+    const correct = q.ans;
+
+    btnB.disabled = true;
+    btnS.disabled = true;
+
+    if (userAns === correct) {
+      score++;
+      card.classList.add('correct');
+      if (userAns === true) btnB.innerHTML = '✔ Betul <span class="feedback-icon">✅</span>';
+      else btnS.innerHTML = '✘ Salah <span class="feedback-icon">✅</span>';
+    } else {
+      card.classList.add('wrong');
+      // Show what the correct answer is
+      if (correct === true) {
+        btnB.innerHTML = '✔ Betul <span class="feedback-icon">✅</span>';
+        btnS.className = 'btn-tf btn-salah selected-wrong';
+        btnS.innerHTML = '✘ Salah <span class="feedback-icon">❌</span>';
+      } else {
+        btnS.innerHTML = '✘ Salah <span class="feedback-icon">✅</span>';
+        btnB.className = 'btn-tf btn-betul selected-wrong';
+        btnB.innerHTML = '✔ Betul <span class="feedback-icon">❌</span>';
+      }
+    }
+  });
+
+  showResult(score);
+}
+
+// ── Result Modal ──
+function showResult(score) {
+  const modal = document.getElementById('resultModal');
+  const emoji = document.getElementById('modalEmoji');
+  const title = document.getElementById('modalTitle');
+  const sub = document.getElementById('modalSub');
+  const scoreEl = document.getElementById('modalScore');
+  const cdown = document.getElementById('countdownText');
+  const btnUlang = document.getElementById('btnUlang');
+
+  scoreEl.textContent = `${score} / 20`;
+  modal.classList.add('show');
+
+  if (score === 20) {
+    emoji.textContent = '🎉';
+    title.textContent = 'Cemerlang!';
+    sub.textContent = 'Tahniah! Anda berjaya menjawab semua soalan dengan betul. Syabas!';
+    btnUlang.textContent = '🔄 Cuba Soalan Lain';
+    playSuccess();
+    spawnConfetti();
+
+    let secs = 10;
+    cdown.textContent = `Anda akan dibawa ke Menu Aktiviti dalam ${secs} saat...`;
+    countdownTimer = setInterval(() => {
+      secs--;
+      cdown.textContent = `Anda akan dibawa ke Menu Aktiviti dalam ${secs} saat...`;
+      if (secs <= 0) {
+        clearInterval(countdownTimer);
+        goMenu();
+      }
+    }, 1000);
+  } else {
+    const wrong = 20 - score;
+    emoji.textContent = score >= 15 ? '👍' : score >= 10 ? '😊' : '📚';
+    title.textContent = score >= 15 ? 'Bagus!' : 'Cuba Lagi!';
+    sub.textContent = `Anda mendapat ${score} daripada 20. Terdapat ${wrong} soalan yang perlu diperbetulkan. Semak jawapan anda di bawah.`;
+    cdown.textContent = '';
+    btnUlang.textContent = '🔄 Ulang Semula';
+    document.getElementById('retryBanner').classList.add('show');
+    playWrong();
+  }
+}
+
+function ulangSemula() {
+  clearInterval(countdownTimer);
+  const modal = document.getElementById('resultModal');
+  modal.classList.remove('show');
+  document.getElementById('confettiContainer').innerHTML = '';
+
+  const score = parseInt(document.getElementById('modalScore').textContent);
+  const isAllCorrect = score === 20;
+
+  if (isAllCorrect) {
+    // Pick new random questions
+    selectedMirath = pickRandom(poolMirath, 10);
+    selectedHajb = pickRandom(poolHajb, 10);
+  }
+  // If not all correct, keep same questions but reset answers
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goMenu() {
+  clearInterval(countdownTimer);
+  window.location.href = 'MenuActivity.html';
+}
+
+// ── Sound effects (from Activity1) ──
+const ac = new (window.AudioContext || window.webkitAudioContext)();
+
+function playClick() {
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.connect(g); g.connect(ac.destination);
+  o.frequency.value = 880; o.type = 'sine';
+  g.gain.setValueAtTime(.18, ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .12);
+  o.start(); o.stop(ac.currentTime + .12);
+}
+
+function playSuccess() {
+  [523, 659, 784, 1047].forEach((f, i) => {
+    setTimeout(() => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(.2, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .25);
+      o.start(); o.stop(ac.currentTime + .25);
+    }, i * 120);
+  });
+}
+
+function playWrong() {
+  [330, 280].forEach((f, i) => {
+    setTimeout(() => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = f; o.type = 'sawtooth';
+      g.gain.setValueAtTime(.15, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .2);
+      o.start(); o.stop(ac.currentTime + .2);
+    }, i * 140);
+  });
+}
+
+// ── Confetti ──
+function spawnConfetti() {
+  const container = document.getElementById('confettiContainer');
+  container.innerHTML = '';
+  const colors = ['#c9884e','#d4a843','#4a7c59','#e8c96a','#c0392b','#3498db','#9b59b6'];
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random()*100}%;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration: ${1.5 + Math.random()*2}s;
+      animation-delay: ${Math.random()*1}s;
+      width: ${6 + Math.random()*8}px;
+      height: ${6 + Math.random()*8}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    container.appendChild(piece);
+  }
+}
+
+// ── Init ──
+selectedMirath = pickRandom(poolMirath, 10);
+selectedHajb = pickRandom(poolHajb, 10);
+render();
+</script>
+</body>
+</html>

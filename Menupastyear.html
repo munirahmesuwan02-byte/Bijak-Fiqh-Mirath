@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu Soalan Tahun Lepas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sage:       #dce8de;
+      --sage-dark:  #b8cebb;
+      --sage-deep:  #7a9e80;
+      --orange:     #c9884e;
+      --orange-dark:#b5703a;
+      --orange-deep:#8a4e20;
+      --cream:      #fdf8f2;
+      --white:      #ffffff;
+      --text-dark:  #3a2e22;
+      --text-mid:   #6b5040;
+      --gold:       #d4a843;
+      --green-pill: #4a8c5c;
+      --shadow:     4px 4px 0px #b5703a;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--sage);
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(201,136,78,0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(122,158,128,0.15) 0%, transparent 40%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 0 1rem;
+    }
+
+    .nav-icon {
+      position: fixed;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      box-shadow: 3px 3px 0 var(--orange-dark);
+      cursor: pointer;
+      z-index: 100;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+    }
+    .nav-icon:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+    .nav-icon:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
+    .nav-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-home { top: 18px; left: 18px; }
+    .nav-exit { top: 18px; right: 18px; }
+
+    .header {
+      text-align: center;
+      margin-bottom: clamp(16px, 3vh, 30px);
+    }
+    .header-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--cream);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: clamp(20px, 3.5vw, 28px);
+      font-weight: 900;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+    .header h1 span { color: var(--orange-dark); }
+    .header p {
+      font-size: clamp(12px, 1.5vw, 14px);
+      color: var(--text-mid);
+      margin-top: 4px;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(14px, 2vw, 24px);
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 2.5px solid var(--orange);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: clamp(24px, 4vh, 40px) clamp(16px, 2vw, 24px);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(10px, 1.5vh, 14px);
+      transition: transform .15s ease, box-shadow .15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--orange), var(--gold));
+      border-radius: 13px 13px 0 0;
+    }
+    .card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0px var(--orange-dark); }
+    .card:active { transform: translate(2px,2px); box-shadow: 2px 2px 0px var(--orange-dark); }
+
+    .card-icon {
+      width: clamp(64px, 8vw, 84px);
+      height: clamp(64px, 8vw, 84px);
+      border-radius: 50%;
+      background: var(--sage);
+      border: 2px solid var(--sage-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(28px, 3.5vw, 40px);
+      flex-shrink: 0;
+    }
+    .card-state {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 800;
+      color: var(--text-dark);
+      text-align: center;
+      line-height: 1.2;
+    }
+    .card-year {
+      font-size: clamp(12px, 1.3vw, 14px);
+      font-family: 'Nunito Sans', sans-serif;
+      font-weight: 600;
+      color: var(--text-mid);
+    }
+    .card-pill {
+      display: inline-block;
+      background: var(--sage);
+      color: var(--green-pill);
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--sage-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <a href="MenuPenilaian.html" class="nav-icon nav-home" title="Menu Penilaian">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  </a>
+
+  <a href="keluar.html" class="nav-icon nav-exit" title="Keluar">
+    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+  </a>
+
+  <div class="header">
+    <div class="header-badge">STPM Penggal 1</div>
+    <h1>Soalan <span>Tahun Lepas</span></h1>
+    <p>Pilih tahun untuk memulakan latihan soalan peperiksaan</p>
+  </div>
+
+  <div class="grid">
+    <a href="SoalanLepas2024.html" class="card">
+      <div class="card-icon">📄</div>
+      <div class="card-state">STPM 2024</div>
+      <div class="card-year">Bahagian B: Mirath</div>
+      <div class="card-pill">Tersedia</div>
+    </a>
+
+    <a href="SoalanLepas2022.html" class="card">
+      <div class="card-icon">📄</div>
+      <div class="card-state">STPM 2022</div>
+      <div class="card-year">Bahagian B: Mirath</div>
+      <div class="card-pill">Tersedia</div>
+    </a>
+  </div>
+
+</body>
+</html>

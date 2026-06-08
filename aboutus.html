@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tentang Kami – Bijak Fiqh Mirath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      background-color: #dce8de;
+      color: #1e2620;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: #c9884e;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+    }
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff3e8;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: #4ac76e; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: #c9884e;
+      text-align: center;
+      padding: 3.5rem 2rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: #dce8de;
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    .page-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+    .page-hero p {
+      font-size: 1rem;
+      color: #fff3e8;
+      font-weight: 400;
+      animation: fadeUp 0.6s ease 0.25s both;
+    }
+
+    /* ── INTRO ── */
+    .intro {
+      max-width: 750px;
+      margin: 3.5rem auto 0;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    .intro p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #3a5040;
+    }
+    .intro p strong {
+      color: #1e2620;
+      font-weight: 900;
+    }
+
+    /* ── WHY FIQH MIRATH ── */
+    .why-section {
+      max-width: 750px;
+      margin: 3rem auto 0;
+      padding: 1.75rem 2rem;
+      background: #fff;
+      border: 1px solid #c9d9cb;
+      border-left: 5px solid #c9884e;
+      border-radius: 16px;
+    }
+    .why-section h2 {
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #c9884e;
+      margin-bottom: 0.85rem;
+    }
+    .why-section p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: #444;
+    }
+
+    /* ── MISI & VISI ── */
+    .mv-section {
+      max-width: 960px;
+      margin: 3.5rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .mv-card {
+      background: #fff;
+      border: 1px solid #c9d9cb;
+      border-radius: 16px;
+      padding: 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .mv-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 5px;
+      height: 100%;
+      border-radius: 16px 0 0 16px;
+    }
+    .mv-card.misi::before { background: #c9884e; }
+    .mv-card.visi::before { background: #2da84e; }
+
+    .mv-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .mv-card.misi .mv-icon { background: #fdf0e6; }
+    .mv-card.visi .mv-icon { background: #e6f5eb; }
+    .mv-icon svg { width: 26px; height: 26px; }
+
+    .mv-card h2 {
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+    }
+    .mv-card.misi h2 { color: #c9884e; }
+    .mv-card.visi h2 { color: #2da84e; }
+
+    .mv-card p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: #444;
+    }
+
+    /* ── VALUES ── */
+    .values-section {
+      max-width: 960px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    .values-section h2 {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1e2620;
+      margin-bottom: 0.5rem;
+    }
+    .values-sub {
+      text-align: center;
+      color: #5f5e5a;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .value-card {
+      background: #fff;
+      border: 1px solid #c9d9cb;
+      border-radius: 12px;
+      padding: 1.4rem;
+      text-align: center;
+    }
+    .value-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .value-card h3 {
+      font-size: 0.88rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1e2620;
+      margin-bottom: 0.35rem;
+    }
+    .value-card p {
+      font-size: 0.82rem;
+      color: #666;
+      line-height: 1.55;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      background: #2da84e;
+      text-align: center;
+      padding: 3.5rem 2rem;
+    }
+    .cta h2 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .cta p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.75rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fff;
+      padding: 0.75rem 2.2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      background: linear-gradient(180deg, #4ac76e 0%, #2da84e 50%, #1e8c3a 100%);
+      box-shadow:
+        0 6px 0 #156128,
+        0 8px 20px rgba(0,0,0,.35),
+        inset 0 2px 0 rgba(255,255,255,.3);
+      text-shadow: 0 1px 2px rgba(0,0,0,.3);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #156128, 0 12px 24px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.3);
+    }
+    .btn-primary:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #156128, 0 4px 12px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.3);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: auto;
+      background: #fff;
+      border-top: 1px solid #c9d9cb;
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fade-in-delay-1 { transition-delay: 0.1s; }
+    .fade-in-delay-2 { transition-delay: 0.2s; }
+    .fade-in-delay-3 { transition-delay: 0.3s; }
+    .fade-in-delay-4 { transition-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .mv-section { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">Bijak Fiqh Mirath</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Halaman Utama</a></li>
+      <li><a href="aboutus.html" class="active">Tentang Kami</a></li>
+      <li><a href="#">Tutorial Penggunaan</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <h1>Tentang Kami</h1>
+    <p>Kenali lebih lanjut tentang Bijak Fiqh Mirath</p>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro fade-in">
+    <p>
+      <strong>Bijak Fiqh Mirath</strong> ialah sebuah perisian kursus interaktif yang direka khas untuk membantu
+      pelajar STPM memahami Fiqh Mirath dengan lebih mudah, jelas, dan menarik. Melalui nota multimedia,
+      aktiviti interaktif, dan kuiz, pelajar dapat menguasai konsep pembahagian harta pusaka Islam
+      dengan lebih berkesan mengikut kadar pembelajaran masing-masing.
+    </p>
+  </div>
+
+  <!-- WHY FIQH MIRATH -->
+  <div class="why-section fade-in fade-in-delay-2">
+    <h2>Mengapa Fiqh Mirath?</h2>
+    <p>
+      Fiqh Mirath dipilih kerana ia merupakan topik yang penting namun mencabar dalam mata pelajaran Syariah.
+      Pelajar perlu memahami peraturan pusaka Islam, mengenal pasti waris yang layak, serta mengira pembahagian
+      harta pusaka dengan betul. Perisian kursus ini membantu pelajar mempelajari topik tersebut melalui nota
+      berstruktur, elemen multimedia, aktiviti interaktif, dan kuiz — agar proses pembelajaran menjadi lebih
+      jelas, menarik, dan mudah diikuti.
+    </p>
+  </div>
+
+  <!-- MISI & VISI -->
+  <div class="mv-section">
+    <div class="mv-card misi fade-in fade-in-delay-1">
+      <div class="mv-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9884e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h2>Misi Kami</h2>
+      <p>
+        Menyediakan platform pembelajaran digital yang inovatif dan mudah diakses bagi membantu pelajar
+        STPM menguasai ilmu Fiqh Mirath secara mendalam, interaktif, dan menyeronokkan — di mana sahaja
+        dan pada bila-bila masa.
+      </p>
+    </div>
+
+    <div class="mv-card visi fade-in fade-in-delay-2">
+      <div class="mv-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2da84e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <h2>Visi Kami</h2>
+      <p>
+        Menjadi rujukan utama pembelajaran Fiqh Mirath secara digital di Malaysia, dengan melahirkan
+        pelajar yang berilmu, yakin, dan mampu mengaplikasikan hukum faraid dalam kehidupan seharian
+        mereka.
+      </p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2026 Bijak Fiqh Mirath. Hak Cipta Terpelihara.
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

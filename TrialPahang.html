@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trial Negeri Pahang</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #dce8de;
+    min-height: 100vh;
+    padding: 30px 16px 60px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* NAV ICONS */
+  .nav-home, .nav-exit {
+    position: fixed;
+    top: 18px;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid #c9884e;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 3px 3px 0 #b5703a;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 100;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-home:hover, .nav-exit:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+  .nav-home:active, .nav-exit:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+  .nav-home { left: 18px; }
+  .nav-exit { right: 18px; }
+  .nav-home svg, .nav-exit svg { width: 22px; height: 22px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* SOALAN CARD */
+  .soalan-card {
+    background: #fff;
+    border: 2px solid #c9884e;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #b5703a;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .soalan-header {
+    background: #fff;
+    padding: 18px 24px 4px 24px;
+  }
+  .soalan-header .title-main {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 15px;
+    color: #111; letter-spacing: 0.3px;
+  }
+  .soalan-header .title-sub {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 15px;
+    color: #111; margin-top: 2px;
+  }
+  .soalan-body { padding: 6px 24px 24px 24px; }
+
+  /* BAHAGIAN */
+  .bahagian { margin-bottom: 22px; }
+  .bahagian:last-child { margin-bottom: 0; }
+
+  .soalan-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .soalan-row-left { display: flex; gap: 10px; flex: 1; }
+  .bahagian-label { font-size: 15px; font-weight: 400; color: #111; white-space: nowrap; min-width: 24px; }
+  .soalan-text { font-size: 15px; color: #111; line-height: 1.75; font-weight: 400; }
+  .markah-badge { font-size: 15px; color: #111; white-space: nowrap; font-weight: 400; }
+
+  .sub-soalan { margin-top: 14px; padding-left: 20px; }
+  .sub-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .sub-row-left { display: flex; gap: 10px; flex: 1; }
+  .sub-label { font-size: 15px; font-weight: 400; color: #111; white-space: nowrap; min-width: 20px; }
+
+  /* JAWAPAN */
+  .jawapan-label { font-size: 13px; font-weight: 700; color: #4a7c59; margin-bottom: 6px; }
+  textarea {
+    width: 100%;
+    border: 1.5px solid #b5d4bc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+    color: #2d3a2e;
+    resize: vertical;
+    min-height: 100px;
+    background: #f9fcfa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    line-height: 1.7;
+  }
+  textarea:focus { border-color: #4a7c59; background: #fff; }
+  textarea:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* TABLE INPUT */
+  .table-wrapper { overflow-x: auto; margin-top: 8px; }
+  .jadual-input { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 480px; }
+  .jadual-input th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 13px;
+  }
+  .jadual-input td { padding: 5px 7px; border: 1px solid #c9e0cc; vertical-align: middle; }
+  .jadual-input tr:nth-child(even) td { background: #f0f8f2; }
+  .jadual-input input[type="text"] {
+    width: 100%; border: 1.5px solid #c9e0cc; border-radius: 6px;
+    padding: 6px 8px; font-size: 13px;
+    font-family: 'Nunito Sans', sans-serif;
+    background: #fff; outline: none; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .jadual-input input[type="text"]:focus { border-color: #4a7c59; }
+  .jadual-input input[type="text"]:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* NOTIFICATION */
+  .semak-note {
+    display: none; margin-top: 8px;
+    padding: 9px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+  }
+  .semak-note.ok { background: #edf5ef; color: #2e5c3a; border: 1px solid #4a7c59; }
+  .semak-note.empty { background: #fdf3e8; color: #b5703a; border: 1px solid #c9884e; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .btn-semak {
+    background: #4a7c59; color: #fff; border: none;
+    padding: 9px 22px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 2px 2px 0 #2e5c3a;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-semak:hover { transform: translateY(-1px); box-shadow: 3px 3px 0 #2e5c3a; }
+  .btn-semak:active { transform: scale(0.97); box-shadow: 1px 1px 0 #2e5c3a; }
+  .btn-reset {
+    background: #fff; color: #b5703a;
+    border: 1.5px solid #c9884e;
+    padding: 9px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: transform 0.1s, background 0.15s;
+  }
+  .btn-reset:hover { background: #fdf3e8; }
+  .btn-reset:active { transform: scale(0.97); }
+
+  /* SKEMA BOX */
+  .skema-box {
+    display: none;
+    margin-top: 14px;
+    background: #f5faf6;
+    border: 2px dashed #4a7c59;
+    border-radius: 12px;
+    padding: 16px 18px;
+    animation: fadeIn 0.3s ease;
+  }
+  .skema-box.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .skema-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #4a7c59; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .skema-text { font-size: 14px; color: #2d3a2e; line-height: 1.75; margin-bottom: 10px; }
+
+  .skema-section { margin-bottom: 12px; }
+  .skema-section-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #b5703a; margin-bottom: 6px;
+  }
+  .skema-section ul { padding-left: 18px; }
+  .skema-section ul li { font-size: 14px; color: #2d3a2e; line-height: 1.7; margin-bottom: 3px; }
+
+  .contoh-item {
+    background: #fdf3e8;
+    border-left: 3px solid #c9884e;
+    border-radius: 0 8px 8px 0;
+    padding: 9px 14px; margin: 6px 0;
+    font-size: 14px; color: #4a3020;
+  }
+  .contoh-item b { color: #b5703a; }
+
+  /* Skema table */
+  .jadual-skema { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+  .jadual-skema th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+  }
+  .jadual-skema td { padding: 8px 10px; border: 1px solid #c9e0cc; text-align: center; color: #2d3a2e; }
+  .jadual-skema tr:nth-child(even) td { background: #edf5ef; }
+  .jadual-skema .waris-col { text-align: left; font-weight: 600; }
+  .am-cell {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 22px;
+    color: #4a7c59; vertical-align: middle;
+  }
+  .mahjub { color: #c0392b; font-weight: 700; }
+  .asabah { color: #2e7d32; font-weight: 700; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 2px dashed #c9e0cc; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<a href="Menutrialnegeri.html" class="nav-home" title="Menu Trial">
+  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+</a>
+<a href="keluar.html" class="nav-exit" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+</a>
+
+<div class="page">
+
+  <!-- ═══════════════════════════════
+       SOALAN 1
+  ═══════════════════════════════ -->
+  <div class="soalan-card">
+    <div class="soalan-header">
+      <div class="title-main">TRIAL NEGERI PAHANG</div>
+      <div class="title-sub">Soalan 1</div>
+    </div>
+    <div class="soalan-body">
+
+      <!-- 1a -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">a)</span>
+            <span class="soalan-text">Huraikan maksud harta pusaka dalam Islam beserta contohnya.</span>
+          </div>
+          <span class="markah-badge">[4 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-1a" placeholder="Tulis jawapan anda di sini..."></textarea>
+        <div id="note-1a" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('1a')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('1a')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-1a">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="skema-section">
+            <div class="skema-section-title">Pengertian</div>
+            <p class="skema-text">Segala bentuk harta yang ditinggalkan oleh seseorang yang telah meninggal dunia untuk waris-warisnya meliputi harta alih dan tidak alih untuk dibahagikan mengikut hukum faraid.</p>
+          </div>
+          <div class="skema-section">
+            <div class="skema-section-title">Contoh-contoh</div>
+            <ul>
+              <li><b>Harta tidak alih:</b> tanah, bangunan, rumah.</li>
+              <li><b>Harta alih:</b> barang kemas, wang simpanan, saham, kereta, motor.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1b -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">b)</span>
+            <span class="soalan-text">Jelaskan empat sebab seseorang itu mendapat pusaka.</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-1b" placeholder="Tulis jawapan anda di sini..." style="min-height:160px;"></textarea>
+        <div id="note-1b" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('1b')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('1b')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-1b">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="skema-section">
+            <div class="skema-section-title">[ 4 isi + Huraian = 8M ]</div>
+            <ul>
+              <li><b>Sebab Kerabat</b> – Hubungan nasab/darah antara si mati dengan waris.</li>
+              <li><b>Sebab Perkahwinan</b> – Ikatan pernikahan yang sah antara suami dan isteri.</li>
+              <li><b>Sebab Wala' / Pemerdekaan</b> – Seseorang yang memerdekakan hamba berhak mewarisi harta hamba tersebut.</li>
+              <li><b>Badan Islam (Baitulmal)</b> – Menerima harta pusaka jika si mati tiada waris lain.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1c -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">c)</span>
+            <span class="soalan-text">Selesaikan kes pembahagian harta pusaka yang berikut:</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <!-- 1c I -->
+        <div class="sub-soalan">
+          <div class="sub-row">
+            <div class="sub-row-left">
+              <span class="sub-label">I.</span>
+              <span class="soalan-text">Seorang perempuan meninggalkan dunia dengan meninggalkan <b>suami, bapa, bapa kepada bapa</b> dan <b>anak perempuan</b>.</span>
+            </div>
+            <span class="markah-badge">[4 markah]</span>
+          </div>
+
+          <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+          <div class="table-wrapper">
+            <table class="jadual-input">
+              <thead>
+                <tr>
+                  <th>Waris</th>
+                  <th>Fardu</th>
+                  <th>Asal Masalah</th>
+                  <th>Jumlah</th>
+                  <th>Saham</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Suami</td>
+                  <td><input type="text" id="c1-f1" placeholder="..."></td>
+                  <td rowspan="4" style="text-align:center;"><input type="text" id="c1-am" placeholder="..." style="width:60px;"></td>
+                  <td><input type="text" id="c1-j1" placeholder="..."></td>
+                  <td><input type="text" id="c1-s1" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Bapa</td>
+                  <td><input type="text" id="c1-f2" placeholder="..."></td>
+                  <td><input type="text" id="c1-j2" placeholder="..."></td>
+                  <td><input type="text" id="c1-s2" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Bapa kepada Bapa (Datuk)</td>
+                  <td><input type="text" id="c1-f3" placeholder="..."></td>
+                  <td><input type="text" id="c1-j3" placeholder="..."></td>
+                  <td><input type="text" id="c1-s3" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Anak Perempuan</td>
+                  <td><input type="text" id="c1-f4" placeholder="..."></td>
+                  <td><input type="text" id="c1-j4" placeholder="..."></td>
+                  <td><input type="text" id="c1-s4" placeholder="..."></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="note-1cI" class="semak-note"></div>
+          <div class="btn-row">
+            <button class="btn-semak" onclick="semakJadual('1cI', fields1cI)">Semak &amp; Lihat Skema</button>
+            <button class="btn-reset" onclick="resetJadual('1cI', fields1cI)">Set Semula</button>
+          </div>
+
+          <div class="skema-box" id="skema-1cI">
+            <div class="skema-title">✔ Skema Jawapan</div>
+            <div class="table-wrapper">
+              <table class="jadual-skema">
+                <thead>
+                  <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah</th><th>Saham</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="waris-col">Suami</td>
+                    <td>1/4</td>
+                    <td rowspan="4" class="am-cell">12</td>
+                    <td>3/12</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Bapa</td>
+                    <td>1/6 + <span class="asabah">Asabah</span></td>
+                    <td>3/12</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Bapa kepada Bapa (Datuk)</td>
+                    <td><span class="mahjub">Mahjub</span></td>
+                    <td>–</td>
+                    <td>–</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Anak Perempuan</td>
+                    <td>1/2</td>
+                    <td>6/12</td>
+                    <td>6</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- end sub I -->
+
+        <!-- 1c II -->
+        <div class="sub-soalan" style="margin-top:18px;">
+          <div class="sub-row">
+            <div class="sub-row-left">
+              <span class="sub-label">II.</span>
+              <span class="soalan-text">Seorang lelaki meninggal dunia dengan meninggalkan <b>isteri, ibu</b> dan <b>bapa kepada bapa (datuk)</b>.</span>
+            </div>
+            <span class="markah-badge">[4 markah]</span>
+          </div>
+
+          <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+          <div class="table-wrapper">
+            <table class="jadual-input">
+              <thead>
+                <tr>
+                  <th>Waris</th>
+                  <th>Fardu</th>
+                  <th>Asal Masalah</th>
+                  <th>Jumlah</th>
+                  <th>Saham</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Isteri</td>
+                  <td><input type="text" id="c2-f1" placeholder="..."></td>
+                  <td rowspan="3" style="text-align:center;"><input type="text" id="c2-am" placeholder="..." style="width:60px;"></td>
+                  <td><input type="text" id="c2-j1" placeholder="..."></td>
+                  <td><input type="text" id="c2-s1" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Ibu</td>
+                  <td><input type="text" id="c2-f2" placeholder="..."></td>
+                  <td><input type="text" id="c2-j2" placeholder="..."></td>
+                  <td><input type="text" id="c2-s2" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Bapa kepada Bapa (Datuk)</td>
+                  <td><input type="text" id="c2-f3" placeholder="..."></td>
+                  <td><input type="text" id="c2-j3" placeholder="..."></td>
+                  <td><input type="text" id="c2-s3" placeholder="..."></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="note-1cII" class="semak-note"></div>
+          <div class="btn-row">
+            <button class="btn-semak" onclick="semakJadual('1cII', fields1cII)">Semak &amp; Lihat Skema</button>
+            <button class="btn-reset" onclick="resetJadual('1cII', fields1cII)">Set Semula</button>
+          </div>
+
+          <div class="skema-box" id="skema-1cII">
+            <div class="skema-title">✔ Skema Jawapan</div>
+            <div class="table-wrapper">
+              <table class="jadual-skema">
+                <thead>
+                  <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah</th><th>Saham</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="waris-col">Isteri</td>
+                    <td>1/4</td>
+                    <td rowspan="3" class="am-cell">12</td>
+                    <td>3/12</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Ibu</td>
+                    <td>1/3</td>
+                    <td>4/12</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Bapa kepada Bapa (Datuk)</td>
+                    <td><span class="asabah">Asabah</span></td>
+                    <td>5/12</td>
+                    <td>5</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- end sub II -->
+
+      </div><!-- end 1c -->
+
+    </div><!-- end soalan-body -->
+  </div><!-- end soalan-card 1 -->
+
+
+  <!-- ═══════════════════════════════
+       SOALAN 2
+  ═══════════════════════════════ -->
+  <div class="soalan-card">
+    <div class="soalan-header">
+      <div class="title-main">TRIAL NEGERI PAHANG</div>
+      <div class="title-sub">Soalan 2</div>
+    </div>
+    <div class="soalan-body">
+
+      <!-- 2a -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">a)</span>
+            <span class="soalan-text">Nyatakan dua perbezaan antara waris Ashab al-Furud dan waris Asabah.</span>
+          </div>
+          <span class="markah-badge">[4 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-2a" placeholder="Tulis jawapan anda di sini..."></textarea>
+        <div id="note-2a" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('2a')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('2a')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-2a">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="table-wrapper">
+            <table class="jadual-skema">
+              <thead>
+                <tr><th>Aspek</th><th>Ashab al-Furud</th><th>Asabah</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="waris-col">Pengertian</td>
+                  <td style="text-align:left;">Waris yang mendapat bahagian tetap dalam al-Quran dan hadis.</td>
+                  <td style="text-align:left;">Waris yang tidak mendapat bahagian secara fardu yang tetap.</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Bahagian</td>
+                  <td style="text-align:left;">Telah ditetapkan (½, ⅓, ¼, ⅙, ⅛) bergantung kepada situasi waris lain.</td>
+                  <td style="text-align:left;">Tiada bahagian tetap; menerima baki atau keseluruhan jika tiada waris ashab al-furud.</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Kedudukan dalam Faraid</td>
+                  <td style="text-align:left;">Diutamakan dalam pembahagian harta pusaka.</td>
+                  <td style="text-align:left;">Menerima selepas ashab al-furud selesai diberi; tidak mendahului mereka.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 2b -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">b)</span>
+            <span class="soalan-text">Jelaskan keadaan yang dapat mengubah status waris Ashab al-Furud kepada waris Asabah.</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-2b" placeholder="Tulis jawapan anda di sini..." style="min-height:160px;"></textarea>
+        <div id="note-2b" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('2b')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('2b')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-2b">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="skema-section">
+            <div class="skema-section-title">[ 4 isi + Huraian = 8M ]</div>
+            <ul>
+              <li><b>Bapa</b> boleh berubah status kepada waris asabah jika si mati tidak mempunyai anak lelaki, anak lelaki kepada anak lelaki atau ke bawah.</li>
+              <li><b>Datuk</b> boleh berubah status kepada waris asabah jika si mati tidak mempunyai waris-waris seperti keadaan di atas.</li>
+              <li><b>Anak perempuan</b> boleh berubah status kepada waris <i>asabah bi al-ghair</i> jika bersama-sama anak lelaki.</li>
+              <li><b>Anak perempuan</b> boleh berubah status kepada waris <i>asabah bi al-ghair</i> jika bersama-sama anak lelaki kepada anak lelaki.</li>
+              <li><b>Saudara perempuan seibu sebapa</b> boleh berubah status kepada waris <i>asabah bi al-ghair</i> jika bersama-sama saudara lelaki seibu sebapa.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 2c -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">c)</span>
+            <span class="soalan-text">Selesaikan kes pembahagian harta pusaka yang berikut:</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <!-- 2c I -->
+        <div class="sub-soalan">
+          <div class="sub-row">
+            <div class="sub-row-left">
+              <span class="sub-label">I.</span>
+              <span class="soalan-text">Seorang perempuan meninggal dunia dengan meninggalkan <b>suami, ibu, bapa, seorang saudara lelaki seibu</b> dan <b>seorang saudara perempuan seibu</b>.</span>
+            </div>
+            <span class="markah-badge">[4 markah]</span>
+          </div>
+
+          <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+          <div class="table-wrapper">
+            <table class="jadual-input">
+              <thead>
+                <tr>
+                  <th>Waris</th>
+                  <th>Fardu</th>
+                  <th>Asal Masalah</th>
+                  <th>Jumlah</th>
+                  <th>Saham</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Suami</td>
+                  <td><input type="text" id="d1-f1" placeholder="..."></td>
+                  <td rowspan="5" style="text-align:center;"><input type="text" id="d1-am" placeholder="..." style="width:60px;"></td>
+                  <td><input type="text" id="d1-j1" placeholder="..."></td>
+                  <td><input type="text" id="d1-s1" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Ibu</td>
+                  <td><input type="text" id="d1-f2" placeholder="..."></td>
+                  <td><input type="text" id="d1-j2" placeholder="..."></td>
+                  <td><input type="text" id="d1-s2" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Bapa</td>
+                  <td><input type="text" id="d1-f3" placeholder="..."></td>
+                  <td><input type="text" id="d1-j3" placeholder="..."></td>
+                  <td><input type="text" id="d1-s3" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Saudara Lelaki Seibu Sebapa</td>
+                  <td><input type="text" id="d1-f4" placeholder="..."></td>
+                  <td><input type="text" id="d1-j4" placeholder="..."></td>
+                  <td><input type="text" id="d1-s4" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Saudara Perempuan Seibu</td>
+                  <td><input type="text" id="d1-f5" placeholder="..."></td>
+                  <td><input type="text" id="d1-j5" placeholder="..."></td>
+                  <td><input type="text" id="d1-s5" placeholder="..."></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="note-2cI" class="semak-note"></div>
+          <div class="btn-row">
+            <button class="btn-semak" onclick="semakJadual('2cI', fields2cI)">Semak &amp; Lihat Skema</button>
+            <button class="btn-reset" onclick="resetJadual('2cI', fields2cI)">Set Semula</button>
+          </div>
+
+          <div class="skema-box" id="skema-2cI">
+            <div class="skema-title">✔ Skema Jawapan</div>
+            <div class="table-wrapper">
+              <table class="jadual-skema">
+                <thead>
+                  <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah</th><th>Saham</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="waris-col">Suami</td>
+                    <td>1/2</td>
+                    <td rowspan="5" class="am-cell">6</td>
+                    <td>3/6</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Ibu</td>
+                    <td>1/6</td>
+                    <td>1/6</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Bapa</td>
+                    <td><span class="asabah">Asabah</span></td>
+                    <td>2/6</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Saudara Lelaki Seibu Sebapa</td>
+                    <td><span class="mahjub">Mahjub</span></td>
+                    <td>–</td>
+                    <td>–</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Saudara Perempuan Seibu</td>
+                    <td><span class="mahjub">Mahjub</span></td>
+                    <td>–</td>
+                    <td>–</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- end sub I -->
+
+        <!-- 2c II -->
+        <div class="sub-soalan" style="margin-top:18px;">
+          <div class="sub-row">
+            <div class="sub-row-left">
+              <span class="sub-label">II.</span>
+              <span class="soalan-text">Seorang lelaki meninggal dunia dengan meninggalkan <b>isteri, seorang anak perempuan</b> dan <b>seorang saudara perempuan seibu sebapa</b>.</span>
+            </div>
+            <span class="markah-badge">[4 markah]</span>
+          </div>
+
+          <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+          <div class="table-wrapper">
+            <table class="jadual-input">
+              <thead>
+                <tr>
+                  <th>Waris</th>
+                  <th>Fardu</th>
+                  <th>Asal Masalah</th>
+                  <th>Jumlah</th>
+                  <th>Saham</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Isteri</td>
+                  <td><input type="text" id="d2-f1" placeholder="..."></td>
+                  <td rowspan="3" style="text-align:center;"><input type="text" id="d2-am" placeholder="..." style="width:60px;"></td>
+                  <td><input type="text" id="d2-j1" placeholder="..."></td>
+                  <td><input type="text" id="d2-s1" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Anak Perempuan</td>
+                  <td><input type="text" id="d2-f2" placeholder="..."></td>
+                  <td><input type="text" id="d2-j2" placeholder="..."></td>
+                  <td><input type="text" id="d2-s2" placeholder="..."></td>
+                </tr>
+                <tr>
+                  <td>Saudara Perempuan Seibu Sebapa</td>
+                  <td><input type="text" id="d2-f3" placeholder="..."></td>
+                  <td><input type="text" id="d2-j3" placeholder="..."></td>
+                  <td><input type="text" id="d2-s3" placeholder="..."></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="note-2cII" class="semak-note"></div>
+          <div class="btn-row">
+            <button class="btn-semak" onclick="semakJadual('2cII', fields2cII)">Semak &amp; Lihat Skema</button>
+            <button class="btn-reset" onclick="resetJadual('2cII', fields2cII)">Set Semula</button>
+          </div>
+
+          <div class="skema-box" id="skema-2cII">
+            <div class="skema-title">✔ Skema Jawapan</div>
+            <div class="table-wrapper">
+              <table class="jadual-skema">
+                <thead>
+                  <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah</th><th>Saham</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="waris-col">Isteri</td>
+                    <td>1/8</td>
+                    <td rowspan="3" class="am-cell">8</td>
+                    <td>1/8</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Anak Perempuan</td>
+                    <td>1/2</td>
+                    <td>4/8</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td class="waris-col">Saudara Perempuan Seibu Sebapa</td>
+                    <td><span class="asabah">Asabah</span></td>
+                    <td>3/8</td>
+                    <td>3</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- end sub II -->
+
+      </div><!-- end 2c -->
+
+    </div><!-- end soalan-body -->
+  </div><!-- end soalan-card 2 -->
+
+</div><!-- end page -->
+
+<script>
+  // ── Text textarea semak/reset ──
+  function semak(id) {
+    var ta = document.getElementById('jwp-' + id);
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    if (!ta.value.trim()) {
+      note.textContent = '⚠️ Sila isi jawapan terlebih dahulu sebelum melihat skema.';
+      note.className = 'semak-note empty';
+      note.style.display = 'block';
+      return;
+    }
+    note.textContent = '✅ Jawapan direkodkan. Bandingkan dengan skema jawapan di bawah.';
+    note.className = 'semak-note ok';
+    note.style.display = 'block';
+    skema.classList.add('open');
+    ta.disabled = true;
+  }
+
+  function reset(id) {
+    var ta = document.getElementById('jwp-' + id);
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    ta.value = '';
+    ta.disabled = false;
+    note.style.display = 'none';
+    skema.classList.remove('open');
+  }
+
+  // ── Field lists ──
+  var fields1cI  = ['c1-f1','c1-f2','c1-f3','c1-f4','c1-am','c1-j1','c1-j2','c1-j3','c1-j4','c1-s1','c1-s2','c1-s3','c1-s4'];
+  var fields1cII = ['c2-f1','c2-f2','c2-f3','c2-am','c2-j1','c2-j2','c2-j3','c2-s1','c2-s2','c2-s3'];
+  var fields2cI  = ['d1-f1','d1-f2','d1-f3','d1-f4','d1-f5','d1-am','d1-j1','d1-j2','d1-j3','d1-j4','d1-j5','d1-s1','d1-s2','d1-s3','d1-s4','d1-s5'];
+  var fields2cII = ['d2-f1','d2-f2','d2-f3','d2-am','d2-j1','d2-j2','d2-j3','d2-s1','d2-s2','d2-s3'];
+
+  // ── Jadual semak/reset ──
+  function semakJadual(id, fields) {
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    var allFilled = fields.every(function(f) {
+      var el = document.getElementById(f);
+      return el && el.value.trim() !== '';
+    });
+    if (!allFilled) {
+      note.textContent = '⚠️ Sila isi semua ruangan jadual sebelum melihat skema.';
+      note.className = 'semak-note empty';
+      note.style.display = 'block';
+      return;
+    }
+    note.textContent = '✅ Jadual diisi. Bandingkan jawapan anda dengan skema di bawah.';
+    note.className = 'semak-note ok';
+    note.style.display = 'block';
+    skema.classList.add('open');
+    fields.forEach(function(f) {
+      var el = document.getElementById(f);
+      if (el) el.disabled = true;
+    });
+  }
+
+  function resetJadual(id, fields) {
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    fields.forEach(function(f) {
+      var el = document.getElementById(f);
+      if (el) { el.value = ''; el.disabled = false; }
+    });
+    note.style.display = 'none';
+    skema.classList.remove('open');
+  }
+</script>
+
+</body>
+</html>

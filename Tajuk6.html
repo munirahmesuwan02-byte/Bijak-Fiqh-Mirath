@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajuk 6 - Isu Kontemporari Tentang Mirath</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #dce8de;
+    font-family: 'Nunito', sans-serif;
+    padding: 80px 20px 80px;
+  }
+
+  /* ── Nav ── */
+  .corner-btn, .btn-back {
+    position: fixed;
+    top: 18px;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid #c9884e;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #b5703a;
+    transition: transform .15s, box-shadow .15s;
+    z-index: 100;
+    text-decoration: none;
+  }
+  .corner-btn:hover, .btn-back:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+  .corner-btn:active, .btn-back:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+  .corner-btn.exit { right: 18px; }
+  .btn-back { left: 18px; }
+  .corner-btn svg, .btn-back svg { width: 24px; height: 24px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Page title ── */
+  .page-title { text-align: center; margin-bottom: 30px; }
+  .page-title h1 {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(20px, 4vw, 34px); text-transform: uppercase;
+    letter-spacing: 2px; color: #1a1a1a;
+  }
+  .page-title p {
+    font-size: 0.85rem; color: #4a5e4d;
+    margin-top: 5px; font-weight: 700; letter-spacing: 0.05em;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ── Section title ── */
+  .section-title {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(13px, 2vw, 16px); text-transform: uppercase;
+    letter-spacing: 1.5px; color: #2e2e2e;
+    margin: 32px 0 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(to right, #c9884e, transparent); border-radius: 2px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 4px 4px 0 #b5703a, 0 8px 24px rgba(0,0,0,.1);
+    border: 2px solid #c9884e; margin-bottom: 24px;
+  }
+  .card-header {
+    background: linear-gradient(135deg, #c9884e, #b5703a);
+    padding: 12px 18px;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.6vw, 14px); text-transform: uppercase;
+    letter-spacing: 1px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #f5ede4; padding: 11px 16px;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(10px, 1.3vw, 12px); text-transform: uppercase;
+    letter-spacing: 1px; color: #7a4010; text-align: left;
+    border-bottom: 2px solid #e0c9b0;
+  }
+  tbody tr { border-bottom: 1px solid #f0e8e0; transition: background .15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fdf6f0; }
+  tbody td { padding: 11px 16px; font-size: clamp(11px, 1.4vw, 13px); color: #2e2e2e; vertical-align: top; }
+  tbody td:first-child { font-weight: 900; color: #7a4010; white-space: nowrap; }
+
+  /* ── Condition rows ── */
+  .condition-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 5px 0; border-bottom: 1px dashed #edddd0;
+  }
+  .condition-row:last-child { border-bottom: none; }
+  .cond-text { font-size: clamp(11px, 1.3vw, 12px); color: #555; line-height: 1.5; }
+
+  /* ── Fraction / status badges ── */
+  .cond-frac {
+    display: inline-block; min-width: 54px; text-align: center;
+    font-weight: 900; font-family: 'Nunito', sans-serif;
+    font-size: clamp(10px, 1.2vw, 12px); flex-shrink: 0;
+    padding: 3px 10px; border-radius: 50px;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5);
+    color: #3a1a00; text-shadow: 0 1px 0 rgba(255,255,255,.3);
+  }
+  .cond-frac.red {
+    background: linear-gradient(180deg, #e87a7a 0%, #c0392b 45%, #a02020 100%);
+    box-shadow: 0 3px 0 #7a1010, inset 0 1px 0 rgba(255,255,255,.3);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+  .cond-frac.green {
+    background: linear-gradient(180deg, #6ecf6e 0%, #3aad3a 45%, #2a8c2a 100%);
+    box-shadow: 0 3px 0 #1a5e1a, inset 0 1px 0 rgba(255,255,255,.4);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+  .cond-frac.blue {
+    background: linear-gradient(180deg, #74b8e8 0%, #2a7abf 45%, #1a5a9e 100%);
+    box-shadow: 0 3px 0 #0a3a7a, inset 0 1px 0 rgba(255,255,255,.4);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+
+  /* ── Badge pills ── */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 50px;
+    font-size: clamp(9px, 1.1vw, 11px); font-weight: 900;
+    font-family: 'Nunito', sans-serif; text-transform: uppercase;
+  }
+  .badge-green {
+    background: linear-gradient(180deg, #6ecf6e 0%, #3aad3a 100%);
+    box-shadow: 0 2px 0 #1a5e1a; color: #fff;
+  }
+  .badge-red {
+    background: linear-gradient(180deg, #e87a7a 0%, #c0392b 100%);
+    box-shadow: 0 2px 0 #7a1010; color: #fff;
+  }
+
+  /* ── Steps ── */
+  .step { display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #f0e8e0; }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 13px; color: #3a1a00;
+  }
+  .step-title { font-weight: 900; color: #7a4010; font-size: clamp(12px, 1.5vw, 14px); margin-bottom: 4px; }
+  .step-desc { font-size: clamp(11px, 1.3vw, 12px); color: #555; line-height: 1.55; }
+
+  /* ── Split card ── */
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .split-col { border-right: 1px solid #f0e8e0; }
+  .split-col:last-child { border-right: none; }
+  .split-col-header {
+    padding: 9px 14px; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(10px, 1.2vw, 12px); text-transform: uppercase; letter-spacing: 0.8px;
+    color: #7a4010; background: #f5ede4; border-bottom: 1px solid #e0c9b0;
+  }
+  .split-col-body { padding: 10px 14px; }
+  .row-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 6px 0; border-bottom: 1px dashed #edddd0;
+    font-size: clamp(10px, 1.2vw, 12px); color: #555; line-height: 1.5;
+  }
+  .row-item:last-child { border-bottom: none; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .split-grid { grid-template-columns: 1fr; }
+    tbody td:first-child { white-space: normal; }
+  }
+
+  /* ── Legend ── */
+  .legend-box {
+    background: #f5ede4; border-top: 2px solid #e0c9b0;
+    padding: 12px 18px;
+    font-size: clamp(10px, 1.2vw, 11px); color: #7a5030; line-height: 1.8;
+  }
+  .legend-box strong { color: #5a3010; font-family: 'Nunito Sans', sans-serif; }
+
+  /* ── Fade in ── */
+  .fade-in { opacity: 0; transform: translateY(14px); animation: fadeUp .45s ease forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .fade-in:nth-child(1)  { animation-delay: .05s; }
+  .fade-in:nth-child(2)  { animation-delay: .15s; }
+  .fade-in:nth-child(3)  { animation-delay: .25s; }
+  .fade-in:nth-child(4)  { animation-delay: .35s; }
+  .fade-in:nth-child(5)  { animation-delay: .45s; }
+  .fade-in:nth-child(6)  { animation-delay: .55s; }
+  .fade-in:nth-child(7)  { animation-delay: .65s; }
+  .fade-in:nth-child(8)  { animation-delay: .75s; }
+  .fade-in:nth-child(9)  { animation-delay: .85s; }
+  .fade-in:nth-child(10) { animation-delay: .95s; }
+  .fade-in:nth-child(11) { animation-delay: 1.05s; }
+  .fade-in:nth-child(12) { animation-delay: 1.15s; }
+  /* ── Download button ── */
+  .btn-download {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 4px 0 #9e5800, 0 6px 14px rgba(0,0,0,.25);
+    color: #3a1a00;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 20px 10px 16px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform .15s, box-shadow .15s;
+    text-shadow: 0 1px 0 rgba(255,255,255,.25);
+  }
+  .btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #9e5800, 0 10px 20px rgba(0,0,0,.3);
+  }
+  .btn-download:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #9e5800;
+  }
+  .btn-download svg {
+    width: 18px; height: 18px;
+    fill: #3a1a00;
+    flex-shrink: 0;
+  }
+
+  /* ── Objektif Popup ── */
+  .popup-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(20, 35, 22, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: overlayIn .3s ease forwards;
+  }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .popup-box {
+    background: #fff;
+    border-radius: 20px;
+    border: 3px solid #c9884e;
+    box-shadow: 6px 6px 0 #b5703a, 0 20px 50px rgba(0,0,0,.25);
+    max-width: 560px; width: 100%;
+    max-height: 88vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: popIn .35s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes popIn { from { opacity: 0; transform: scale(.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .popup-header {
+    background: linear-gradient(135deg, #c9884e, #b5703a);
+    padding: 18px 22px 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .popup-header .popup-icon { font-size: 34px; line-height: 1; margin-bottom: 6px; }
+  .popup-header h2 {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(13px, 2.2vw, 16px); text-transform: uppercase;
+    letter-spacing: 2px; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.3); margin: 0;
+  }
+  .popup-header p {
+    font-size: clamp(10px, 1.4vw, 12px); color: rgba(255,255,255,.8);
+    margin-top: 4px; letter-spacing: 0.08em; font-weight: 700;
+  }
+
+  .popup-body { padding: 20px 22px 14px; overflow-y: auto; flex: 1; }
+  .popup-body .obj-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(9px, 1.2vw, 11px); text-transform: uppercase;
+    letter-spacing: 1.5px; color: #b5703a; margin-bottom: 10px;
+  }
+  .obj-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 13px; border-radius: 10px;
+    background: #f9f4ef; border: 1px solid #e8d5c0;
+    margin-bottom: 8px;
+  }
+  .obj-item:last-of-type { margin-bottom: 0; }
+  .obj-badge {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 12px; color: #3a1a00;
+  }
+  .obj-text {
+    font-size: clamp(11px, 1.4vw, 12.5px); color: #2e2e2e;
+    line-height: 1.6; font-weight: 700;
+  }
+  .obj-text span { color: #7a4010; font-weight: 900; }
+
+  .popup-footer { padding: 14px 22px 20px; text-align: center; flex-shrink: 0; }
+  .btn-teruskan {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(180deg, #4ac76e 0%, #2da84e 45%, #1e8f3c 100%);
+    box-shadow: 0 4px 0 #145e28, 0 6px 16px rgba(0,0,0,.2);
+    color: #fff; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.8vw, 14px); text-transform: uppercase;
+    letter-spacing: 1.5px; text-shadow: 0 1px 2px rgba(0,0,0,.2);
+    padding: 12px 32px; border-radius: 50px; border: none; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-teruskan:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #145e28, 0 10px 22px rgba(0,0,0,.25); }
+  .btn-teruskan:active { transform: translateY(2px); box-shadow: 0 2px 0 #145e28; }
+  .btn-teruskan svg { width: 16px; height: 16px; fill: #fff; }
+
+  /* ── Popup audio player (compact) ── */
+  .popup-audio-section {
+    padding: 6px 22px 8px;
+    background: #f9f4ef;
+    border-bottom: 1px solid #e8d5c0;
+    flex-shrink: 0;
+  }
+  .popup-audio-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: #b5703a; margin-bottom: 5px; text-align: center;
+  }
+  .popup-audio-wrap { display: flex; align-items: center; gap: 10px; }
+  .popup-audio-btn {
+    width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 2px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .12s, box-shadow .12s;
+  }
+  .popup-audio-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 0 #9e5800; }
+  .popup-audio-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #9e5800; }
+  .popup-audio-btn svg { width: 13px; height: 13px; fill: #3a1a00; }
+  .popup-progress-wrap { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .popup-progress-bar {
+    width: 100%; height: 4px; border-radius: 50px;
+    background: #e0c9b0; cursor: pointer; appearance: none; accent-color: #c9884e;
+  }
+  .popup-audio-time {
+    font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 900;
+    color: #b5703a; letter-spacing: 0.08em; text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ POPUP OBJEKTIF PEMBELAJARAN ══ -->
+<div class="popup-overlay" id="popupObjektif">
+  <div class="popup-box">
+    <div class="popup-header">
+      <div class="popup-icon">🎯</div>
+      <h2>Objektif Pembelajaran</h2>
+      <p>Tajuk 6 · Isu Kontemporari Tentang Mirath</p>
+    </div>
+    <div class="popup-body">
+      <div class="obj-label">Pada akhir tajuk ini, pelajar dapat:</div>
+      <div class="obj-item">
+        <div class="obj-badge">a</div>
+        <div class="obj-text">Mengenal pasti jenis harta pusaka berdasarkan peruntukan undang-undang di Malaysia, iaitu <span>harta pusaka kecil</span>, <span>harta pusaka besar</span>, dan <span>harta pusaka ringkas</span>;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">b</div>
+        <div class="obj-text">Membezakan <span>ketiga-tiga jenis harta pusaka</span> berkenaan;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">c</div>
+        <div class="obj-text">Menjelaskan <span>pemakaian undang-undang</span> dan <span>peranan agensi</span> yang terlibat dalam pentadbiran harta pusaka orang Islam di Malaysia;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">d</div>
+        <div class="obj-text">Menjelaskan peranan utama <span>Mahkamah Syariah</span> dalam pentadbiran harta pusaka, iaitu mengeluarkan <span>Sijil Faraid</span> atau <span>Perintah Faraid</span> dan peranan lain yang berkaitan;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">e</div>
+        <div class="obj-text">Menjelaskan konsep <span>penyelesaian harta pusaka secara muafakat (takharruj)</span> dari segi pengertian, hukum, syarat, dan kaedah pembahagian; dan</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">f</div>
+        <div class="obj-text">Menilai amalan <span>penyelesaian harta secara muafakat (takharruj)</span> yang diamalkan oleh masyarakat Islam di Malaysia.</div>
+      </div>
+    </div>
+    <div class="popup-audio-section">
+      <div class="popup-audio-label">🔊 Dengar Objektif Pembelajaran</div>
+      <div class="popup-audio-wrap">
+        <button class="popup-audio-btn" id="popupPlayBtn" onclick="togglePopupAudio()">
+          <svg id="popupPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="popup-progress-wrap">
+          <input type="range" class="popup-progress-bar" id="popupSeek" value="0" min="0" step="0.1">
+          <div class="popup-audio-time" id="popupTime">0:00 / 0:00</div>
+        </div>
+      </div>
+      <audio id="popupAudio" src="audio_popup_tajuk6.mp3" preload="auto" autoplay></audio>
+    </div>
+    <div class="popup-footer">
+      <button class="btn-teruskan" onclick="tutupPopup()">
+        Teruskan
+        <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const playPath  = 'M8 5v14l11-7z';
+  const pausePath = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+
+  function fmt(s) {
+    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return m + ':' + String(sec).padStart(2, '0');
+  }
+
+  function tutupPopup() {
+    const overlay = document.getElementById('popupObjektif');
+    const pa = document.getElementById('popupAudio');
+    if (pa) { pa.pause(); pa.currentTime = 0; }
+    overlay.style.transition = 'opacity .25s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 250);
+  }
+
+  const popupAudio = document.getElementById('popupAudio');
+  const popupSeek  = document.getElementById('popupSeek');
+  const popupTime  = document.getElementById('popupTime');
+  const popupIcon  = document.getElementById('popupPlayIcon');
+
+  function togglePopupAudio() {
+    if (popupAudio.paused) { popupAudio.play(); popupIcon.querySelector('path').setAttribute('d', pausePath); }
+    else { popupAudio.pause(); popupIcon.querySelector('path').setAttribute('d', playPath); }
+  }
+
+  popupAudio.addEventListener('play', () => {
+    popupIcon.querySelector('path').setAttribute('d', pausePath);
+  });
+
+  popupAudio.addEventListener('canplay', () => {
+    if (popupAudio.paused) {
+      popupAudio.play().then(() => {
+        popupIcon.querySelector('path').setAttribute('d', pausePath);
+      }).catch(() => {});
+    }
+  }, { once: true });
+
+  popupAudio.addEventListener('timeupdate', () => {
+    if (popupAudio.duration) {
+      popupSeek.max = popupAudio.duration;
+      popupSeek.value = popupAudio.currentTime;
+      popupTime.textContent = fmt(popupAudio.currentTime) + ' / ' + fmt(popupAudio.duration);
+    }
+  });
+
+  popupAudio.addEventListener('ended', () => {
+    popupIcon.querySelector('path').setAttribute('d', playPath);
+    popupSeek.value = 0;
+  });
+
+  popupSeek.addEventListener('input', () => { popupAudio.currentTime = popupSeek.value; });
+</script>
+
+<button class="corner-btn exit" onclick="window.location.href='keluar.html'" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</button>
+<a href="topik.html" class="btn-back" title="Kembali">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</a>
+
+<!-- Download Notes button (bottom-right) -->
+<a href="6- Isu-Kontemporari-Tentang-Mirath.pdf" download="Nota_Persoalan_Semasa_Mirath.pdf" class="btn-download" title="Muat Turun Nota">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+  Muat Turun Nota
+</a>
+
+<div class="container">
+
+  <div class="page-title">
+    <h1>Tajuk 6</h1>
+    <p>Isu Kontemporari Tentang Mirath — Undang-Undang &amp; Pentadbiran Hartapusaka di Malaysia</p>
+  </div>
+
+  <!-- 1. PENTADBIRAN HARTA PUSAKA -->
+  <div class="section-title fade-in">🏛️ Pentadbiran Harta Pusaka di Malaysia</div>
+  <div class="grid-3 fade-in">
+    <div class="card">
+      <div class="card-header">Harta Pusaka Kecil</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text">Bernilai <strong>5 juta ke bawah</strong> — harta alih &amp; tidak alih / harta tak alih sahaja, tanpa wasiat.</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac blue" style="min-width:auto; font-size:10px;">Akta 1955</span>
+          <span class="cond-text">Akta Harta Pusaka Kecil (Pembahagian) 1955</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-text">Tuntutan di <strong>Pejabat Pusaka Kecil / Pejabat Tanah</strong> — Pegawai Penyelesai Pusaka</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Harta Pusaka Besar</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text">Bernilai <strong>5 juta ke atas</strong> — harta alih &amp; tidak alih / harta tak alih sahaja, dengan atau tanpa wasiat.</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac blue" style="min-width:auto; font-size:10px;">Akta 1959</span>
+          <span class="cond-text">Akta Probet dan Pentadbiran 1959</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-text">Tuntutan di <strong>Mahkamah Tinggi</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Harta Pusaka Ringkas</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text">Nilai <strong>tidak melebihi RM600,000</strong> — harta alih sahaja, tanpa wasiat.</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac blue" style="min-width:auto; font-size:10px;">Akta 1995</span>
+          <span class="cond-text">Akta Perbadanan Amanah Raya 1995</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-text">Tuntutan melalui <strong>Pegawai Pentadbir Pusaka</strong> atau Pengarah PAR Berhad</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PERBEZAAN -->
+  <div class="section-title fade-in">⚖️ Perbezaan</div>
+  <div class="card fade-in">
+    <table>
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th>Harta Pusaka Kecil</th>
+          <th>Harta Pusaka Besar</th>
+          <th>Harta Pusaka Ringkas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nilai Harta</td>
+          <td>5 juta ke bawah</td>
+          <td>5 juta ke atas</td>
+          <td>Tidak melebihi RM600,000</td>
+        </tr>
+        <tr>
+          <td>Jenis Harta</td>
+          <td>Alih &amp; tak alih / tak alih sahaja</td>
+          <td>Alih &amp; tak alih / tak alih sahaja</td>
+          <td>Harta alih sahaja</td>
+        </tr>
+        <tr>
+          <td>Wasiat</td>
+          <td>Tanpa wasiat</td>
+          <td>Dengan / tanpa wasiat</td>
+          <td>Tanpa wasiat</td>
+        </tr>
+        <tr>
+          <td>Undang-undang</td>
+          <td>Akta Harta Pusaka Kecil (Pembahagian) 1955</td>
+          <td>Akta Probet dan Pentadbiran 1959</td>
+          <td>Akta Perbadanan Amanah Raya 1995</td>
+        </tr>
+        <tr>
+          <td>Tempat Tuntutan</td>
+          <td>Pejabat Pusaka Kecil / Pejabat Tanah</td>
+          <td>Mahkamah Tinggi</td>
+          <td>Pegawai Pentadbir Pusaka / Pengarah PAR Bhd</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. PERANAN MAHKAMAH SYARIAH -->
+  <div class="section-title fade-in">🕌 Peranan Mahkamah Syariah</div>
+  <div class="card fade-in">
+    <table>
+      <thead>
+        <tr><th>Peranan</th><th>Huraian</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sijil Faraid</td>
+          <td>
+            Mengeluarkan sijil/perakuan bagi si mati yang beragama Islam, menyatakan waris yang berhak dan bahagian masing-masing. Menyiasat pengesahan ahli waris, keesahan perkahwinan dan hak waris.
+            <br><span style="font-size:11px; color:#888; display:block; margin-top:4px;">Tidak perlu disahkan oleh Mahkamah Tinggi Syariah jika dikeluarkan oleh Mahkamah Rendah Syariah. Dikeluarkan atas permohonan waris yang berhasrat membahagikan harta pusaka.</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Kesahtarafan Anak</td>
+          <td>Menentukan kesahtarafan seorang anak. Isu ini perlu dijelaskan <strong>sebelum</strong> pengagihan harta.</td>
+        </tr>
+        <tr>
+          <td>Keesahan Perkahwinan</td>
+          <td>Mengesahkan akad perkahwinan. Perlu diputuskan oleh Mahkamah Syariah kerana pasangan si mati layak mewarisi harta.</td>
+        </tr>
+        <tr>
+          <td>Pertikaian Harta</td>
+          <td>Memutuskan pertikaian berkaitan <strong>harta sepencarian, wasiat, hibah, waqaf, nazar</strong>. Diputuskan oleh Mahkamah Syariah jika ada pertikaian.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. TAKHARRUJ -->
+  <div class="section-title fade-in">🤝 Penyelesaian Secara Muafakat (Takharruj)</div>
+  <div class="card fade-in">
+    <table>
+      <thead>
+        <tr><th>Aspek</th><th>Penjelasan</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Takrif</td>
+          <td>Ahli waris menarik diri daripada menerima bahagian harta pusaka sama ada sebahagian atau kesemuanya, dengan memberikan bahagiannya kepada waris lain — sama ada dengan balasan atau tanpa balasan.</td>
+        </tr>
+        <tr>
+          <td>Hukum</td>
+          <td><span class="badge badge-green">Harus</span> &nbsp;dengan syarat semua waris bersetuju.</td>
+        </tr>
+        <tr>
+          <td>Syarat Tarik Diri</td>
+          <td>
+            <div class="condition-row">
+              <span class="cond-frac">1</span>
+              <span class="cond-text">Penarikan diri boleh dibuat oleh seorang waris atau lebih. Waris yang menerima boleh terdiri daripada seorang, lebih daripada seorang, atau kesemua waris yang tinggal.</span>
+            </div>
+            <div class="condition-row">
+              <span class="cond-frac">2</span>
+              <span class="cond-text">Waris yang menarik diri boleh menerima balasan / imbuhan / ganti rugi, atau menolak bahagiannya secara sukarela tanpa apa-apa balasan.</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. PEMBAHAGIAN SECARA MUAFAKAT -->
+  <div class="section-title fade-in">📋 Pembahagian Secara Muafakat</div>
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="card-header">Cara Pembahagian</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row"><span class="cond-frac">A</span><span class="cond-text">Ikut Faraid</span></div>
+        <div class="condition-row"><span class="cond-frac">B</span><span class="cond-text">Sama Banyak</span></div>
+        <div class="condition-row"><span class="cond-frac">C</span><span class="cond-text">Seorang Memiliki Satu Harta</span></div>
+        <div class="condition-row"><span class="cond-frac">D</span><span class="cond-text">Serah Hak kepada Orang Lain</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Syarat Pembahagian</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-frac">1</span>
+          <span class="cond-text">Asal pembahagian adalah mengikut faraid — setiap waris mengetahui bahagiannya terlebih dahulu.</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac">2</span>
+          <span class="cond-text">Kemudian mereka boleh bersetuju sama ada mengikut faraid atau sama banyak.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header">Kaedah Pembahagian Secara Muafakat</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div><div class="step-title">Waris Buat Permohonan</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Senarai Waris &amp; Harta</div>
+        <div class="step-desc">Senaraikan semua waris yang layak dan hartanya.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div><div class="step-title">Persetujuan Semua Waris</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div><div class="step-title">Tandatangan Surat Persetujuan</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div><div class="step-title">Kelulusan &amp; Pembahagian Harta</div></div>
+    </div>
+  </div>
+
+  <!-- 6. AMALAN MUAFAKAT -->
+  <div class="section-title fade-in">🇲🇾 Amalan Penyelesaian Harta Secara Muafakat di Malaysia</div>
+  <div class="card fade-in">
+    <div class="split-grid">
+      <div class="split-col">
+        <div class="split-col-header">✅ Yang Baik</div>
+        <div class="split-col-body">
+          <div class="row-item">
+            <span class="badge badge-green">Baik</span>
+            <span>Ada yang menolak terus, menerima sebahagian, atau tukar suka sama suka.</span>
+          </div>
+        </div>
+      </div>
+      <div class="split-col">
+        <div class="split-col-header">❌ Yang Tidak Baik</div>
+        <div class="split-col-body">
+          <div class="row-item">
+            <span class="badge badge-red">Salah</span>
+            <span>Waris membahagi secara muafakat tanpa mengetahui kadar yang mereka patut dapat secara faraid — tidak menepati syarak.</span>
+          </div>
+          <div class="row-item">
+            <span class="badge badge-red">Salah</span>
+            <span>Pembahagian secara muafakat diteruskan walaupun ada waris yang tidak bersetuju.</span>
+          </div>
+          <div class="row-item">
+            <span class="badge badge-red">Salah</span>
+            <span>Perbincangan untuk pembahagian muafakat dihadiri oleh beberapa waris sahaja.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

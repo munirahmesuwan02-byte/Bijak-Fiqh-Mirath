@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajuk 2 - Liabiliti &amp; Hak Berkaitan Harta Pusaka</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #dce8de;
+    font-family: 'Nunito', sans-serif;
+    padding: 80px 20px 80px;
+  }
+
+  /* ── Nav ── */
+  .corner-btn, .btn-back {
+    position: fixed;
+    top: 18px;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid #c9884e;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #b5703a;
+    transition: transform .15s, box-shadow .15s;
+    z-index: 100;
+    text-decoration: none;
+  }
+  .corner-btn:hover, .btn-back:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+  .corner-btn:active, .btn-back:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+  .corner-btn.exit { right: 18px; }
+  .btn-back { left: 18px; }
+  .corner-btn svg, .btn-back svg { width: 24px; height: 24px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Page title ── */
+  .page-title { text-align: center; margin-bottom: 30px; }
+  .page-title h1 {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(20px, 4vw, 34px); text-transform: uppercase;
+    letter-spacing: 2px; color: #1a1a1a;
+  }
+  .page-title p {
+    font-size: 0.85rem; color: #4a5e4d;
+    margin-top: 5px; font-weight: 700; letter-spacing: 0.05em;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ── Section title ── */
+  .section-title {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(13px, 2vw, 16px); text-transform: uppercase;
+    letter-spacing: 1.5px; color: #2e2e2e;
+    margin: 32px 0 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(to right, #c9884e, transparent); border-radius: 2px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 4px 4px 0 #b5703a, 0 8px 24px rgba(0,0,0,.1);
+    border: 2px solid #c9884e; margin-bottom: 24px;
+  }
+  .card-header {
+    background: linear-gradient(135deg, #c9884e, #b5703a);
+    padding: 12px 18px;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.6vw, 14px); text-transform: uppercase;
+    letter-spacing: 1px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #f5ede4; padding: 11px 16px;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(10px, 1.3vw, 12px); text-transform: uppercase;
+    letter-spacing: 1px; color: #7a4010; text-align: left;
+    border-bottom: 2px solid #e0c9b0;
+  }
+  tbody tr { border-bottom: 1px solid #f0e8e0; transition: background .15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fdf6f0; }
+  tbody td { padding: 11px 16px; font-size: clamp(11px, 1.4vw, 13px); color: #2e2e2e; vertical-align: top; }
+  tbody td:first-child { font-weight: 900; color: #7a4010; white-space: nowrap; }
+
+  /* ── Condition rows ── */
+  .condition-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 5px 0; border-bottom: 1px dashed #edddd0;
+  }
+  .condition-row:last-child { border-bottom: none; }
+  .cond-text { font-size: clamp(11px, 1.3vw, 12px); color: #555; line-height: 1.5; }
+
+  /* ── Fraction / status badges ── */
+  .cond-frac {
+    display: inline-block; min-width: 54px; text-align: center;
+    font-weight: 900; font-family: 'Nunito', sans-serif;
+    font-size: clamp(10px, 1.2vw, 12px); flex-shrink: 0;
+    padding: 3px 10px; border-radius: 50px;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.5);
+    color: #3a1a00; text-shadow: 0 1px 0 rgba(255,255,255,.3);
+  }
+  .cond-frac.red {
+    background: linear-gradient(180deg, #e87a7a 0%, #c0392b 45%, #a02020 100%);
+    box-shadow: 0 3px 0 #7a1010, inset 0 1px 0 rgba(255,255,255,.3);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+  .cond-frac.green {
+    background: linear-gradient(180deg, #6ecf6e 0%, #3aad3a 45%, #2a8c2a 100%);
+    box-shadow: 0 3px 0 #1a5e1a, inset 0 1px 0 rgba(255,255,255,.4);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+  .cond-frac.blue {
+    background: linear-gradient(180deg, #74b8e8 0%, #2a7abf 45%, #1a5a9e 100%);
+    box-shadow: 0 3px 0 #0a3a7a, inset 0 1px 0 rgba(255,255,255,.4);
+    color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.25);
+  }
+
+  /* ── Badge pills ── */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 50px;
+    font-size: clamp(9px, 1.1vw, 11px); font-weight: 900;
+    font-family: 'Nunito', sans-serif; text-transform: uppercase;
+  }
+  .badge-green {
+    background: linear-gradient(180deg, #6ecf6e 0%, #3aad3a 100%);
+    box-shadow: 0 2px 0 #1a5e1a; color: #fff;
+  }
+  .badge-red {
+    background: linear-gradient(180deg, #e87a7a 0%, #c0392b 100%);
+    box-shadow: 0 2px 0 #7a1010; color: #fff;
+  }
+
+  /* ── Steps ── */
+  .step { display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #f0e8e0; }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 13px; color: #3a1a00;
+  }
+  .step-title { font-weight: 900; color: #7a4010; font-size: clamp(12px, 1.5vw, 14px); margin-bottom: 4px; }
+  .step-desc { font-size: clamp(11px, 1.3vw, 12px); color: #555; line-height: 1.55; }
+
+  /* ── Split card ── */
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .split-col { border-right: 1px solid #f0e8e0; }
+  .split-col:last-child { border-right: none; }
+  .split-col-header {
+    padding: 9px 14px; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(10px, 1.2vw, 12px); text-transform: uppercase; letter-spacing: 0.8px;
+    color: #7a4010; background: #f5ede4; border-bottom: 1px solid #e0c9b0;
+  }
+  .split-col-body { padding: 10px 14px; }
+  .row-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 6px 0; border-bottom: 1px dashed #edddd0;
+    font-size: clamp(10px, 1.2vw, 12px); color: #555; line-height: 1.5;
+  }
+  .row-item:last-child { border-bottom: none; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .split-grid { grid-template-columns: 1fr; }
+    tbody td:first-child { white-space: normal; }
+  }
+
+  /* ── Legend ── */
+  .legend-box {
+    background: #f5ede4; border-top: 2px solid #e0c9b0;
+    padding: 12px 18px;
+    font-size: clamp(10px, 1.2vw, 11px); color: #7a5030; line-height: 1.8;
+  }
+  .legend-box strong { color: #5a3010; font-family: 'Nunito Sans', sans-serif; }
+
+  /* ── Order badge (urutan liabiliti) ── */
+  .order-strip {
+    display: flex; align-items: center; gap: 0; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .order-item {
+    flex: 1; min-width: 120px; text-align: center;
+    background: #fff; border: 2px solid #c9884e;
+    padding: 12px 10px;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(10px, 1.3vw, 13px); color: #7a4010;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .order-item:hover, .order-item:active, .order-item:visited, .order-item:focus {
+    background: #fff;
+    color: #7a4010;
+    text-decoration: none;
+    outline: none;
+  }
+  .order-item:first-child { border-radius: 10px 0 0 10px; }
+  .order-item:last-child  { border-radius: 0 10px 10px 0; }
+  .order-item + .order-item { border-left: none; }
+  .order-item .num {
+    display: block; margin: 0 auto 6px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 2px 0 #9e5800;
+    font-size: 13px; color: #3a1a00; line-height: 26px;
+  }
+  .order-arrow {
+    font-size: 20px; color: #c9884e; font-weight: 900;
+    align-self: center; margin: 0 -2px; z-index: 1;
+  }
+  @media (max-width: 640px) {
+    .order-strip { flex-direction: column; }
+    .order-item { border-radius: 0; border-left: 2px solid #c9884e; border-top: none; min-width: 100%; }
+    .order-item:first-child { border-radius: 10px 10px 0 0; border-top: 2px solid #c9884e; }
+    .order-item:last-child  { border-radius: 0 0 10px 10px; }
+    .order-arrow { transform: rotate(90deg); }
+  }
+
+  /* ── Download button ── */
+  .btn-download {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 4px 0 #9e5800, 0 6px 14px rgba(0,0,0,.25);
+    color: #3a1a00;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 20px 10px 16px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform .15s, box-shadow .15s;
+    text-shadow: 0 1px 0 rgba(255,255,255,.25);
+  }
+  .btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #9e5800, 0 10px 20px rgba(0,0,0,.3);
+  }
+  .btn-download:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #9e5800;
+  }
+  .btn-download svg {
+    width: 18px; height: 18px;
+    fill: #3a1a00;
+    flex-shrink: 0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  /* Offset anchor targets so they aren't hidden under the fixed nav */
+  #sec-jenazah, #sec-hutang, #sec-wasiat, #sec-sepencarian, #sec-agihan {
+    scroll-margin-top: 80px;
+  }
+  .fade-in { opacity: 0; transform: translateY(14px); animation: fadeUp .45s ease forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .fade-in:nth-child(1)  { animation-delay: .05s; }
+  .fade-in:nth-child(2)  { animation-delay: .15s; }
+  .fade-in:nth-child(3)  { animation-delay: .25s; }
+  .fade-in:nth-child(4)  { animation-delay: .35s; }
+  .fade-in:nth-child(5)  { animation-delay: .45s; }
+  .fade-in:nth-child(6)  { animation-delay: .55s; }
+  .fade-in:nth-child(7)  { animation-delay: .65s; }
+  .fade-in:nth-child(8)  { animation-delay: .75s; }
+  .fade-in:nth-child(9)  { animation-delay: .85s; }
+  .fade-in:nth-child(10) { animation-delay: .95s; }
+  .fade-in:nth-child(11) { animation-delay: 1.05s; }
+  .fade-in:nth-child(12) { animation-delay: 1.15s; }
+
+  /* ── Objektif Popup ── */
+  .popup-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(20, 35, 22, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: overlayIn .3s ease forwards;
+  }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .popup-box {
+    background: #fff;
+    border-radius: 20px;
+    border: 3px solid #c9884e;
+    box-shadow: 6px 6px 0 #b5703a, 0 20px 50px rgba(0,0,0,.25);
+    max-width: 560px; width: 100%;
+    max-height: 88vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: popIn .35s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes popIn { from { opacity: 0; transform: scale(.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .popup-header {
+    background: linear-gradient(135deg, #c9884e, #b5703a);
+    padding: 18px 22px 14px;
+    text-align: center;
+  }
+  .popup-header .popup-icon { font-size: 34px; line-height: 1; margin-bottom: 6px; }
+  .popup-header h2 {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(13px, 2.2vw, 16px); text-transform: uppercase;
+    letter-spacing: 2px; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.3); margin: 0;
+  }
+  .popup-header p {
+    font-size: clamp(10px, 1.4vw, 12px); color: rgba(255,255,255,.8);
+    margin-top: 4px; letter-spacing: 0.08em; font-weight: 700;
+  }
+
+  .popup-body { padding: 20px 22px 14px; overflow-y: auto; flex: 1; }
+  .popup-body .obj-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(9px, 1.2vw, 11px); text-transform: uppercase;
+    letter-spacing: 1.5px; color: #b5703a; margin-bottom: 10px;
+  }
+  .obj-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 13px; border-radius: 10px;
+    background: #f9f4ef; border: 1px solid #e8d5c0;
+    margin-bottom: 8px;
+  }
+  .obj-item:last-of-type { margin-bottom: 0; }
+  .obj-badge {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 3px 0 #9e5800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 12px; color: #3a1a00;
+  }
+  .obj-text {
+    font-size: clamp(11px, 1.4vw, 12.5px); color: #2e2e2e;
+    line-height: 1.6; font-weight: 700;
+  }
+  .obj-text span { color: #7a4010; font-weight: 900; }
+
+  .popup-footer { padding: 14px 22px 20px; text-align: center; }
+  .btn-teruskan {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(180deg, #4ac76e 0%, #2da84e 45%, #1e8f3c 100%);
+    box-shadow: 0 4px 0 #145e28, 0 6px 16px rgba(0,0,0,.2);
+    color: #fff; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.8vw, 14px); text-transform: uppercase;
+    letter-spacing: 1.5px; text-shadow: 0 1px 2px rgba(0,0,0,.2);
+    padding: 12px 32px; border-radius: 50px; border: none; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-teruskan:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #145e28, 0 10px 22px rgba(0,0,0,.25); }
+  .btn-teruskan:active { transform: translateY(2px); box-shadow: 0 2px 0 #145e28; }
+  .btn-teruskan svg { width: 16px; height: 16px; fill: #fff; }
+
+  /* ── Popup audio player ── */
+  .audio-play-btn {
+    width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(180deg, #ffe085 0%, #f5a318 45%, #e08500 100%);
+    box-shadow: 0 2px 0 #9e5800, inset 0 1px 0 rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .12s, box-shadow .12s;
+  }
+  .audio-play-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 0 #9e5800; }
+  .audio-play-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #9e5800; }
+  .audio-play-btn svg { width: 13px; height: 13px; fill: #3a1a00; }
+  .audio-progress-wrap { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .audio-progress-bar {
+    width: 100%; height: 4px; border-radius: 50px;
+    background: #e0c9b0; cursor: pointer; appearance: none; accent-color: #c9884e;
+  }
+  .audio-time {
+    font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 900;
+    color: #b5703a; letter-spacing: 0.08em; text-align: right;
+  }
+  .popup-audio-section {
+    padding: 6px 22px 8px;
+    background: #f9f4ef;
+    border-bottom: 1px solid #e8d5c0;
+  }
+  .popup-audio-label {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: #b5703a; margin-bottom: 5px; text-align: center;
+  }
+  .popup-audio-wrap { display: flex; align-items: center; gap: 10px; }
+</style>
+</head>
+<body>
+
+<!-- ══ POPUP OBJEKTIF PEMBELAJARAN ══ -->
+<div class="popup-overlay" id="popupObjektif">
+  <div class="popup-box">
+    <div class="popup-header">
+      <div class="popup-icon">🎯</div>
+      <h2>Objektif Pembelajaran</h2>
+      <p>Tajuk 2 · Liabiliti &amp; Hak Berkaitan Harta Pusaka</p>
+    </div>
+    <div class="popup-body">
+      <div class="obj-label">Pada akhir tajuk ini, pelajar dapat:</div>
+      <div class="obj-item">
+        <div class="obj-badge">a</div>
+        <div class="obj-text">Mengenal pasti <span>liabiliti dalam harta pusaka</span> mengikut keutamaan, iaitu perbelanjaan pengurusan jenazah, pembayaran hutang, tuntutan harta sepencarian, pelaksanaan wasiat, dan hak waris;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">b</div>
+        <div class="obj-text">Menjelaskan perkara yang <span>boleh</span> dan <span>tidak boleh</span> menggunakan harta pusaka dalam pengurusan jenazah;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">c</div>
+        <div class="obj-text">Menganalisis <span>pandangan ulama</span> berkaitan dengan pembayaran hutang dengan menggunakan harta pusaka;</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">d</div>
+        <div class="obj-text">Menghuraikan <span>tuntutan harta sepencarian</span> selepas kematian; dan</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-badge">e</div>
+        <div class="obj-text">Menjelaskan <span>pelaksanaan wasiat</span> ke atas harta pusaka.</div>
+      </div>
+    </div>
+    <div class="popup-audio-section">
+      <div class="popup-audio-label">🔊 Dengar Objektif Pembelajaran</div>
+      <div class="popup-audio-wrap">
+        <button class="audio-play-btn" id="popupPlayBtn" onclick="togglePopupAudio()">
+          <svg id="popupPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="audio-progress-wrap">
+          <input type="range" class="audio-progress-bar" id="popupSeek" value="0" min="0" step="0.1">
+          <div class="audio-time" id="popupTime">0:00 / 0:00</div>
+        </div>
+      </div>
+      <audio id="popupAudio" src="audio_popup_tajuk2.mp3" preload="auto" autoplay></audio>
+    </div>
+    <div class="popup-footer">
+      <button class="btn-teruskan" onclick="tutupPopup()">
+        Teruskan
+        <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const playPath  = 'M8 5v14l11-7z';
+  const pausePath = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+
+  function fmt(s) {
+    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return m + ':' + String(sec).padStart(2, '0');
+  }
+
+  function tutupPopup() {
+    const overlay = document.getElementById('popupObjektif');
+    const pa = document.getElementById('popupAudio');
+    if (pa) { pa.pause(); pa.currentTime = 0; }
+    overlay.style.transition = 'opacity .25s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 250);
+  }
+
+  const popupAudio = document.getElementById('popupAudio');
+  const popupSeek  = document.getElementById('popupSeek');
+  const popupTime  = document.getElementById('popupTime');
+  const popupIcon  = document.getElementById('popupPlayIcon');
+
+  function togglePopupAudio() {
+    if (popupAudio.paused) { popupAudio.play(); popupIcon.querySelector('path').setAttribute('d', pausePath); }
+    else { popupAudio.pause(); popupIcon.querySelector('path').setAttribute('d', playPath); }
+  }
+
+  popupAudio.addEventListener('play', () => {
+    popupIcon.querySelector('path').setAttribute('d', pausePath);
+  });
+
+  popupAudio.addEventListener('canplay', () => {
+    if (popupAudio.paused) {
+      popupAudio.play().then(() => {
+        popupIcon.querySelector('path').setAttribute('d', pausePath);
+      }).catch(() => {});
+    }
+  }, { once: true });
+
+  popupAudio.addEventListener('timeupdate', () => {
+    if (popupAudio.duration) {
+      popupSeek.max = popupAudio.duration;
+      popupSeek.value = popupAudio.currentTime;
+      popupTime.textContent = fmt(popupAudio.currentTime) + ' / ' + fmt(popupAudio.duration);
+    }
+  });
+
+  popupAudio.addEventListener('ended', () => {
+    popupIcon.querySelector('path').setAttribute('d', playPath);
+    popupSeek.value = 0;
+  });
+
+  popupSeek.addEventListener('input', () => { popupAudio.currentTime = popupSeek.value; });
+</script>
+
+<button class="corner-btn exit" onclick="window.location.href='keluar.html'" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</button>
+<a href="topik.html" class="btn-back" title="Kembali">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</a>
+
+<!-- Download Notes button (bottom-right) -->
+<a href="2- Liabiliti-Hak-Berkaitan-Harta-Pusaka.pdf" download="Nota_Liabiliti_Harta_Pusaka.pdf" class="btn-download" title="Muat Turun Nota">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+  Muat Turun Nota
+</a>
+
+<div class="container">
+
+  <div class="page-title">
+    <h1>Tajuk 2</h1>
+    <p>Liabiliti &amp; Hak Berkaitan Harta Pusaka</p>
+  </div>
+
+  <!-- URUTAN -->
+  <div class="section-title fade-in">📋 Urutan Liabiliti Harta Pusaka</div>
+  <div class="order-strip fade-in">
+    <a class="order-item" href="#sec-jenazah"><span class="num">1</span>Pengurusan Jenazah</a>
+    <div class="order-arrow">›</div>
+    <a class="order-item" href="#sec-hutang"><span class="num">2</span>Langsaikan Hutang</a>
+    <div class="order-arrow">›</div>
+    <a class="order-item" href="#sec-wasiat"><span class="num">3</span>Wasiat</a>
+    <div class="order-arrow">›</div>
+    <a class="order-item" href="#sec-sepencarian"><span class="num">4</span>Harta Sepencarian</a>
+    <div class="order-arrow">›</div>
+    <a class="order-item" href="#sec-agihan"><span class="num">5</span>Agihan Harta Pusaka</a>
+  </div>
+
+  <!-- ══ 1. PENGURUSAN JENAZAH ══ -->
+  <div id="sec-jenazah" class="section-title fade-in">🕌 Pertama — Pengurusan Jenazah</div>
+
+  <div class="card fade-in">
+    <div class="card-header">Maksud</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-text">Bermula dari saat kematian hingga bersemadi di kubur iaitu <strong>memandi, mengkafan, menggali kubur, membawa jenazah dan dikebumikan</strong> — diambil daripada harta si mati.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header">Sumber Pembiayaan (Mengikut Keutamaan)</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Harta Si Mati</div>
+        <div class="step-desc">Diambil terus daripada harta peninggalan si mati.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Kaum Kerabat</div>
+        <div class="step-desc">Jika hartanya tiada, kaum kerabat akan membantu menyelesaikannya.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Baitulmal</div>
+        <div class="step-desc">Jika tiada kerabat atau kerabat miskin, diambil peruntukan daripada Baitulmal.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Orang yang Berkemampuan</div>
+        <div class="step-desc">Jika Baitulmal tiada wang, ditanggungjawabkan bagi orang yang berkemampuan.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header">Kes Khas — Kematian Isteri</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-frac green">Suami Hidup</span>
+        <span class="cond-text">Jika isteri meninggal sedangkan suami masih hidup, <strong>suami perlu menanggung</strong> kos pengkebumian.</span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac blue">Suami Mati</span>
+        <span class="cond-text">Jika suami telah meninggal terlebih dahulu, kos diambil daripada <strong>harta suami</strong>.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="card-header">✅ Boleh Digunakan</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row"><span class="cond-frac green" style="min-width:auto;">✓</span><span class="cond-text">Peralatan mandikan jenazah</span></div>
+        <div class="condition-row"><span class="cond-frac green" style="min-width:auto;">✓</span><span class="cond-text">Peralatan kafan</span></div>
+        <div class="condition-row"><span class="cond-frac green" style="min-width:auto;">✓</span><span class="cond-text">Upah penggali kubur</span></div>
+        <div class="condition-row"><span class="cond-frac green" style="min-width:auto;">✓</span><span class="cond-text">Fidyah</span></div>
+        <div class="condition-row"><span class="cond-frac green" style="min-width:auto;">✓</span><span class="cond-text">Van jenazah</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">❌ Tidak Boleh Digunakan</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row"><span class="cond-frac red" style="min-width:auto;">✗</span><span class="cond-text">Majlis tahlil</span></div>
+        <div class="condition-row"><span class="cond-frac red" style="min-width:auto;">✗</span><span class="cond-text">Batu nisan</span></div>
+        <div class="condition-row"><span class="cond-frac red" style="min-width:auto;">✗</span><span class="cond-text">Upah solat jenazah</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 2. LANGSAIKAN HUTANG ══ -->
+  <div id="sec-hutang" class="section-title fade-in">💰 Kedua — Langsaikan Hutang</div>
+
+  <div class="card fade-in">
+    <div class="card-header">Maksud</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-text">Menggunakan harta si mati untuk melangsaikan hutang sama ada <strong>hutang dengan Allah</strong> atau <strong>hutang dengan manusia</strong>.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="card-header">Hutang dengan Allah</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text"><strong>Contoh:</strong> Zakat, Kaffarah, Nazar, Haji, Fidyah</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac" style="min-width:auto;">Jumhur</span>
+          <span class="cond-text">Wajib bayar guna harta si mati. <strong>Dilangsaikan dahulu</strong> sebelum diagihkan kepada waris.</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Hutang dengan Manusia</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text"><strong>Contoh:</strong> Gadaian, Pinjaman</span>
+        </div>
+        <div class="condition-row">
+          <span class="cond-frac" style="min-width:auto;">Jumhur</span>
+          <span class="cond-text">Wajib bayar guna harta si mati. Dilangsaikan <strong>selepas urusan jenazah dan hutang dengan Allah</strong>, kemudian diagihkan kepada waris.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 3. WASIAT ══ -->
+  <div id="sec-wasiat" class="section-title fade-in">📜 Ketiga — Wasiat</div>
+
+  <div class="card fade-in">
+    <div class="card-header">Maksud</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-text">Pesan yang dibuat oleh seseorang <strong>semasa hidup</strong> untuk agihkan harta selepas kematiannya.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header">Kaedah Pelaksanaan Wasiat</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-frac">1</span>
+        <span class="cond-text">Dilaksanakan <strong>sebelum</strong> pengagihan harta pusaka.</span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">2</span>
+        <span class="cond-text">Kadarnya <strong>tidak melebihi 1/3</strong> daripada harta.</span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">3</span>
+        <span class="cond-text">Diberi kepada <strong>bukan waris</strong>.</span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">4</span>
+        <span class="cond-text">Diserahkan <strong>selepas pewasiat meninggal dunia</strong>.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 4. HARTA SEPENCARIAN ══ -->
+  <div id="sec-sepencarian" class="section-title fade-in">🏠 Keempat — Harta Sepencarian</div>
+
+  <div class="card fade-in">
+    <div class="card-header">Maksud</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-text">Harta yang diperoleh pasangan suami isteri <strong>sepanjang tempoh perkahwinan yang sah</strong>, iaitu sumbangan daripada suami dan isteri terhadap perolehan harta itu, sama ada secara langsung ataupun tidak.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="card-header">✅ Harta Sepencarian</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row">
+          <span class="cond-text">Harta yang diperoleh <strong>bersama</strong> semasa tempoh perkahwinan yang sah melalui sumbangan langsung atau tidak langsung.</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">❌ Bukan Harta Sepencarian</div>
+      <div style="padding: 12px 16px;">
+        <div class="condition-row"><span class="cond-frac red" style="min-width:auto;">✗</span><span class="cond-text">Harta bawaan / harta pusaka / hadiah / hibah</span></div>
+        <div class="condition-row"><span class="cond-frac red" style="min-width:auto;">✗</span><span class="cond-text">Harta yang diperoleh <strong>sebelum berkahwin</strong> dengan wang sendiri, hasil titik peluh, hadiah, hibah atau pusaka — tanpa ada penambahan atau pemajuan selepas berkahwin.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header">Kaedah Tuntutan</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-frac">1</span>
+        <span class="cond-text">Tuntut <strong>sebelum</strong> harta pusaka diagihkan.</span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">2</span>
+        <span class="cond-text">Mahkamah akan menilai jumlah yang patut diperolehi.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 5. AGIHAN HARTA PUSAKA ══ -->
+  <div id="sec-agihan" class="section-title fade-in">⚖️ Kelima — Agihan Harta Pusaka</div>
+
+  <div class="card fade-in">
+    <div class="card-header">Ashabul Furud (Waris Utama)</div>
+    <div style="padding: 12px 18px;">
+      <div class="condition-row">
+        <span class="cond-frac">1</span><span class="cond-text"><strong>Suami / Isteri</strong></span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">2</span><span class="cond-text"><strong>Bapa / Ibu</strong></span>
+      </div>
+      <div class="condition-row">
+        <span class="cond-frac">3</span><span class="cond-text"><strong>Anak Perempuan</strong></span>
+      </div>
+    </div>
+    <div class="legend-box">
+      Agihan harta pusaka dilaksanakan <strong>selepas</strong> pengurusan jenazah, langsaian hutang, pelaksanaan wasiat, dan pembahagian harta sepencarian diselesaikan.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

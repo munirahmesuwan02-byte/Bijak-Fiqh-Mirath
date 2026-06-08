@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trial Negeri Terengganu</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #dce8de;
+    min-height: 100vh;
+    padding: 30px 16px 60px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* NAV ICONS */
+  .nav-home, .nav-exit {
+    position: fixed;
+    top: 18px;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid #c9884e;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 3px 3px 0 #b5703a;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 100;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-home:hover, .nav-exit:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #b5703a; }
+  .nav-home:active, .nav-exit:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
+  .nav-home { left: 18px; }
+  .nav-exit { right: 18px; }
+  .nav-home svg, .nav-exit svg { width: 22px; height: 22px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+
+  /* SOALAN CARD */
+  .soalan-card {
+    background: #fff;
+    border: 2px solid #c9884e;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #b5703a;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .soalan-header {
+    background: #fff;
+    padding: 18px 24px 4px 24px;
+  }
+  .soalan-header .title-main {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 15px;
+    color: #111; letter-spacing: 0.3px;
+  }
+  .soalan-header .title-sub {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 15px;
+    color: #111; margin-top: 2px;
+  }
+  .soalan-body { padding: 6px 24px 24px 24px; }
+
+  /* BAHAGIAN */
+  .bahagian { margin-bottom: 22px; }
+  .bahagian:last-child { margin-bottom: 0; }
+
+  .soalan-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .soalan-row-left { display: flex; gap: 10px; flex: 1; }
+  .bahagian-label { font-size: 15px; font-weight: 400; color: #111; white-space: nowrap; min-width: 24px; }
+  .soalan-text { font-size: 15px; color: #111; line-height: 1.75; font-weight: 400; }
+  .markah-badge { font-size: 15px; color: #111; white-space: nowrap; font-weight: 400; }
+
+  .sub-soalan { margin-top: 14px; padding-left: 20px; }
+  .sub-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .sub-row-left { display: flex; gap: 10px; flex: 1; }
+  .sub-label { font-size: 15px; font-weight: 400; color: #111; white-space: nowrap; min-width: 20px; }
+
+  /* QUOTE BOX */
+  .quote-box {
+    background: #fdf3e8;
+    border-left: 3px solid #c9884e;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 8px 0 10px 0;
+    font-size: 14px;
+    color: #4a3020;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* JAWAPAN */
+  .jawapan-label { font-size: 13px; font-weight: 700; color: #4a7c59; margin-bottom: 6px; }
+  textarea {
+    width: 100%;
+    border: 1.5px solid #b5d4bc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+    color: #2d3a2e;
+    resize: vertical;
+    min-height: 100px;
+    background: #f9fcfa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    line-height: 1.7;
+  }
+  textarea:focus { border-color: #4a7c59; background: #fff; }
+  textarea:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* TABLE INPUT */
+  .table-wrapper { overflow-x: auto; margin-top: 8px; }
+  .jadual-input { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 480px; }
+  .jadual-input th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 13px;
+  }
+  .jadual-input td { padding: 5px 7px; border: 1px solid #c9e0cc; vertical-align: middle; }
+  .jadual-input tr:nth-child(even) td { background: #f0f8f2; }
+  .jadual-input input[type="text"] {
+    width: 100%; border: 1.5px solid #c9e0cc; border-radius: 6px;
+    padding: 6px 8px; font-size: 13px;
+    font-family: 'Nunito Sans', sans-serif;
+    background: #fff; outline: none; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .jadual-input input[type="text"]:focus { border-color: #4a7c59; }
+  .jadual-input input[type="text"]:disabled { background: #f0f6f2; color: #555; cursor: not-allowed; }
+
+  /* NOTIFICATION */
+  .semak-note {
+    display: none; margin-top: 8px;
+    padding: 9px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+  }
+  .semak-note.ok { background: #edf5ef; color: #2e5c3a; border: 1px solid #4a7c59; }
+  .semak-note.empty { background: #fdf3e8; color: #b5703a; border: 1px solid #c9884e; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .btn-semak {
+    background: #4a7c59; color: #fff; border: none;
+    padding: 9px 22px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 2px 2px 0 #2e5c3a;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-semak:hover { transform: translateY(-1px); box-shadow: 3px 3px 0 #2e5c3a; }
+  .btn-semak:active { transform: scale(0.97); box-shadow: 1px 1px 0 #2e5c3a; }
+  .btn-reset {
+    background: #fff; color: #b5703a;
+    border: 1.5px solid #c9884e;
+    padding: 9px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: transform 0.1s, background 0.15s;
+  }
+  .btn-reset:hover { background: #fdf3e8; }
+  .btn-reset:active { transform: scale(0.97); }
+
+  /* SKEMA BOX */
+  .skema-box {
+    display: none;
+    margin-top: 14px;
+    background: #f5faf6;
+    border: 2px dashed #4a7c59;
+    border-radius: 12px;
+    padding: 16px 18px;
+    animation: fadeIn 0.3s ease;
+  }
+  .skema-box.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .skema-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #4a7c59; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .skema-text { font-size: 14px; color: #2d3a2e; line-height: 1.75; margin-bottom: 10px; }
+
+  .skema-section { margin-bottom: 12px; }
+  .skema-section-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #b5703a; margin-bottom: 6px;
+  }
+  .skema-section ul { padding-left: 18px; }
+  .skema-section ul li { font-size: 14px; color: #2d3a2e; line-height: 1.7; margin-bottom: 3px; }
+
+  .contoh-item {
+    background: #fdf3e8;
+    border-left: 3px solid #c9884e;
+    border-radius: 0 8px 8px 0;
+    padding: 9px 14px; margin: 6px 0;
+    font-size: 14px; color: #4a3020;
+  }
+  .contoh-item b { color: #b5703a; }
+
+  /* Skema table */
+  .jadual-skema { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+  .jadual-skema th {
+    background: #4a7c59; color: #fff;
+    padding: 9px 10px; text-align: center;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+  }
+  .jadual-skema td { padding: 8px 10px; border: 1px solid #c9e0cc; text-align: center; color: #2d3a2e; }
+  .jadual-skema tr:nth-child(even) td { background: #edf5ef; }
+  .jadual-skema .waris-col { text-align: left; font-weight: 600; }
+  .am-cell {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 22px;
+    color: #4a7c59; vertical-align: middle;
+  }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 2px dashed #c9e0cc; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<a href="Menutrialnegeri.html" class="nav-home" title="Menu Trial">
+  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+</a>
+<a href="keluar.html" class="nav-exit" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+</a>
+
+<div class="page">
+
+  <!-- SOALAN 1 -->
+  <div class="soalan-card">
+    <div class="soalan-header">
+      <div class="title-main">TRIAL NEGERI TERENGGANU</div>
+      <div class="title-sub">Soalan 1</div>
+    </div>
+    <div class="soalan-body">
+
+      <!-- 1a -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">a)</span>
+            <span class="soalan-text">Jelaskan pengertian asal masalah dan cara mencari asal masalah yang perlu diketahui sebelum pembahagian harta pusaka.</span>
+          </div>
+          <span class="markah-badge">[4 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-1a" placeholder="Tulis jawapan anda di sini..."></textarea>
+        <div id="note-1a" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('1a')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('1a')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-1a">
+          <div class="skema-title">✔ Skema Jawapan</div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">I. Pengertian Asal Masalah</div>
+            <p class="skema-text">Angka paling kecil yang terbit daripada fardu atau cabangnya yang dapat diketahui daripadanya bahagian waris-waris harta pusaka tanpa berlaku sebarang pecahan.</p>
+          </div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">II. Cara Mencari Asal Masalah</div>
+            <ul>
+              <li>Fardu atau bahagian yang diperoleh oleh waris</li>
+              <li>Asal masalah</li>
+              <li>Kadar atau nilai bagi satu saham</li>
+              <li>Kadar bahagian setiap waris</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1b -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">b)</span>
+            <span class="soalan-text">Seorang lelaki meninggal dunia dan meninggalkan 2 orang cucu perempuan kepada anak lelaki, 2 orang isteri, ibu, dan seorang saudara perempuan seibu sebapa. Huraikan pembahagian faraid kepada ahli waris tersebut.</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="jawapan-label">✏️ Isi Jadual Jawapan:</div>
+        <div class="table-wrapper">
+          <table class="jadual-input">
+            <thead>
+              <tr>
+                <th>Waris</th>
+                <th>Fardu</th>
+                <th>Asal Masalah</th>
+                <th>Jumlah</th>
+                <th>Saham</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2 Cucu Perempuan kepada Anak Lelaki</td>
+                <td><input type="text" id="b-f1" placeholder="..."></td>
+                <td rowspan="4" style="text-align:center;"><input type="text" id="b-am" placeholder="..." style="width:60px;"></td>
+                <td><input type="text" id="b-j1" placeholder="..."></td>
+                <td><input type="text" id="b-s1" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>2 Isteri</td>
+                <td><input type="text" id="b-f2" placeholder="..."></td>
+                <td><input type="text" id="b-j2" placeholder="..."></td>
+                <td><input type="text" id="b-s2" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>Ibu</td>
+                <td><input type="text" id="b-f3" placeholder="..."></td>
+                <td><input type="text" id="b-j3" placeholder="..."></td>
+                <td><input type="text" id="b-s3" placeholder="..."></td>
+              </tr>
+              <tr>
+                <td>Saudara Perempuan Seibu Sebapa</td>
+                <td><input type="text" id="b-f4" placeholder="..."></td>
+                <td><input type="text" id="b-j4" placeholder="..."></td>
+                <td><input type="text" id="b-s4" placeholder="..."></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="note-1b" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semakJadual('1b')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="resetJadual('1b')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-1b">
+          <div class="skema-title">✔ Skema Jawapan</div>
+          <div class="table-wrapper">
+            <table class="jadual-skema">
+              <thead>
+                <tr><th>Waris</th><th>Fardu</th><th>Asal Masalah</th><th>Jumlah</th><th>Saham</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="waris-col">2 Cucu Perempuan kepada Anak Lelaki</td>
+                  <td>2/3</td>
+                  <td rowspan="4" class="am-cell">24</td>
+                  <td>16/24</td>
+                  <td>16</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">2 Isteri</td>
+                  <td>1/8</td>
+                  <td>3/24</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Ibu</td>
+                  <td>1/6</td>
+                  <td>4/24</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td class="waris-col">Saudara Perempuan Seibu Sebapa</td>
+                  <td>Asabah</td>
+                  <td>1/24</td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- 1c -->
+      <div class="bahagian">
+        <div class="soalan-row">
+          <div class="soalan-row-left">
+            <span class="bahagian-label">c)</span>
+            <span class="soalan-text">Bincangkan status pewarisan bayi tersebut berdasarkan situasi berikut:</span>
+          </div>
+          <span class="markah-badge">[8 markah]</span>
+        </div>
+
+        <div class="quote-box">
+          "Siti berkahwin dengan Ahmad dan melahirkan seorang bayi selepas tempoh 4 bulan pernikahan mereka."
+        </div>
+
+        <div class="jawapan-label">✏️ Ruangan Jawapan:</div>
+        <textarea id="jwp-1c" placeholder="Tulis jawapan anda di sini..." style="min-height:160px;"></textarea>
+        <div id="note-1c" class="semak-note"></div>
+        <div class="btn-row">
+          <button class="btn-semak" onclick="semak('1c')">Semak &amp; Lihat Skema</button>
+          <button class="btn-reset" onclick="reset('1c')">Set Semula</button>
+        </div>
+
+        <div class="skema-box" id="skema-1c">
+          <div class="skema-title">✔ Skema Jawapan</div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">I. Pengertian &mdash; [2 markah]</div>
+            <ul>
+              <li><b>Anak sah taraf:</b> anak yang lahir daripada perkahwinan yang sah mengikut hukum syarak</li>
+              <li><b>Anak tidak sah taraf:</b> anak yang lahir di luar nikah yang sah atau dilahirkan kurang daripada tempoh minimum</li>
+            </ul>
+          </div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">II. Perkaitan dengan Kes &mdash; [2 markah]</div>
+            <ul>
+              <li>Bayi dilahirkan selepas <b>4 bulan</b> perkahwinan</li>
+              <li>Tempoh minimum yang ditetapkan ialah <b>6 bulan qamariah</b></li>
+              <li>Oleh itu, bayi ini dikira sebagai <b>anak tidak sah taraf</b> kerana kurang daripada 6 bulan qamariah</li>
+            </ul>
+          </div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">III. Implikasi Pusaka &mdash; [2 markah]</div>
+            <div class="contoh-item"><b>Fakta:</b> Anak tidak sah taraf tidak layak menerima harta pusaka.</div>
+            <div class="contoh-item"><b>Huraian:</b> Syarat menerima harta pusaka mesti ada pertalian kerabat (nasab) yang sah. Anak tidak sah taraf tidak mempunyai nasab kepada bapa.</div>
+          </div>
+
+          <div class="skema-section">
+            <div class="skema-section-title">IV. Kesimpulan &mdash; [2 markah]</div>
+            <div class="contoh-item"><b>Fakta:</b> Bayi tersebut tidak berhak mewarisi harta pusaka bapa biologinya.</div>
+            <div class="contoh-item"><b>Huraian:</b> Tiada ikatan nasab yang sah antara bayi dengan bapanya dari sudut hukum faraid. Hanya nasab kepada ibu sahaja yang diiktiraf.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end soalan-body -->
+  </div><!-- end soalan-card -->
+
+</div><!-- end page -->
+
+<script>
+  function semak(id) {
+    var ta = document.getElementById('jwp-' + id);
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    if (!ta.value.trim()) {
+      note.textContent = '⚠️ Sila isi jawapan terlebih dahulu sebelum melihat skema.';
+      note.className = 'semak-note empty';
+      note.style.display = 'block';
+      return;
+    }
+    note.textContent = '✅ Jawapan direkodkan. Bandingkan dengan skema jawapan di bawah.';
+    note.className = 'semak-note ok';
+    note.style.display = 'block';
+    skema.classList.add('open');
+    ta.disabled = true;
+  }
+
+  function reset(id) {
+    var ta = document.getElementById('jwp-' + id);
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    ta.value = '';
+    ta.disabled = false;
+    note.style.display = 'none';
+    skema.classList.remove('open');
+  }
+
+  var fields1b = ['b-f1','b-f2','b-f3','b-f4','b-am','b-j1','b-j2','b-j3','b-j4','b-s1','b-s2','b-s3','b-s4'];
+
+  function semakJadual(id) {
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    var fields = fields1b;
+    var allFilled = fields.every(function(f) {
+      var el = document.getElementById(f);
+      return el && el.value.trim() !== '';
+    });
+    if (!allFilled) {
+      note.textContent = '⚠️ Sila isi semua ruangan jadual sebelum melihat skema.';
+      note.className = 'semak-note empty';
+      note.style.display = 'block';
+      return;
+    }
+    note.textContent = '✅ Jadual diisi. Bandingkan jawapan anda dengan skema di bawah.';
+    note.className = 'semak-note ok';
+    note.style.display = 'block';
+    skema.classList.add('open');
+    fields.forEach(function(f) {
+      var el = document.getElementById(f);
+      if (el) el.disabled = true;
+    });
+  }
+
+  function resetJadual(id) {
+    var note = document.getElementById('note-' + id);
+    var skema = document.getElementById('skema-' + id);
+    var fields = fields1b;
+    fields.forEach(function(f) {
+      var el = document.getElementById(f);
+      if (el) { el.value = ''; el.disabled = false; }
+    });
+    note.style.display = 'none';
+    skema.classList.remove('open');
+  }
+</script>
+
+</body>
+</html>

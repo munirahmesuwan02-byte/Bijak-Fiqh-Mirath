@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 3 – Bijak Fiqh Mirath</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #dce8de;
+    --card-bg: #ffffff;
+    --orange: #c9884e;
+    --orange-dark: #b5703a;
+    --green-dark: #4a7c59;
+    --gold: #e2b54b;
+    --gold-dark: #c99a2e;
+    --text: #2d2d2d;
+    --shadow: 4px 4px 0px #a0b8a4;
+    --correct: #4caf50;
+    --wrong: #e53935;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    position: relative;
+  }
+
+  /* ── Corner nav buttons ── */
+  .nav-btn {
+    position: fixed;
+    width: 46px; height: 46px;
+    background: #ffffff;
+    border: 2px solid var(--orange);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--orange-dark);
+    transition: transform .15s, box-shadow .15s;
+    z-index: 100;
+    text-decoration: none;
+  }
+  .nav-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+  .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
+  .nav-btn.home { top: 16px; left: 16px; }
+  .nav-btn.exit { top: 16px; right: 16px; }
+  .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Title ── */
+  .title-block {
+    text-align: center;
+    margin: 60px auto 6px;
+  }
+  .title-block h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+  .title-block p {
+    font-size: .9rem;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  /* ── Main Content ── */
+  .main {
+    max-width: 860px;
+    margin: 24px auto 0;
+    padding: 0 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── Section Card ── */
+  .section-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 2px solid var(--orange);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: opacity 0.4s, filter 0.4s;
+  }
+  .section-card.locked {
+    opacity: 0.5;
+    filter: grayscale(40%);
+    pointer-events: none;
+  }
+  .section-card.completed .section-header {
+    background: var(--correct);
+  }
+
+  .section-header {
+    background: var(--green-dark);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-num {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.82rem;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title-wrap { flex: 1; }
+  .section-title-wrap h2 {
+    font-size: .95rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: .3px;
+  }
+  .section-title-wrap p {
+    font-size: .78rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 2px;
+  }
+  .section-status { font-size: 1.3rem; }
+
+  .section-body { padding: 18px; }
+
+  /* ── Drag Items ── */
+  .drag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: 2px solid #a07820;
+    border-radius: 24px;
+    padding: 6px 16px;
+    font-size: .82rem;
+    font-weight: 700;
+    color: white;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 2px 2px 0 #a07820;
+    transition: transform .15s, box-shadow .15s, opacity .2s;
+    white-space: nowrap;
+  }
+  .drag-item:hover { transform: translateY(-2px); box-shadow: 3px 4px 0 #a07820; }
+  .drag-item.dragging { opacity: 0.4; cursor: grabbing; }
+  .drag-item.placed { opacity: 0.35; pointer-events: none; cursor: default; }
+
+  .items-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: #f0f6f1;
+    border-radius: 10px;
+    border: 2px dashed #a0b8a4;
+    min-height: 50px;
+    margin-bottom: 16px;
+  }
+
+  /* ── Drop Zones ── */
+  .drop-zone {
+    min-height: 44px;
+    border: 2px dashed #bbb;
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    transition: border-color .2s, background .2s;
+    background: #fafafa;
+  }
+  .drop-zone.drag-over { border-color: var(--orange); background: #fff4eb; }
+  .drop-zone .placed-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: 2px solid #a07820;
+    border-radius: 24px;
+    padding: 5px 14px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    box-shadow: 1px 1px 0 #a07820;
+  }
+  .drop-zone .placed-item:hover { filter: brightness(1.1); }
+  .drop-zone.correct { border-color: var(--correct); background: #e8f5e9; }
+  .drop-zone.wrong   { border-color: var(--wrong);   background: #ffebee; animation: shake .3s; }
+  .placed-item.item-correct {
+    background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+    border-color: #2e7d32 !important;
+    box-shadow: 1px 1px 0 #1b5e20 !important;
+  }
+  .placed-item.item-wrong {
+    background: linear-gradient(135deg, #ef5350, #c62828) !important;
+    border-color: #b71c1c !important;
+    box-shadow: 1px 1px 0 #7f0000 !important;
+  }
+  .btn-retry {
+    padding: 8px 20px;
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .8rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--orange-dark);
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--orange-dark);
+    transition: background .15s, transform .15s, box-shadow .15s;
+    margin-left: 8px;
+  }
+  .btn-retry:hover { background: #fff4eb; transform: translateY(-2px); box-shadow: 0 5px 0 var(--orange-dark); }
+  .btn-retry:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--orange-dark); }
+
+  @keyframes shake {
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-5px); }
+    75%{ transform: translateX(5px); }
+  }
+
+  /* ── Order List (Bahagian 1) ── */
+  .order-list { display: flex; flex-direction: column; gap: 10px; }
+  .order-slot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f0f6f1;
+    border-radius: 10px;
+    border: 2px dashed #a0b8a4;
+    min-height: 46px;
+    transition: border-color .2s, background .2s;
+  }
+  .order-slot-num {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    width: 26px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .order-slot .drop-zone {
+    flex: 1; border: none; background: transparent; padding: 0; min-height: 30px;
+  }
+  .order-slot.drag-over { border-color: var(--orange); background: #fff4eb; }
+  .order-slot.correct   { border-color: var(--correct); background: #e8f5e9; }
+  .order-slot.wrong     { border-color: var(--wrong);   background: #ffebee; animation: shake .3s; }
+
+  /* ── Two-column sort ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sort-col h3 {
+    text-align: center;
+    font-size: .85rem;
+    font-weight: 800;
+    padding: 7px 10px;
+    border-radius: 8px 8px 0 0;
+    color: #fff;
+  }
+  .sort-col.col-yes h3, .sort-col.col-good h3 { background: var(--green-dark); }
+  .sort-col.col-no  h3, .sort-col.col-bad  h3 { background: #8d3b3b; }
+  .sort-col .drop-zone {
+    border-radius: 0 0 10px 10px;
+    border-top: none;
+    min-height: 90px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  /* ── Match Table (B3) ── */
+  .match-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  .match-table td { padding: 8px 12px; font-size: .82rem; vertical-align: middle; }
+  .match-table .stmt-cell {
+    background: #f0f6f1;
+    border-radius: 8px 0 0 8px;
+    border: 1.5px solid #c8d8cb;
+    border-right: none;
+    font-weight: 600;
+    width: 58%;
+  }
+  .match-table .ans-cell {
+    background: #fafafa;
+    border-radius: 0 8px 8px 0;
+    border: 1.5px solid #c8d8cb;
+    border-left: none;
+    width: 42%;
+  }
+  .match-table tr.correct td { background: #e8f5e9; border-color: var(--correct); }
+  .match-table tr.wrong   td { background: #ffebee; border-color: var(--wrong); animation: shake .3s; }
+
+  /* ── Three-column (B4) ── */
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .sort-col.col-a h3 { background: #5c7a9f; }
+  .sort-col.col-b h3 { background: #7a5c9f; }
+  .sort-col.col-c h3 { background: #9f7a5c; }
+
+  /* ── Action buttons ── */
+  .btn-gold {
+    padding: 12px 28px;
+    background: #2da84e;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .85rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1a7035;
+    transition: background .15s, transform .15s, box-shadow .15s;
+  }
+  .btn-gold:hover { background: #4ac76e; transform: translateY(-2px); box-shadow: 0 6px 0 #1a7035; }
+  .btn-gold:active { transform: translateY(1px); box-shadow: 0 2px 0 #1a7035; }
+  .btn-gold:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: 0 4px 0 #1a7035; }
+
+  .btn-outline {
+    padding: 12px 28px;
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: .85rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--orange-dark);
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--orange-dark);
+    transition: background .15s, transform .15s, box-shadow .15s;
+  }
+  .btn-outline:hover { background: #fff4eb; transform: translateY(-2px); box-shadow: 0 6px 0 var(--orange-dark); }
+  .btn-outline:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--orange-dark); }
+
+  .action-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  /* ── Feedback ── */
+  .feedback {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: .85rem;
+    min-height: 20px;
+  }
+  .feedback.ok  { color: #2e7d32; }
+  .feedback.err { color: #c62828; }
+
+  /* ── Lock hint ── */
+  .locked-hint {
+    text-align: center;
+    color: #888;
+    font-size: .82rem;
+    font-weight: 700;
+    padding: 8px;
+    display: none;
+  }
+  .section-card.locked .locked-hint { display: block; }
+
+  /* ── Result modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 36px;
+    text-align: center;
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(.7); opacity: 0; }
+    to   { transform: scale(1);  opacity: 1; }
+  }
+  .modal-box .emoji { font-size: 3rem; margin-bottom: 10px; }
+  .modal-box h2 { font-size: 1.3rem; font-weight: 800; color: var(--green-dark); margin-bottom: 6px; }
+  .modal-box p  { font-size: .9rem; color: #555; margin-bottom: 18px; }
+  .score-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav buttons -->
+<a class="nav-btn home" href="MenuActivity.html" title="Menu – Aktiviti">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+</a>
+<a class="nav-btn exit" href="keluar.html" title="Keluar">
+  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+</a>
+
+<!-- Title -->
+<div class="title-block">
+  <h1>🏛️ Aktiviti 3: Pengurusan Harta Pusaka</h1>
+  <p>Seret dan susun jawapan yang betul ke tempat yang disediakan.</p>
+</div>
+
+<div class="main">
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- BAHAGIAN 1: Susunan Liabiliti Harta Pusaka             -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-card" id="sec1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title-wrap">
+        <h2>Bahagian 1: Susunan Liabiliti Harta Pusaka</h2>
+        <p>Seret dan susun mengikut keutamaan (1 = paling utama)</p>
+      </div>
+      <div class="section-status" id="stat1">📋</div>
+    </div>
+    <div class="section-body">
+      <div class="items-pool" id="pool1">
+        <div class="drag-item" draggable="true" data-id="lbl-pengurusan">⚰️ Pengurusan jenazah</div>
+        <div class="drag-item" draggable="true" data-id="lbl-hutang">💳 Langsaikan hutang</div>
+        <div class="drag-item" draggable="true" data-id="lbl-wasiat">📜 Wasiat</div>
+        <div class="drag-item" draggable="true" data-id="lbl-sepencarian">🏠 Harta sepencarian</div>
+        <div class="drag-item" draggable="true" data-id="lbl-agihan">⚖️ Agihan harta pusaka</div>
+      </div>
+      <div class="order-list" id="orderList1">
+        <div class="order-slot" data-pos="1" data-answer="lbl-pengurusan">
+          <div class="order-slot-num">1</div>
+          <div class="drop-zone" data-slot="slot1-1"></div>
+        </div>
+        <div class="order-slot" data-pos="2" data-answer="lbl-hutang">
+          <div class="order-slot-num">2</div>
+          <div class="drop-zone" data-slot="slot1-2"></div>
+        </div>
+        <div class="order-slot" data-pos="3" data-answer="lbl-wasiat">
+          <div class="order-slot-num">3</div>
+          <div class="drop-zone" data-slot="slot1-3"></div>
+        </div>
+        <div class="order-slot" data-pos="4" data-answer="lbl-sepencarian">
+          <div class="order-slot-num">4</div>
+          <div class="drop-zone" data-slot="slot1-4"></div>
+        </div>
+        <div class="order-slot" data-pos="5" data-answer="lbl-agihan">
+          <div class="order-slot-num">5</div>
+          <div class="drop-zone" data-slot="slot1-5"></div>
+        </div>
+      </div>
+      
+      <div class="action-row"><button class="btn-gold" onclick="checkSection(1)">✅ Semak Jawapan</button></div>
+      <div class="feedback" id="fb1"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- BAHAGIAN 2: Pengurusan Jenazah                         -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-card locked" id="sec2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title-wrap">
+        <h2>Bahagian 2: Pengurusan Jenazah</h2>
+        <p>Seret item ke dalam kategori yang betul</p>
+      </div>
+      <div class="section-status" id="stat2">🔒</div>
+    </div>
+    <div class="section-body">
+      <div class="locked-hint">🔒 Lengkapkan Bahagian 1 dahulu</div>
+      <div class="items-pool" id="pool2">
+        <div class="drag-item" draggable="true" data-id="j-peralatan-mandi">🪣 Peralatan mandikan jenazah</div>
+        <div class="drag-item" draggable="true" data-id="j-tahlil">🕌 Majlis tahlil</div>
+        <div class="drag-item" draggable="true" data-id="j-kafan">🧶 Peralatan kafan</div>
+        <div class="drag-item" draggable="true" data-id="j-batu">🪨 Batu nisan</div>
+        <div class="drag-item" draggable="true" data-id="j-upah-kubur">⛏️ Upah penggali kubur</div>
+        <div class="drag-item" draggable="true" data-id="j-upah-solat">🙏 Upah solat jenazah</div>
+        <div class="drag-item" draggable="true" data-id="j-fidyah">📿 Fidyah</div>
+        <div class="drag-item" draggable="true" data-id="j-van">🚐 Van jenazah</div>
+      </div>
+      <div class="two-col">
+        <div class="sort-col col-yes">
+          <h3>✅ Boleh Digunakan</h3>
+          <div class="drop-zone" id="zone2-yes" data-zone="2-yes"></div>
+        </div>
+        <div class="sort-col col-no">
+          <h3>❌ Tidak Boleh Digunakan</h3>
+          <div class="drop-zone" id="zone2-no" data-zone="2-no"></div>
+        </div>
+      </div>
+      
+      <div class="action-row"><button class="btn-gold" onclick="checkSection(2)">✅ Semak Jawapan</button></div>
+      <div class="feedback" id="fb2"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- BAHAGIAN 3: Hutang, Wasiat dan Harta Sepencarian        -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-card locked" id="sec3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title-wrap">
+        <h2>Bahagian 3: Hutang, Wasiat & Harta Sepencarian</h2>
+        <p>Seret istilah yang betul kepada pernyataan yang sesuai</p>
+      </div>
+      <div class="section-status" id="stat3">🔒</div>
+    </div>
+    <div class="section-body">
+      <div class="locked-hint">🔒 Lengkapkan Bahagian 2 dahulu</div>
+      <div class="items-pool" id="pool3">
+        <div class="drag-item" draggable="true" data-id="t-hutang-allah">🕌 Hutang dengan Allah</div>
+        <div class="drag-item" draggable="true" data-id="t-hutang-manusia">🤝 Hutang dengan manusia</div>
+        <div class="drag-item" draggable="true" data-id="t-wasiat">📜 Wasiat</div>
+        <div class="drag-item" draggable="true" data-id="t-satu-pertiga">⅓ 1/3</div>
+        <div class="drag-item" draggable="true" data-id="t-harta-sep">🏠 Harta sepencarian</div>
+      </div>
+      <table class="match-table" id="matchTable3">
+        <tbody>
+          <tr data-answer="t-hutang-allah">
+            <td class="stmt-cell">Hutang dengan Allah seperti zakat, kaffarah, nazar, haji dan fidyah</td>
+            <td class="ans-cell"><div class="drop-zone" data-zone="m3-1"></div></td>
+          </tr>
+          <tr data-answer="t-hutang-manusia">
+            <td class="stmt-cell">Hutang seperti gadaian dan pinjaman</td>
+            <td class="ans-cell"><div class="drop-zone" data-zone="m3-2"></div></td>
+          </tr>
+          <tr data-answer="t-wasiat">
+            <td class="stmt-cell">Pesanan seseorang semasa hidup untuk agihkan harta selepas kematian</td>
+            <td class="ans-cell"><div class="drop-zone" data-zone="m3-3"></div></td>
+          </tr>
+          <tr data-answer="t-satu-pertiga">
+            <td class="stmt-cell">Wasiat tidak boleh melebihi kadar ini</td>
+            <td class="ans-cell"><div class="drop-zone" data-zone="m3-4"></div></td>
+          </tr>
+          <tr data-answer="t-harta-sep">
+            <td class="stmt-cell">Harta yang diperoleh oleh suami isteri sepanjang perkahwinan yang sah</td>
+            <td class="ans-cell"><div class="drop-zone" data-zone="m3-5"></div></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="action-row"><button class="btn-gold" onclick="checkSection(3)">✅ Semak Jawapan</button></div>
+      <div class="feedback" id="fb3"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- BAHAGIAN 4: Jenis Harta Pusaka di Malaysia              -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-card locked" id="sec4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title-wrap">
+        <h2>Bahagian 4: Jenis Harta Pusaka di Malaysia</h2>
+        <p>Seret ciri-ciri ke dalam kategori harta pusaka yang betul</p>
+      </div>
+      <div class="section-status" id="stat4">🔒</div>
+    </div>
+    <div class="section-body">
+      <div class="locked-hint">🔒 Lengkapkan Bahagian 3 dahulu</div>
+      <div class="items-pool" id="pool4">
+        <div class="drag-item" draggable="true" data-id="hp-kecil-nilai">💰 Nilai 5 juta ke bawah</div>
+        <div class="drag-item" draggable="true" data-id="hp-besar-nilai">💎 Nilai 5 juta ke atas</div>
+        <div class="drag-item" draggable="true" data-id="hp-ringkas-nilai">🏷️ Tidak melebihi RM600,000</div>
+        <div class="drag-item" draggable="true" data-id="hp-kecil-pejabat">🏢 Pejabat Pusaka Kecil / Pejabat Tanah</div>
+        <div class="drag-item" draggable="true" data-id="hp-besar-mahkamah">⚖️ Mahkamah Tinggi</div>
+        <div class="drag-item" draggable="true" data-id="hp-ringkas-amanah">🏦 Amanah Raya Berhad</div>
+        <div class="drag-item" draggable="true" data-id="hp-kecil-akta">📋 Akta Harta Pusaka Kecil 1955</div>
+        <div class="drag-item" draggable="true" data-id="hp-besar-akta">📋 Akta Probet dan Pentadbiran 1959</div>
+        <div class="drag-item" draggable="true" data-id="hp-ringkas-akta">📋 Akta Perbadanan Amanah Raya 1995</div>
+      </div>
+      <div class="three-col">
+        <div class="sort-col col-a">
+          <h3>🏘️ Harta Pusaka Kecil</h3>
+          <div class="drop-zone" id="zone4-kecil" data-zone="4-kecil"></div>
+        </div>
+        <div class="sort-col col-b">
+          <h3>🏙️ Harta Pusaka Besar</h3>
+          <div class="drop-zone" id="zone4-besar" data-zone="4-besar"></div>
+        </div>
+        <div class="sort-col col-c">
+          <h3>📄 Harta Pusaka Ringkas</h3>
+          <div class="drop-zone" id="zone4-ringkas" data-zone="4-ringkas"></div>
+        </div>
+      </div>
+      
+      <div class="action-row"><button class="btn-gold" onclick="checkSection(4)">✅ Semak Jawapan</button></div>
+      <div class="feedback" id="fb4"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- BAHAGIAN 5: Takharuj dan Muafakat                       -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-card locked" id="sec5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title-wrap">
+        <h2>Bahagian 5: Takharuj dan Muafakat</h2>
+        <p>Seret pernyataan ke dalam kategori yang betul</p>
+      </div>
+      <div class="section-status" id="stat5">🔒</div>
+    </div>
+    <div class="section-body">
+      <div class="locked-hint">🔒 Lengkapkan Bahagian 4 dahulu</div>
+      <div class="items-pool" id="pool5">
+        <div class="drag-item" draggable="true" data-id="tm-sukarela">🤲 Waris menarik diri secara sukarela</div>
+        <div class="drag-item" draggable="true" data-id="tm-tanpa-faraid">❓ Membahagi harta tanpa mengetahui kadar faraid</div>
+        <div class="drag-item" draggable="true" data-id="tm-sebahagian">✋ Waris menerima sebahagian sahaja</div>
+        <div class="drag-item" draggable="true" data-id="tm-tanpa-setuju">🚫 Pembahagian diteruskan walaupun ada waris tidak bersetuju</div>
+        <div class="drag-item" draggable="true" data-id="tm-tukar">🔄 Tukar suka sama suka</div>
+        <div class="drag-item" draggable="true" data-id="tm-beberapa">👥 Perbincangan hanya dihadiri oleh beberapa waris sahaja</div>
+        <div class="drag-item" draggable="true" data-id="tm-semua">👨‍👩‍👧‍👦 Semua waris bersetuju</div>
+      </div>
+      <div class="two-col">
+        <div class="sort-col col-good">
+          <h3>✅ Amalan Baik</h3>
+          <div class="drop-zone" id="zone5-good" data-zone="5-good"></div>
+        </div>
+        <div class="sort-col col-bad">
+          <h3>❌ Amalan Tidak Baik</h3>
+          <div class="drop-zone" id="zone5-bad" data-zone="5-bad"></div>
+        </div>
+      </div>
+      <div class="action-row"><button class="btn-gold" onclick="checkSection(5)">✅ Semak Jawapan</button></div>
+      <div class="feedback" id="fb5"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Completion Modal -->
+<div class="modal-overlay" id="doneOverlay">
+  <div class="modal-box">
+    <div class="emoji">🏆</div>
+    <h2>Tahniah!</h2>
+    <p id="doneMsg">Aktiviti 3 selesai! 🌟<br><small>Kembali ke menu dalam <strong id="countNum">5</strong> saat...</small></p>
+    <div class="score-badge">✅ Semua Bahagian Selesai</div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// AUDIO
+// ─────────────────────────────────────────────────────────────────────────────
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+function playTone(freq, dur, type='sine', vol=0.3) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + dur);
+  o.start(); o.stop(AC.currentTime + dur);
+}
+function sfxCorrect() { playTone(523,0.12); setTimeout(()=>playTone(659,0.12),120); setTimeout(()=>playTone(784,0.2),240); }
+function sfxWrong()   { playTone(220,0.15,'sawtooth',0.2); setTimeout(()=>playTone(180,0.15,'sawtooth',0.2),160); }
+function sfxComplete(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.25),i*120)); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRAG STATE — event delegation so locked sections work after unlock
+// ─────────────────────────────────────────────────────────────────────────────
+let dragged = null;
+
+function initDrag() {
+  document.addEventListener('dragstart', e => {
+    const item = e.target.closest('.drag-item');
+    if (!item) return;
+    dragged = item;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  document.addEventListener('dragend', e => {
+    if (dragged) dragged.classList.remove('dragging');
+    dragged = null;
+  });
+
+  document.addEventListener('dragover', e => {
+    const zone = e.target.closest('.drop-zone, .order-slot');
+    if (!zone) return;
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+
+  document.addEventListener('dragleave', e => {
+    const zone = e.target.closest('.drop-zone, .order-slot');
+    if (zone) zone.classList.remove('drag-over');
+  });
+
+  document.addEventListener('drop', e => {
+    const zone = e.target.closest('.drop-zone, .order-slot');
+    if (!zone || !dragged) return;
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+
+    const isSlot = zone.classList.contains('order-slot');
+    const dz   = isSlot ? zone.querySelector('.drop-zone') : zone;
+    const slot = isSlot ? zone : null;
+
+    // Order slots: max 1 item. Column zones: unlimited.
+    if (slot && dz.querySelector('.placed-item')) return;
+
+    const capturedId = dragged.dataset.id;
+    const pi = document.createElement('span');
+    pi.className = 'placed-item';
+    pi.textContent = dragged.textContent;
+    pi.dataset.id = capturedId;
+
+    pi.addEventListener('click', () => {
+      // Don't allow removal after section is completed
+      const sec = document.getElementById('sec' + getSectionOf(capturedId));
+      if (sec && sec.classList.contains('completed')) return;
+      const pool = document.getElementById('pool' + getSectionOf(capturedId));
+      const orig = pool ? pool.querySelector(`[data-id="${capturedId}"]`) : null;
+      if (orig) orig.classList.remove('placed');
+      pi.remove();
+      // Clear colour feedback on this zone when item is returned
+      dz.classList.remove('correct','wrong');
+      dz.querySelectorAll('.placed-item').forEach(p => p.classList.remove('item-correct','item-wrong'));
+      if (slot) slot.classList.remove('correct','wrong');
+    });
+
+    dz.appendChild(pi);
+    dragged.classList.add('placed');
+    dz.classList.remove('correct','wrong');
+    if (slot) slot.classList.remove('correct','wrong');
+  });
+}
+
+function getSectionOf(id) {
+  if (id.startsWith('lbl-')) return 1;
+  if (id.startsWith('j-'))   return 2;
+  if (id.startsWith('t-'))   return 3;
+  if (id.startsWith('hp-'))  return 4;
+  if (id.startsWith('tm-'))  return 5;
+  return 1;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION ANSWERS
+// ─────────────────────────────────────────────────────────────────────────────
+const sec2Answers = {
+  'zone2-yes': ['j-peralatan-mandi','j-kafan','j-upah-kubur','j-van'],
+  'zone2-no':  ['j-tahlil','j-batu','j-upah-solat','j-fidyah']
+};
+const sec4Answers = {
+  'zone4-kecil':  ['hp-kecil-nilai','hp-kecil-pejabat','hp-kecil-akta'],
+  'zone4-besar':  ['hp-besar-nilai','hp-besar-mahkamah','hp-besar-akta'],
+  'zone4-ringkas':['hp-ringkas-nilai','hp-ringkas-amanah','hp-ringkas-akta']
+};
+const sec5Answers = {
+  'zone5-good': ['tm-sukarela','tm-sebahagian','tm-tukar','tm-semua'],
+  'zone5-bad':  ['tm-tanpa-faraid','tm-tanpa-setuju','tm-beberapa']
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CHECK FUNCTIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function checkSection(n) {
+  let ok = false;
+  if (n === 1) ok = checkOrdered();
+  else if (n === 2) ok = checkZones(sec2Answers);
+  else if (n === 3) ok = checkMatchTable();
+  else if (n === 4) ok = checkZones(sec4Answers);
+  else if (n === 5) ok = checkZones(sec5Answers);
+
+  const fb = document.getElementById('fb' + n);
+  // Remove any existing retry button
+  const existing = document.getElementById('retry' + n);
+  if (existing) existing.remove();
+
+  if (ok) {
+    sfxCorrect();
+    fb.textContent = '✅ Betul! Teruskan ke bahagian seterusnya.';
+    fb.className = 'feedback ok';
+    markDone(n);
+    if (n < 5) unlockNext(n + 1);
+    else setTimeout(showDone, 600);
+  } else {
+    sfxWrong();
+    fb.innerHTML = '❌ Ada jawapan yang salah. Semak tanda merah di bawah.';
+    fb.className = 'feedback err';
+    // Add Cuba Semula button for this section only
+    const retryBtn = document.createElement('button');
+    retryBtn.id = 'retry' + n;
+    retryBtn.className = 'btn-retry';
+    retryBtn.textContent = '🔄 Cuba Semula';
+    retryBtn.onclick = () => resetSection(n);
+    fb.appendChild(retryBtn);
+  }
+}
+
+function checkOrdered() {
+  let allOk = true;
+  document.querySelectorAll('#sec1 .order-slot').forEach(slot => {
+    const dz  = slot.querySelector('.drop-zone');
+    const pi  = dz.querySelector('.placed-item');
+    const ans = slot.dataset.answer;
+    slot.classList.remove('correct','wrong');
+    if (pi) pi.classList.remove('item-correct','item-wrong');
+    if (!pi || pi.dataset.id !== ans) {
+      slot.classList.add('wrong');
+      if (pi) pi.classList.add('item-wrong');
+      allOk = false;
+    } else {
+      slot.classList.add('correct');
+      pi.classList.add('item-correct');
+    }
+  });
+  return allOk;
+}
+
+function checkZones(answerMap) {
+  let allOk = true;
+  for (const [zoneId, correctIds] of Object.entries(answerMap)) {
+    const zone = document.getElementById(zoneId);
+    const setCorrect = new Set(correctIds);
+    zone.classList.remove('correct','wrong');
+    let zoneOk = true;
+    zone.querySelectorAll('.placed-item').forEach(pi => {
+      pi.classList.remove('item-correct','item-wrong');
+      if (setCorrect.has(pi.dataset.id)) {
+        pi.classList.add('item-correct');
+      } else {
+        pi.classList.add('item-wrong');
+        zoneOk = false;
+        allOk = false;
+      }
+    });
+    // Also wrong if zone doesn't have all required items
+    const placed = new Set(Array.from(zone.querySelectorAll('.placed-item')).map(p => p.dataset.id));
+    const missing = [...setCorrect].some(id => !placed.has(id));
+    if (missing) { zoneOk = false; allOk = false; }
+    zone.classList.add(zoneOk ? 'correct' : 'wrong');
+  }
+  return allOk;
+}
+
+function checkMatchTable() {
+  let allOk = true;
+  document.querySelectorAll('#sec3 .match-table tr').forEach(row => {
+    const dz  = row.querySelector('.drop-zone');
+    const pi  = dz && dz.querySelector('.placed-item');
+    const ans = row.dataset.answer;
+    row.classList.remove('correct','wrong');
+    if (pi) pi.classList.remove('item-correct','item-wrong');
+    if (!pi || pi.dataset.id !== ans) {
+      row.classList.add('wrong');
+      if (pi) pi.classList.add('item-wrong');
+      allOk = false;
+    } else {
+      row.classList.add('correct');
+      pi.classList.add('item-correct');
+    }
+  });
+  return allOk;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RESET SECTION (Cuba Semula)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function resetSection(n) {
+  const card = document.getElementById('sec' + n);
+
+  // Return all placed-items back to pool
+  card.querySelectorAll('.placed-item').forEach(pi => {
+    const pool = document.getElementById('pool' + n);
+    const orig = pool ? pool.querySelector(`[data-id="${pi.dataset.id}"]`) : null;
+    if (orig) orig.classList.remove('placed');
+    pi.remove();
+  });
+
+  // Clear all zone/slot feedback colours and item colours
+  card.querySelectorAll('.drop-zone, .order-slot').forEach(z => {
+    z.classList.remove('correct','wrong','drag-over');
+  });
+  card.querySelectorAll('.drag-item').forEach(d => d.classList.remove('placed'));
+
+  // Clear feedback text and remove retry button
+  const fb = document.getElementById('fb' + n);
+  fb.textContent = '';
+  fb.className = 'feedback';
+  const retryBtn = document.getElementById('retry' + n);
+  if (retryBtn) retryBtn.remove();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UNLOCK / COMPLETE
+// ─────────────────────────────────────────────────────────────────────────────
+
+function markDone(n) {
+  const card = document.getElementById('sec' + n);
+  card.classList.add('completed');
+  document.getElementById('stat' + n).textContent = '✅';
+  card.querySelectorAll('.drag-item').forEach(d => { d.draggable = false; d.style.cursor = 'default'; });
+  card.querySelectorAll('.placed-item').forEach(p => { p.style.pointerEvents = 'none'; });
+  card.querySelector('.btn-gold').disabled = true;
+}
+
+function unlockNext(n) {
+  const card = document.getElementById('sec' + n);
+  card.classList.remove('locked');
+  document.getElementById('stat' + n).textContent = '📋';
+  const hint = card.querySelector('.locked-hint');
+  if (hint) hint.style.display = 'none';
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COUNTDOWN POPUP
+// ─────────────────────────────────────────────────────────────────────────────
+
+function showDone() {
+  sfxComplete();
+  document.getElementById('doneOverlay').classList.add('show');
+  let sec = 5;
+  const numEl = document.getElementById('countNum');
+  const tick = setInterval(() => {
+    sec--;
+    if (numEl) numEl.textContent = sec;
+    if (sec <= 0) { clearInterval(tick); window.location.href = 'MenuActivity.html'; }
+  }, 1000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHUFFLE POOLS
+// ─────────────────────────────────────────────────────────────────────────────
+function shufflePool(poolId) {
+  const pool = document.getElementById(poolId);
+  if (!pool) return;
+  const items = Array.from(pool.children);
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    pool.appendChild(items[j]);
+    items.splice(j, 1);
+  }
+}
+
+function shuffleAllPools() {
+  ['pool1','pool2','pool3','pool4','pool5'].forEach(shufflePool);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+initDrag();
+shuffleAllPools();
+</script>
+</body>
+</html>

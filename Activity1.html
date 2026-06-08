@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aktiviti 1 – Kenal Pasti Waris dan Bahagian Fardu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #dce8de;
+      --card-bg: #ffffff;
+      --orange: #c9884e;
+      --orange-dark: #b5703a;
+      --green-dark: #4a7c59;
+      --gold: #e2b54b;
+      --gold-dark: #c99a2e;
+      --text: #2d2d2d;
+      --shadow: 4px 4px 0px #a0b8a4;
+      --correct: #4caf50;
+      --wrong: #e53935;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+      position: relative;
+    }
+
+    /* ── Corner nav buttons ── */
+    .nav-btn {
+      position: fixed;
+      width: 46px; height: 46px;
+      background: #ffffff;
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--orange-dark);
+      transition: transform .15s, box-shadow .15s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .nav-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+    .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
+    .nav-btn.home { top: 16px; left: 16px; }
+    .nav-btn.exit { top: 16px; right: 16px; }
+    .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Title ── */
+    .title-block {
+      text-align: center;
+      margin: 60px auto 6px;
+    }
+    .title-block h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+    .title-block p {
+      font-size: .9rem;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 18px auto 20px;
+    }
+    .tab-btn {
+      padding: 7px 22px;
+      border-radius: 20px;
+      border: 2px solid var(--orange);
+      background: white;
+      color: var(--orange-dark);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .tab-btn.active {
+      background: var(--orange);
+      color: white;
+    }
+    .tab-btn.locked {
+      background: #e0e0e0;
+      border-color: #bbb;
+      color: #999;
+      cursor: not-allowed;
+      opacity: .7;
+    }
+    .tab-btn.locked::after {
+      content: ' 🔒';
+      font-size: .8rem;
+    }
+
+    /* ── Main layout ── */
+    .activity-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .columns {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    /* ── Waris column ── */
+    .col-waris, .col-fardu {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .col-label {
+      text-align: center;
+      font-weight: 800;
+      font-size: .95rem;
+      color: white;
+      background: var(--green-dark);
+      padding: 6px 0;
+      border-radius: 10px;
+      margin-bottom: 4px;
+      letter-spacing: .5px;
+    }
+
+    .waris-card {
+      background: var(--card-bg);
+      border: 2px solid var(--orange);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      position: relative;
+      user-select: none;
+    }
+    .waris-card:hover { background: #fff4eb; }
+    .waris-card.selected {
+      background: var(--orange);
+      color: white;
+      border-color: var(--orange-dark);
+      transform: scale(1.03);
+    }
+    .waris-card.matched-correct {
+      background: #e8f5e9;
+      border-color: var(--correct);
+      color: #2e7d32;
+      cursor: default;
+    }
+    .waris-card.matched-wrong {
+      background: #ffebee;
+      border-color: var(--wrong);
+      color: var(--wrong);
+    }
+
+    /* ── SVG connector area ── */
+    .svg-area {
+      width: 120px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    #connector-svg {
+      position: absolute;
+      top: 36px; left: 0;
+      width: 120px;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    /* ── Fardu card ── */
+    .fardu-card {
+      background: var(--card-bg);
+      border: 2px solid var(--green-dark);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: .78rem;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      user-select: none;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fardu-card:hover { background: #f0f7f1; }
+    .fardu-card.selected {
+      background: var(--green-dark);
+      color: white;
+      border-color: #2d5a3d;
+      transform: scale(1.03);
+    }
+    .fardu-card.matched-correct {
+      background: #e8f5e9;
+      border-color: var(--correct);
+      color: #2e7d32;
+      cursor: default;
+    }
+    .fardu-card.matched-wrong {
+      background: #ffebee;
+      border-color: var(--wrong);
+      color: var(--wrong);
+    }
+
+    /* ── Action buttons ── */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .btn-gold {
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: none;
+      background: #2da84e;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1a7035;
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-gold:hover { background: #4ac76e; transform: translateY(-2px); box-shadow: 0 6px 0 #1a7035; }
+    .btn-gold:active { transform: translateY(1px); box-shadow: 0 2px 0 #1a7035; }
+
+    .btn-outline {
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: 2px solid var(--orange);
+      background: white;
+      color: var(--orange-dark);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--orange-dark);
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-outline:hover { background: #fff4eb; transform: translateY(-2px); box-shadow: 0 6px 0 var(--orange-dark); }
+    .btn-outline:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--orange-dark); }
+
+    /* ── Result modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 30px 36px;
+      text-align: center;
+      max-width: 340px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes popIn {
+      from { transform: scale(.7); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .modal-box .emoji { font-size: 3rem; margin-bottom: 10px; }
+    .modal-box h2 { font-size: 1.3rem; font-weight: 800; color: var(--green-dark); margin-bottom: 6px; }
+    .modal-box p  { font-size: .9rem; color: #555; margin-bottom: 18px; }
+    .score-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+    }
+
+    /* ── Instructions ── */
+    .instruction {
+      text-align: center;
+      font-size: .8rem;
+      color: #666;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav buttons -->
+  <a class="nav-btn home" href="MenuActivity.html" title="Menu – Aktiviti">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  </a>
+  <a class="nav-btn exit" href="keluar.html" title="Keluar">
+    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+  </a>
+
+  <!-- Title -->
+  <div class="title-block">
+    <h1>🔗 Aktiviti 1: Kenal Pasti Waris dan Bahagian Fardu</h1>
+    <p>Padankan setiap waris dengan bahagian fardu yang betul.</p>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabA" onclick="switchTab('A', this)">Bahagian A</button>
+    <button class="tab-btn locked" id="tabB" onclick="switchTab('B', this)">Bahagian B</button>
+  </div>
+
+  <p class="instruction">Klik kad <strong>Waris</strong>, kemudian klik kad <strong>Fardu</strong> yang sepadan.</p>
+
+  <!-- Activity wrapper -->
+  <div class="activity-wrapper">
+    <div class="columns">
+      <!-- Waris -->
+      <div class="col-waris">
+        <div class="col-label">WARIS</div>
+        <div id="waris-list"></div>
+      </div>
+
+      <!-- SVG lines -->
+      <div class="svg-area">
+        <svg id="connector-svg"></svg>
+      </div>
+
+      <!-- Fardu -->
+      <div class="col-fardu">
+        <div class="col-label">FARDU</div>
+        <div id="fardu-list"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-gold" onclick="semak()">✅ Semak Jawapan</button>
+      <button class="btn-outline" onclick="ulangSemula()">🔄 Ulang Semula</button>
+    </div>
+  </div>
+
+  <!-- Result Modal -->
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-box">
+      <div class="emoji" id="modalEmoji">🎉</div>
+      <h2 id="modalTitle">Tahniah!</h2>
+      <p id="modalMsg">Semua jawapan betul!</p>
+      <div class="score-badge" id="modalScore">10 / 10</div><br/>
+      <div id="modalBtns">
+        <button class="btn-outline" onclick="ulangSemula()">Ulang Semula</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ─── Data ───────────────────────────────────────────────────────────────────
+const DATA = {
+  A: {
+    waris: [
+      "Suami","Isteri","Bapa","Ibu",
+      "Anak lelaki","Anak perempuan",
+      "Datuk","Nenek","Cucu lelaki","Cucu perempuan"
+    ],
+    fardu: [
+      "1/2 dan 1/4",
+      "1/4 dan 1/8",
+      "1/6, 1/6 + asabah dan mahjub",
+      "1/6, 1/3 dan 1/3 baki",
+      "Asabah",
+      "1/2, 2/3 dan asabah",
+      "1/6, 1/6 + asabah, asabah dan mahjub",
+      "1/6 dan mahjub",
+      "Asabah dan mahjub",
+      "1/2, 2/3, 1/6, asabah dan mahjub"
+    ],
+    // correct[i] = index into fardu array
+    correct: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  },
+  B: {
+    waris: [
+      "Saudara lelaki seibu sebapa",
+      "Saudara perempuan seibu sebapa",
+      "Saudara lelaki sebapa",
+      "Saudara perempuan sebapa",
+      "Saudara lelaki seibu",
+      "Saudara perempuan seibu"
+    ],
+    fardu: [
+      "Asabah bin nafsi, asabah bil ghairi, mahjub",
+      "1/2, 2/3, asabah maal ghairi, asabah bil ghairi dan mahjub",
+      "1/2, 2/3, 1/6, asabah maal ghairi, asabah bil ghairi dan mahjub",
+      "1/6, 1/3 dan mahjub"
+    ],
+    correct: [0, 1, 0, 2, 3, 3]
+  }
+};
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let currentTab = 'A';
+let selectedWaris = null;
+let selectedFardu = null;
+let pairs = {};
+let checked = false;
+let bahagianAUnlocked = false;
+
+// ─── Shuffle helper ──────────────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let farduOrder = [];   // shuffled fardu indices for display
+
+// ─── Render ──────────────────────────────────────────────────────────────────
+function render() {
+  const d = DATA[currentTab];
+  const warisList = document.getElementById('waris-list');
+  const farduList = document.getElementById('fardu-list');
+
+  // Shuffle fardu for display
+  farduOrder = shuffle(d.fardu.map((_, i) => i));
+
+  warisList.innerHTML = '';
+  farduList.innerHTML = '';
+  document.getElementById('connector-svg').innerHTML = '';
+  pairs = {};
+  checked = false;
+  selectedWaris = null;
+  selectedFardu = null;
+
+  d.waris.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'waris-card';
+    card.textContent = w;
+    card.dataset.idx = i;
+    card.addEventListener('click', () => clickWaris(i));
+    warisList.appendChild(card);
+  });
+
+  farduOrder.forEach((fi, displayIdx) => {
+    const card = document.createElement('div');
+    card.className = 'fardu-card';
+    card.textContent = d.fardu[fi];
+    card.dataset.fi = fi;
+    card.dataset.display = displayIdx;
+    card.addEventListener('click', () => clickFardu(fi));
+    farduList.appendChild(card);
+  });
+}
+
+// ─── Click handlers ───────────────────────────────────────────────────────────
+function clickWaris(idx) {
+  if (checked) return;
+  // Deselect if already paired (allow change)
+  selectedWaris = (selectedWaris === idx) ? null : idx;
+  selectedFardu = null;
+  updateHighlights();
+  tryPair();
+}
+
+function clickFardu(fi) {
+  if (checked) return;
+  if (selectedWaris === null) return;
+  selectedFardu = fi;
+  updateHighlights();
+  tryPair();
+}
+
+function tryPair() {
+  if (selectedWaris === null || selectedFardu === null) return;
+  // Only remove existing pair for THIS waris (allow other waris to share same fardu)
+  delete pairs[selectedWaris];
+  pairs[selectedWaris] = selectedFardu;
+  selectedWaris = null;
+  selectedFardu = null;
+  updateHighlights();
+  drawLines();
+  playClick();
+}
+
+function updateHighlights() {
+  const d = DATA[currentTab];
+  // Waris cards
+  document.querySelectorAll('.waris-card').forEach(c => {
+    const i = parseInt(c.dataset.idx);
+    c.classList.remove('selected', 'matched-correct', 'matched-wrong');
+    if (checked) {
+      if (pairs[i] !== undefined) {
+        c.classList.add(pairs[i] === d.correct[i] ? 'matched-correct' : 'matched-wrong');
+      }
+    } else {
+      if (i === selectedWaris) c.classList.add('selected');
+      else if (pairs[i] !== undefined) c.classList.add('matched-correct');
+    }
+  });
+  // Fardu cards — a fardu card is "matched" if ANY waris points to it
+  document.querySelectorAll('.fardu-card').forEach(c => {
+    const fi = parseInt(c.dataset.fi);
+    c.classList.remove('selected', 'matched-correct', 'matched-wrong');
+    const warisForThis = Object.keys(pairs).filter(k => pairs[k] === fi).map(Number);
+    if (checked) {
+      if (warisForThis.length > 0) {
+        // correct if ALL waris pointing here are correct for this fardu
+        const allCorrect = warisForThis.every(wi => d.correct[wi] === fi);
+        c.classList.add(allCorrect ? 'matched-correct' : 'matched-wrong');
+      }
+    } else {
+      if (fi === selectedFardu) c.classList.add('selected');
+      else if (warisForThis.length > 0) c.classList.add('matched-correct');
+    }
+  });
+}
+
+// ─── Draw SVG lines ───────────────────────────────────────────────────────────
+function drawLines() {
+  const svg = document.getElementById('connector-svg');
+  svg.innerHTML = '';
+
+  const svgRect = svg.getBoundingClientRect();
+  const d = DATA[currentTab];
+
+  // Count how many waris point to each fardu (for offset calculation)
+  const farduCount = {};
+  const farduSeen = {};
+  Object.values(pairs).forEach(fi => { farduCount[fi] = (farduCount[fi] || 0) + 1; });
+
+  Object.keys(pairs).forEach(wi => {
+    wi = parseInt(wi);
+    const fi = pairs[wi];
+
+    const wCard = document.querySelector(`.waris-card[data-idx="${wi}"]`);
+    const fCard = document.querySelector(`.fardu-card[data-fi="${fi}"]`);
+    if (!wCard || !fCard) return;
+
+    const wRect = wCard.getBoundingClientRect();
+    const fRect = fCard.getBoundingClientRect();
+
+    const x1 = wRect.right - svgRect.left;
+    const y1 = wRect.top + wRect.height / 2 - svgRect.top;
+
+    // Offset multiple lines arriving at same fardu card
+    const total = farduCount[fi] || 1;
+    farduSeen[fi] = (farduSeen[fi] || 0);
+    const offsetStep = 8;
+    const offsetY = total > 1 ? (farduSeen[fi] - (total - 1) / 2) * offsetStep : 0;
+    farduSeen[fi]++;
+
+    const x2 = fRect.left - svgRect.left;
+    const y2 = fRect.top + fRect.height / 2 - svgRect.top + offsetY;
+
+    const cx1 = x1 + 40, cx2 = x2 - 40;
+
+    let color = '#c9884e';
+    if (checked) color = fi === d.correct[wi] ? '#4caf50' : '#e53935';
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M${x1},${y1} C${cx1},${y1} ${cx2},${y2} ${x2},${y2}`);
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('opacity', '0.85');
+    svg.appendChild(path);
+  });
+}
+
+// ─── Redraw on resize ─────────────────────────────────────────────────────────
+window.addEventListener('resize', drawLines);
+
+// ─── Semak ────────────────────────────────────────────────────────────────────
+function semak() {
+  if (Object.keys(pairs).length < DATA[currentTab].waris.length) {
+    alert('Sila padankan semua waris terlebih dahulu!');
+    return;
+  }
+  checked = true;
+  updateHighlights();
+  drawLines();
+
+  const d = DATA[currentTab];
+  let correct = 0;
+  Object.keys(pairs).forEach(wi => {
+    if (pairs[wi] === d.correct[parseInt(wi)]) correct++;
+  });
+  const total = d.waris.length;
+
+  const modal = document.getElementById('resultModal');
+  document.getElementById('modalScore').textContent = `${correct} / ${total}`;
+
+  if (correct === total) {
+    document.getElementById('modalEmoji').textContent = '🎉';
+    document.getElementById('modalTitle').textContent = 'Hebat!';
+    document.getElementById('modalBtns').style.display = 'none';
+    playSuccess();
+
+    if (currentTab === 'A') {
+      bahagianAUnlocked = true;
+      const tabB = document.getElementById('tabB');
+      tabB.classList.remove('locked');
+      tabB.classList.add('unlocked');
+
+      // Countdown to Bahagian B
+      let count = 5;
+      document.getElementById('modalMsg').innerHTML =
+        'Semua jawapan betul! 🔓<br><small>Ke Bahagian B dalam <strong id="countNum">' + count + '</strong> saat...</small>';
+      modal.classList.add('show');
+      const interval = setInterval(() => {
+        count--;
+        const el = document.getElementById('countNum');
+        if (el) el.textContent = count;
+        if (count <= 0) {
+          clearInterval(interval);
+          closeModal();
+          switchTab('B', document.getElementById('tabB'));
+        }
+      }, 1000);
+      return;
+
+    } else {
+      // Bahagian B selesai — countdown ke menu aktiviti
+      let count = 5;
+      document.getElementById('modalMsg').innerHTML =
+        'Aktiviti 1 selesai! Tahniah! 🌟<br><small>Kembali ke menu dalam <strong id="countNum">' + count + '</strong> saat...</small>';
+      modal.classList.add('show');
+      const interval = setInterval(() => {
+        count--;
+        const el = document.getElementById('countNum');
+        if (el) el.textContent = count;
+        if (count <= 0) {
+          clearInterval(interval);
+          window.location.href = 'MenuActivity.html';
+        }
+      }, 1000);
+      return;
+    }
+
+  } else {
+    document.getElementById('modalBtns').style.display = '';
+    document.getElementById('modalEmoji').textContent = '😊';
+    document.getElementById('modalTitle').textContent = 'Cuba Lagi!';
+    document.getElementById('modalMsg').textContent = `${correct} daripada ${total} jawapan betul. Semak semula yang salah.`;
+    playWrong();
+  }
+
+  modal.classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('resultModal').classList.remove('show');
+}
+
+// ─── Ulang Semula ─────────────────────────────────────────────────────────────
+function ulangSemula() {
+  closeModal();
+  render();
+}
+
+// ─── Tab switch ───────────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  if (tab === 'B' && !bahagianAUnlocked) {
+    showToast('Sila selesaikan Bahagian A dahulu! ✅');
+    return;
+  }
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ─── Sound effects ────────────────────────────────────────────────────────────
+const ac = new (window.AudioContext || window.webkitAudioContext)();
+
+function playClick() {
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.connect(g); g.connect(ac.destination);
+  o.frequency.value = 880; o.type = 'sine';
+  g.gain.setValueAtTime(.18, ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .12);
+  o.start(); o.stop(ac.currentTime + .12);
+}
+
+function playSuccess() {
+  [523, 659, 784, 1047].forEach((f, i) => {
+    setTimeout(() => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(.2, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .25);
+      o.start(); o.stop(ac.currentTime + .25);
+    }, i * 120);
+  });
+}
+
+function playWrong() {
+  [330, 280].forEach((f, i) => {
+    setTimeout(() => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = f; o.type = 'sawtooth';
+      g.gain.setValueAtTime(.15, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .2);
+      o.start(); o.stop(ac.currentTime + .2);
+    }, i * 140);
+  });
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#4a7c59;color:white;padding:10px 22px;border-radius:20px;font-family:Nunito,sans-serif;font-weight:700;font-size:.85rem;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

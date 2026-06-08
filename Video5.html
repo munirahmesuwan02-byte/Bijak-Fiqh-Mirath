@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Video – Tajuk 6</title>
+  <title>Video – Tajuk 5</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -180,20 +180,27 @@
 
 <!-- Header -->
 <div class="page-header">
-  <h1 class="page-title">Topik 6: Isu Kontemporari Tentang Mirath</h1>
+  <h1 class="page-title">Topik 5: Asal Masalah & Pembahagian</h1>
+  <p class="page-subtitle">Pilih bahagian video yang ingin ditonton</p>
+</div>
+
+<!-- Part Selector -->
+<div class="part-selector">
+  <button class="part-btn active" onclick="selectPart(1)">▶ Bahagian 1</button>
+  <button class="part-btn" onclick="selectPart(2)">▶ Bahagian 2</button>
 </div>
 
 <!-- Video Card -->
 <div class="video-card">
   <div class="video-card-header">
-    <span class="part-label" id="partLabel">Topik 6</span>
-    <span class="video-title" id="videoTitle">Isu Kontemporari Tentang Mirath</span>
+    <span class="part-label" id="partLabel">Bahagian 1</span>
+    <span class="video-title" id="videoTitle">Waris Ashabul Furud</span>
   </div>
 
   <div class="video-wrapper" id="videoWrapper">
     <div class="video-placeholder" id="videoPlaceholder">
       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      <p id="placeholderText">Topik 6</p>
+      <p id="placeholderText">Tajuk 5 – Bahagian 1</p>
       <p style="font-size:.75rem">Gantikan src dengan pautan video sebenar</p>
     </div>
   </div>
@@ -221,7 +228,8 @@
 
 <script>
   const parts = [
-    { label:"Topik 6",      src:"https://xnnrnpceekuucrvdxtxq.supabase.co/storage/v1/object/public/videos/tajuk6_video.mp4" },
+    { label:"Bahagian 1",  src:"https://xnnrnpceekuucrvdxtxq.supabase.co/storage/v1/object/public/videos/tajuk5_part1.mp4" },
+    { label:"Bahagian 2",     src:"https://xnnrnpceekuucrvdxtxq.supabase.co/storage/v1/object/public/videos/tajuk5_part2.mp4" }
   ];
 
   let current = 0;
@@ -268,7 +276,7 @@
       }
     } else {
       wrapper.querySelector('.video-placeholder').style.display = 'flex';
-      document.getElementById('placeholderText').textContent = `Tajuk 6 – ${p.label}`;
+      document.getElementById('placeholderText').textContent = `Tajuk 5 – ${p.label}`;
     }
   }
 

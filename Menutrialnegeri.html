@@ -118,8 +118,6 @@
       border-radius: 16px;
       box-shadow: var(--shadow);
       padding: clamp(12px, 1.8vh, 20px) clamp(12px, 1.5vw, 18px);
-      cursor: pointer;
-      text-decoration: none;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -175,6 +173,33 @@
       border: 1.5px solid var(--sage-dark);
     }
 
+    .btn-start {
+      margin-top: 2px;
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: none;
+      background: var(--green-pill);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #2f6240;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #2f6240;
+    }
+    .btn-start:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 #2f6240;
+    }
+
     .hint {
       margin-top: clamp(10px, 1.5vh, 16px);
       font-size: clamp(11px, 1.2vw, 13px);
@@ -186,12 +211,12 @@
 </head>
 <body>
 
-  <a href="MenuPenilaian.html" class="nav-icon nav-home" title="Menu Penilaian">
-    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  <a href="MenuPenilaian.html" class="nav-icon nav-home" title="Kembali">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
   </a>
 
-  <a href="keluar.html" class="nav-icon nav-exit" title="Keluar">
-    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+  <a href="index.html" class="nav-icon nav-exit" title="Laman Utama">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
   </a>
 
   <div class="header">
@@ -201,43 +226,70 @@
 
   <!-- Row 1: 3 cards -->
   <div class="grid-top">
-    <a href="TrialKedah.html" class="card">
+    <div class="card">
       <div class="card-icon">🌾</div>
       <div class="card-state">Kedah</div>
       <div class="card-year">Trial 2026</div>
-      <div class="card-pill">Tersedia</div>
-    </a>
+      <a href="TrialKedah.html" class="btn-start">Mulakan</a>
+    </div>
 
-    <a href="TrialPerak.html" class="card">
+    <div class="card">
       <div class="card-icon">🏔️</div>
       <div class="card-state">Perak</div>
       <div class="card-year">Trial 2026</div>
-      <div class="card-pill">Tersedia</div>
-    </a>
+      <a href="TrialPerak.html" class="btn-start">Mulakan</a>
+    </div>
 
-    <a href="TrialPahang.html" class="card">
+    <div class="card">
       <div class="card-icon">🐘</div>
       <div class="card-state">Pahang</div>
       <div class="card-year">Trial 2026</div>
-      <div class="card-pill">Tersedia</div>
-    </a>
+      <a href="TrialPahang.html" class="btn-start">Mulakan</a>
+    </div>
   </div>
 
   <!-- Row 2: 2 cards centred -->
   <div class="grid-bottom">
-    <a href="TrialTerengganu.html" class="card">
+    <div class="card">
       <div class="card-icon">🐢</div>
       <div class="card-state">Terengganu</div>
       <div class="card-year">Trial 2026</div>
-      <div class="card-pill">Tersedia</div>
-    </a>
+      <a href="TrialTerengganu.html" class="btn-start">Mulakan</a>
+    </div>
 
-    <a href="TrialSarawak.html" class="card">
+    <div class="card">
       <div class="card-icon">🦅</div>
       <div class="card-state">Sarawak</div>
       <div class="card-year">Trial 2026</div>
-      <div class="card-pill">Tersedia</div>
-    </a>
-  </div>
+      <a href="TrialSarawak.html" class="btn-start">Mulakan</a>
+    </div>
+  </div>  <!-- Background music -->
+  <audio id="bgMusic" src="background_music.mp3" loop preload="auto"></audio>
+
+  <script>
+    const bgMusic = document.getElementById('bgMusic');
+    bgMusic.volume = 1.0;
+
+    // Try to autoplay as soon as the page loads
+    function tryAutoplay() {
+      const playPromise = bgMusic.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay blocked by browser — start on first user interaction
+          const startOnInteraction = () => {
+            bgMusic.play().catch(() => {});
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('keydown', startOnInteraction);
+            document.removeEventListener('touchstart', startOnInteraction);
+          };
+          document.addEventListener('click', startOnInteraction);
+          document.addEventListener('keydown', startOnInteraction);
+          document.addEventListener('touchstart', startOnInteraction);
+        });
+      }
+    }
+    tryAutoplay();
+  </script>
+
 </body>
 </html>

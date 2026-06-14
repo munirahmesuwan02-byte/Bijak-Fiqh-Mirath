@@ -52,6 +52,7 @@
       stroke-linejoin: round;
     }
 
+
     /* ── WOOD FRAME ── */
     .frame {
       width: min(700px, 92vw);
@@ -310,16 +311,25 @@
       0%, 80%, 100% { transform: scale(0.7); opacity: .5; }
       40%           { transform: scale(1.2); opacity: 1;  }
     }
-    .loading-text {
-      font-size: 15px;
-      font-weight: 700;
-      color: #3a6b3e;
-      font-family: 'Nunito', sans-serif;
-      letter-spacing: .5px;
-    }
   </style>
 </head>
 <body>
+    <audio id="bgMusic" src="background_music.mp3" autoplay loop></audio>
+    <script>
+        // Attempt autoplay; if blocked by browser, play on first user interaction
+        window.addEventListener('load', () => {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(() => {
+                const startAudio = () => {
+                    audio.play();
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('keydown', startAudio);
+                };
+                document.addEventListener('click', startAudio);
+                document.addEventListener('keydown', startAudio);
+            });
+        });
+    </script>
 
   <!-- Dot Bounce Loading Overlay -->
   <div id="loading-overlay">
@@ -328,17 +338,11 @@
       <div class="dot"></div>
       <div class="dot"></div>
     </div>
-    <p class="loading-text">Memuatkan...</p>
   </div>
 
   <!-- Home icon (top-left) -->
   <button class="corner-btn home" onclick="window.location.href='index.html'" title="Halaman Utama">
     <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
-  </button>
-
-  <!-- Exit icon (top-right) -->
-  <button class="corner-btn exit" onclick="confirmExit()" title="Keluar">
-    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
   </button>
 
   <!-- Chalkboard -->
@@ -366,7 +370,6 @@
       window.location.href = 'keluar.html';
     }
 
-    // Hide loading overlay after 5 seconds
     setTimeout(() => {
       const overlay = document.getElementById('loading-overlay');
       overlay.classList.add('hide');

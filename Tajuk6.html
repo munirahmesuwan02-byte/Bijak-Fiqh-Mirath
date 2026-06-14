@@ -34,6 +34,7 @@
   .corner-btn:active, .btn-back:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #b5703a; }
   .corner-btn.exit { right: 18px; }
   .btn-back { left: 18px; }
+.btn-back.right { left: auto; right: 18px; }
   .corner-btn svg, .btn-back svg { width: 24px; height: 24px; fill: none; stroke: #b5703a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   /* ── Page title ── */
@@ -254,6 +255,7 @@
   @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
 
   .popup-box {
+    position: relative;
     background: #fff;
     border-radius: 20px;
     border: 3px solid #c9884e;
@@ -327,6 +329,37 @@
   .btn-teruskan:active { transform: translateY(2px); box-shadow: 0 2px 0 #145e28; }
   .btn-teruskan svg { width: 16px; height: 16px; fill: #fff; }
 
+  .btn-kembali {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(180deg, #fff 0%, #f9f4ef 100%);
+    box-shadow: 0 4px 0 #d8b08c, 0 6px 16px rgba(0,0,0,.1);
+    color: #b5703a; font-family: 'Nunito Sans', sans-serif; font-weight: 900;
+    font-size: clamp(12px, 1.8vw, 14px); text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 12px 32px; border-radius: 50px; border: 2px solid #e8a86b; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    text-decoration: none;
+  }
+  .btn-kembali:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #d8b08c, 0 10px 22px rgba(0,0,0,.15);
+  }
+  .btn-kembali:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #d8b08c;
+  }
+  .btn-kembali svg { width: 16px; height: 16px; fill: #b5703a; }
+
+  .popup-close-btn {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.25); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, transform .15s; z-index: 10;
+  }
+  .popup-close-btn:hover { background: rgba(255,255,255,.4); transform: scale(1.08); }
+  .popup-close-btn svg { width: 16px; height: 16px; fill: #fff; }
+
   /* ── Popup audio player (compact) ── */
   .popup-audio-section {
     padding: 6px 22px 8px;
@@ -366,6 +399,9 @@
 <!-- ══ POPUP OBJEKTIF PEMBELAJARAN ══ -->
 <div class="popup-overlay" id="popupObjektif">
   <div class="popup-box">
+    <button class="popup-close-btn" onclick="tutupPopup()" aria-label="Tutup">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 7 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
     <div class="popup-header">
       <div class="popup-icon">🎯</div>
       <h2>Objektif Pembelajaran</h2>
@@ -412,10 +448,10 @@
       <audio id="popupAudio" src="audio_popup_tajuk6.mp3" preload="auto" autoplay></audio>
     </div>
     <div class="popup-footer">
-      <button class="btn-teruskan" onclick="tutupPopup()">
-        Teruskan
-        <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/></svg>
-      </button>
+      <a href="topik.html" class="btn-kembali">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Kembali
+      </a>
     </div>
   </div>
 </div>
@@ -476,10 +512,10 @@
   popupSeek.addEventListener('input', () => { popupAudio.currentTime = popupSeek.value; });
 </script>
 
-<button class="corner-btn exit" onclick="window.location.href='keluar.html'" title="Keluar">
-  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-</button>
 <a href="topik.html" class="btn-back" title="Kembali">
+  <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+</a>
+<a href="index.html" class="btn-back right" title="Home">
   <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
 </a>
 

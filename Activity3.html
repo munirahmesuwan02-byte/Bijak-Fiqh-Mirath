@@ -48,7 +48,7 @@
   .nav-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
   .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
   .nav-btn.home { top: 16px; left: 16px; }
-  .nav-btn.exit { top: 16px; right: 16px; }
+  .nav-btn.home2 { top: 16px; right: 16px; }
   .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   /* ── Title ── */
@@ -409,13 +409,14 @@
 </style>
 </head>
 <body>
+<audio id="bgMusic" src="music_background2.mp3" autoplay loop></audio>
 
 <!-- Nav buttons -->
 <a class="nav-btn home" href="MenuActivity.html" title="Menu – Aktiviti">
-  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+  <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
 </a>
-<a class="nav-btn exit" href="keluar.html" title="Keluar">
-  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+<a class="nav-btn home2" href="menu.html" title="Halaman Utama">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
 </a>
 
 <!-- Title -->
@@ -661,6 +662,31 @@
 </div>
 
 <script>
+const bgAudio = document.getElementById('bgMusic');
+window.addEventListener('load', () => {
+  bgAudio.play().catch(() => {
+    const startAudio = () => {
+      bgAudio.play();
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('keydown', startAudio);
+    };
+    document.addEventListener('click', startAudio);
+    document.addEventListener('keydown', startAudio);
+  });
+
+  // Pause/resume music based on completion modal
+  const _doneOverlay = document.getElementById('doneOverlay');
+  if (_doneOverlay) {
+    new MutationObserver(() => {
+      if (_doneOverlay.classList.contains('show')) {
+        bgAudio.pause();
+      } else {
+        bgAudio.play().catch(() => {});
+      }
+    }).observe(_doneOverlay, { attributes: true, attributeFilter: ['class'] });
+  }
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // AUDIO
 // ─────────────────────────────────────────────────────────────────────────────
@@ -761,8 +787,8 @@ function getSectionOf(id) {
 // SECTION ANSWERS
 // ─────────────────────────────────────────────────────────────────────────────
 const sec2Answers = {
-  'zone2-yes': ['j-peralatan-mandi','j-kafan','j-upah-kubur','j-van'],
-  'zone2-no':  ['j-tahlil','j-batu','j-upah-solat','j-fidyah']
+  'zone2-yes': ['j-peralatan-mandi','j-kafan','j-upah-kubur','j-van','j-fidyah'],
+  'zone2-no':  ['j-tahlil','j-batu','j-upah-solat']
 };
 const sec4Answers = {
   'zone4-kecil':  ['hp-kecil-nilai','hp-kecil-pejabat','hp-kecil-akta'],

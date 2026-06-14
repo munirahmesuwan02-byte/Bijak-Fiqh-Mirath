@@ -64,6 +64,10 @@
     .nav-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .nav-home { top: 18px; left: 18px; }
     .nav-exit { top: 18px; right: 18px; }
+    .nav-icon.sound { top: 18px; right: 76px; }
+    .nav-icon.sound .icon-off { display: none; }
+    .nav-icon.sound.muted .icon-on { display: none; }
+    .nav-icon.sound.muted .icon-off { display: block; }
 
     .header {
       text-align: center;
@@ -202,6 +206,11 @@
     <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
   </a>
 
+  <button class="nav-icon sound" id="soundToggle" onclick="toggleSound()" title="Bunyi">
+    <svg class="icon-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+    <svg class="icon-off" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+  </button>
+
   <div class="header">
     <div class="header-badge">STPM Penggal 1</div>
     <h1>Soalan <span>Tahun Lepas</span></h1>
@@ -229,6 +238,24 @@
   <script>
     const bgMusic = document.getElementById('bgMusic');
     bgMusic.volume = 1.0;
+
+    // ─── Sound on/off toggle (persists across pages) ─────────────────────────
+    let soundMuted = localStorage.getItem('bijakSoundMuted') === 'true';
+
+    function applySoundState() {
+      bgMusic.muted = soundMuted;
+      const btn = document.getElementById('soundToggle');
+      if (btn) btn.classList.toggle('muted', soundMuted);
+    }
+
+    function toggleSound() {
+      soundMuted = !soundMuted;
+      localStorage.setItem('bijakSoundMuted', soundMuted);
+      applySoundState();
+    }
+
+    applySoundState();
+    document.addEventListener('DOMContentLoaded', applySoundState);
 
     // Try to autoplay as soon as the page loads
     function tryAutoplay() {

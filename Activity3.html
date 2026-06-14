@@ -49,7 +49,11 @@
   .nav-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dark); }
   .nav-btn.home { top: 16px; left: 16px; }
   .nav-btn.home2 { top: 16px; right: 16px; }
+  .nav-btn.sound { top: 16px; right: 74px; font: inherit; }
   .nav-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--orange-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-btn.sound .icon-off { display: none; }
+  .nav-btn.sound.muted .icon-on { display: none; }
+  .nav-btn.sound.muted .icon-off { display: block; }
 
   /* ── Title ── */
   .title-block {
@@ -418,6 +422,10 @@
 <a class="nav-btn home2" href="menu.html" title="Halaman Utama">
   <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
 </a>
+<button class="nav-btn sound" id="soundToggle" onclick="toggleSound()" title="Bunyi">
+  <svg class="icon-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+  <svg class="icon-off" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+</button>
 
 <!-- Title -->
 <div class="title-block">
@@ -663,6 +671,24 @@
 
 <script>
 const bgAudio = document.getElementById('bgMusic');
+
+// ─── Sound on/off toggle (persists across pages) ─────────────────────────
+let soundMuted = localStorage.getItem('bijakSoundMuted') === 'true';
+
+function applySoundState() {
+  bgAudio.muted = soundMuted;
+  const btn = document.getElementById('soundToggle');
+  if (btn) btn.classList.toggle('muted', soundMuted);
+}
+
+function toggleSound() {
+  soundMuted = !soundMuted;
+  localStorage.setItem('bijakSoundMuted', soundMuted);
+  applySoundState();
+}
+
+applySoundState();
+
 window.addEventListener('load', () => {
   bgAudio.play().catch(() => {
     const startAudio = () => {
@@ -692,6 +718,7 @@ window.addEventListener('load', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 const AC = new (window.AudioContext || window.webkitAudioContext)();
 function playTone(freq, dur, type='sine', vol=0.3) {
+  if (soundMuted) return;
   const o = AC.createOscillator(), g = AC.createGain();
   o.connect(g); g.connect(AC.destination);
   o.type = type; o.frequency.value = freq;

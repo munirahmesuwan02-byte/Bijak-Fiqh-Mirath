@@ -48,6 +48,10 @@
     .corner-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--brown-dark); }
     .corner-btn.home { left: 18px; }
     .corner-btn.exit { right: 18px; }
+    .corner-btn.sound { right: 76px; }
+    .corner-btn.sound .icon-off { display: none; }
+    .corner-btn.sound.muted .icon-on { display: none; }
+    .corner-btn.sound.muted .icon-off { display: block; }
     .corner-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--brown-dark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     /* ── PAGE WRAPPER ── */
@@ -239,6 +243,10 @@
 <button class="corner-btn exit" onclick="window.location.href='index.html'" title="Laman Utama">
   <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
 </button>
+<button class="corner-btn sound" id="soundToggle" onclick="toggleSound()" title="Bunyi">
+  <svg class="icon-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+  <svg class="icon-off" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+</button>
 
 <div class="page-wrapper">
 
@@ -275,6 +283,24 @@
   <script>
     const bgMusic = document.getElementById('bgMusic');
     bgMusic.volume = 1.0;
+
+    // ─── Sound on/off toggle (persists across pages) ─────────────────────────
+    let soundMuted = localStorage.getItem('bijakSoundMuted') === 'true';
+
+    function applySoundState() {
+      bgMusic.muted = soundMuted;
+      const btn = document.getElementById('soundToggle');
+      if (btn) btn.classList.toggle('muted', soundMuted);
+    }
+
+    function toggleSound() {
+      soundMuted = !soundMuted;
+      localStorage.setItem('bijakSoundMuted', soundMuted);
+      applySoundState();
+    }
+
+    applySoundState();
+    document.addEventListener('DOMContentLoaded', applySoundState);
 
     // Try to autoplay as soon as the page loads
     function tryAutoplay() {

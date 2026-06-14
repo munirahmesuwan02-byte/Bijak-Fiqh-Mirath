@@ -214,6 +214,91 @@
       line-height: 1.6;
     }
 
+    /* ── GUIDE BUTTON ── */
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #fff;
+      border: 2px solid #c9884e;
+      color: #c9884e;
+      font-family: 'Nunito Sans', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 0.625rem 2.2rem;
+      border-radius: 50px;
+      box-shadow: 3px 3px 0 #b5703a;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-guide svg { width: 20px; height: 20px; }
+    .btn-guide:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 #b5703a;
+    }
+    .btn-guide:active {
+      transform: translateY(2px);
+      box-shadow: 1px 1px 0 #b5703a;
+    }
+
+    /* ── GUIDE MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 38, 32, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      max-width: 1000px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      background: #fff;
+      border: 2px solid #c9884e;
+      border-radius: 14px;
+      box-shadow: 6px 6px 0 #b5703a;
+      padding: 0.75rem;
+      animation: fadeUp 0.3s ease both;
+    }
+    .modal-content img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      background: #c9884e;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #9c6535, 0 2px 8px rgba(0,0,0,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .12s ease;
+      z-index: 1;
+    }
+    .modal-close:hover { transform: scale(1.08); }
+    .modal-close:active { transform: scale(0.95); }
+
     /* ── FOOTER ── */
     footer {
       position: fixed;
@@ -255,7 +340,13 @@
     /* Hero elements animate on load */
     .hero-text h1   { animation: fadeUp 0.6s ease 0.1s both; }
     .hero-text p    { animation: fadeUp 0.6s ease 0.25s both; }
-    .hero-text .btn-primary { animation: fadeUp 0.6s ease 0.4s both; }
+    .hero-actions { animation: fadeUp 0.6s ease 0.4s both; }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
@@ -267,11 +358,9 @@
 
   <!-- NAV -->
   <nav>
-    <a class="nav-logo" href="index.html">BIJAK FIQH MIRATH</a>
+    <a class="nav-logo">Bijak Fiqh Mirath</a>
     <ul class="nav-links">
-      <li><a href="panduan-pengguna.jpg">Panduan Pengguna</a></li>
-    </div>
-  </div>
+      <li><a href="index.html">Halaman Utama</a></li>
       <li><a href="aboutus.html">Tentang kami</a></li>
     </ul>
   </nav>
@@ -284,7 +373,17 @@
         <p>
           <strong>Bijak Fiqh Mirath</strong> — Dapatkan akses kepada bahan pembelajaran Fiqh Mirath, termasuk nota, video pembelajaran, aktiviti interaktif, dan kuiz secara <strong>PERCUMA</strong>.
         </p>
-        <a href="menu.html" class="btn-primary">Mulakan Pembelajaran</a>
+        <div class="hero-actions">
+          <a href="menu.html" class="btn-primary">Mulakan Pembelajaran</a>
+          <button type="button" class="btn-guide" onclick="openGuideModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#c9884e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            Lihat Panduan Pengguna
+          </button>
+        </div>
       </div>
       <div class="hero-image">
         <img
@@ -362,6 +461,27 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+  <!-- GUIDE MODAL -->
+  <div class="modal-overlay" id="guideModal" onclick="if(event.target===this) closeGuideModal()">
+    <div class="modal-content">
+      <button type="button" class="modal-close" onclick="closeGuideModal()" aria-label="Tutup">&times;</button>
+      <img src="panduan-pengguna.jpg" alt="Panduan Pengguna: Bijak Fiqh Mirath Courseware" />
+    </div>
+  </div>
+
+  <script>
+    function openGuideModal() {
+      document.getElementById('guideModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeGuideModal() {
+      document.getElementById('guideModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeGuideModal();
+    });
   </script>
 
 </body>

@@ -307,6 +307,7 @@
   .timer-display { font-size: 18px; font-weight: 900; color: #2d3a2e; letter-spacing: 1px; min-width: 52px; text-align: center; }
   .timer-bar.warning .timer-display { color: #b5703a; }
   .timer-bar.danger  .timer-display { color: #c0392b; animation: pulse 1s infinite; }
+  .timer-bar.paused { opacity: 0.7; }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
   .timer-btn {
@@ -641,8 +642,11 @@
 </div><!-- end page -->
 
 <script>
-  /* ── Timer auto-start ── */
+  /* ── Timer (auto-start, pause saat skema dipaparkan, reset bila Set Semula) ── */
   var remaining = 30 * 60;
+  var timerInterval = null;
+  var soundCheckInterval = null;
+  var warned5min = false, warned1min = false;
 
   function updateDisplay() {
     var m = Math.floor(remaining / 60);
@@ -655,9 +659,42 @@
     else if (remaining <= 300) bar.classList.add('warning');
   }
 
-  setInterval(function() {
-    if (remaining > 0) { remaining--; updateDisplay(); }
-  }, 1000);
+  function startTimer() {
+    var bar = document.getElementById('timerBar');
+    bar.classList.remove('paused');
+    bar.querySelector('.timer-icon').textContent = '⏱️';
+
+    if (timerInterval) return; // already running
+
+    timerInterval = setInterval(function() {
+      if (remaining > 0) { remaining--; updateDisplay(); }
+    }, 1000);
+
+    soundCheckInterval = setInterval(function() {
+      if (remaining === 300 && !warned5min) { warned5min = true; playSound('timer-warning'); }
+      if (remaining === 60  && !warned1min) { warned1min = true; playSound('timer-danger'); }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    clearInterval(soundCheckInterval);
+    timerInterval = null;
+    soundCheckInterval = null;
+    var bar = document.getElementById('timerBar');
+    bar.classList.add('paused');
+    bar.querySelector('.timer-icon').textContent = '⏸️';
+  }
+
+  function resetTimer() {
+    remaining = 30 * 60;
+    warned5min = false;
+    warned1min = false;
+    updateDisplay();
+    startTimer();
+  }
+
+  startTimer();
 
   /* ── Semua ID yang perlu diisi sebelum skema boleh dibuka ── */
   var allTextareas = ['jwp-1a','jwp-1b','jwp-2a','jwp-2b','jwp-2c'];
@@ -706,6 +743,8 @@
       var el = document.getElementById(id);
       if (el) el.classList.add('open');
     });
+    // Henti masa sementara skema dipaparkan
+    pauseTimer();
     // Scroll ke skema pertama
     document.getElementById('skema-1a').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -724,6 +763,8 @@
       var el = document.getElementById(id);
       if (el) el.classList.remove('open');
     });
+    // Set semula masa ke 30:00 dan mula semula
+    resetTimer();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -861,21 +902,6 @@
       });
     }
   }
-
-  /* ── Trigger sound on timer milestones ── */
-  var warned5min = false, warned1min = false;
-  var _origInterval = setInterval; // patch timer tick
-  // Patch into existing timer — check milestones each second
-  var soundCheckInterval = setInterval(function() {
-    if (remaining === 300 && !warned5min) {
-      warned5min = true;
-      playSound('timer-warning');
-    }
-    if (remaining === 60 && !warned1min) {
-      warned1min = true;
-      playSound('timer-danger');
-    }
-  }, 1000);
 </script>
 
 </body>

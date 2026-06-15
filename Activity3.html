@@ -226,6 +226,54 @@
   .btn-retry:hover { background: #fff4eb; transform: translateY(-2px); box-shadow: 0 5px 0 var(--orange-dark); }
   .btn-retry:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--orange-dark); }
 
+  /* ── Answer-key chip (shown via "Lihat Jawapan Betul") ── */
+  .answer-key-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: #fff8ec;
+    border: 2px dashed var(--gold-dark);
+    border-radius: 24px;
+    padding: 5px 14px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--orange-dark);
+    margin: 3px;
+  }
+  .answer-key-chip .ak-badge {
+    font-size: .66rem;
+    font-weight: 800;
+    color: var(--gold-dark);
+  }
+
+  /* ── Floating "Cuba Semula" after viewing answer ── */
+  .float-retry {
+    display: none;
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 150;
+  }
+  .float-retry.show {
+    display: flex;
+  }
+
+  /* ── Answer banner legend ── */
+  .answer-banner {
+    background: #fff8e1;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-top: 10px;
+    font-size: .8rem;
+    color: #7a5c10;
+    font-weight: 700;
+    text-align: center;
+    display: none;
+  }
+  .answer-banner.show { display: block; }
+
   @keyframes shake {
     0%,100%{ transform: translateX(0); }
     25%{ transform: translateX(-5px); }
@@ -480,6 +528,7 @@
       
       <div class="action-row"><button class="btn-gold" onclick="checkSection(1)">✅ Semak Jawapan</button></div>
       <div class="feedback" id="fb1"></div>
+      <div class="answer-banner" id="ab1">🟡 Kotak garis putus-putus emas = jawapan yang sebetulnya. 🔴 Merah = pilihan anda yang salah.</div>
     </div>
   </div>
 
@@ -520,6 +569,7 @@
       
       <div class="action-row"><button class="btn-gold" onclick="checkSection(2)">✅ Semak Jawapan</button></div>
       <div class="feedback" id="fb2"></div>
+      <div class="answer-banner" id="ab2">🟡 Kotak garis putus-putus emas = jawapan yang sebetulnya. 🔴 Merah = pilihan anda yang salah.</div>
     </div>
   </div>
 
@@ -571,6 +621,7 @@
       
       <div class="action-row"><button class="btn-gold" onclick="checkSection(3)">✅ Semak Jawapan</button></div>
       <div class="feedback" id="fb3"></div>
+      <div class="answer-banner" id="ab3">🟡 Kotak garis putus-putus emas = jawapan yang sebetulnya. 🔴 Merah = pilihan anda yang salah.</div>
     </div>
   </div>
 
@@ -616,6 +667,7 @@
       
       <div class="action-row"><button class="btn-gold" onclick="checkSection(4)">✅ Semak Jawapan</button></div>
       <div class="feedback" id="fb4"></div>
+      <div class="answer-banner" id="ab4">🟡 Kotak garis putus-putus emas = jawapan yang sebetulnya. 🔴 Merah = pilihan anda yang salah.</div>
     </div>
   </div>
 
@@ -654,6 +706,7 @@
       </div>
       <div class="action-row"><button class="btn-gold" onclick="checkSection(5)">✅ Semak Jawapan</button></div>
       <div class="feedback" id="fb5"></div>
+      <div class="answer-banner" id="ab5">🟡 Kotak garis putus-putus emas = jawapan yang sebetulnya. 🔴 Merah = pilihan anda yang salah.</div>
     </div>
   </div>
 
@@ -668,6 +721,9 @@
     <div class="score-badge">✅ Semua Bahagian Selesai</div>
   </div>
 </div>
+
+<!-- Floating Cuba Semula (shown after viewing the answer) -->
+<button class="btn-gold float-retry" id="floatRetryBtn" onclick="cubaSemulaFromAnswer()">🔄 Cuba Semula</button>
 
 <script>
 const bgAudio = document.getElementById('bgMusic');
@@ -840,9 +896,11 @@ function checkSection(n) {
   else if (n === 5) ok = checkZones(sec5Answers);
 
   const fb = document.getElementById('fb' + n);
-  // Remove any existing retry button
+  // Remove any existing retry / lihat-jawapan buttons
   const existing = document.getElementById('retry' + n);
   if (existing) existing.remove();
+  const existingLihat = document.getElementById('lihat' + n);
+  if (existingLihat) existingLihat.remove();
 
   if (ok) {
     sfxCorrect();
@@ -855,6 +913,14 @@ function checkSection(n) {
     sfxWrong();
     fb.innerHTML = '❌ Ada jawapan yang salah. Semak tanda merah di bawah.';
     fb.className = 'feedback err';
+
+    const lihatBtn = document.createElement('button');
+    lihatBtn.id = 'lihat' + n;
+    lihatBtn.className = 'btn-retry';
+    lihatBtn.textContent = '👀 Lihat Jawapan Betul';
+    lihatBtn.onclick = () => tunjukJawapanBetul(n);
+    fb.appendChild(lihatBtn);
+
     // Add Cuba Semula button for this section only
     const retryBtn = document.createElement('button');
     retryBtn.id = 'retry' + n;
@@ -932,6 +998,88 @@ function checkMatchTable() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// LIHAT JAWAPAN BETUL (answer-key overlay)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Build a map of item-id -> display label (text) for a section's items
+function buildLabelMap(n, card) {
+  const map = {};
+  document.querySelectorAll(`#pool${n} .drag-item`).forEach(d => { map[d.dataset.id] = d.textContent; });
+  card.querySelectorAll('.placed-item').forEach(p => {
+    if (!(p.dataset.id in map)) map[p.dataset.id] = p.textContent;
+  });
+  return map;
+}
+
+function addAnswerChip(container, itemId, labelMap) {
+  const chip = document.createElement('div');
+  chip.className = 'answer-key-chip';
+  const label = document.createElement('span');
+  label.textContent = labelMap[itemId] || itemId;
+  const badge = document.createElement('span');
+  badge.className = 'ak-badge';
+  badge.textContent = '✓ Jawapan betul';
+  chip.appendChild(label);
+  chip.appendChild(badge);
+  container.appendChild(chip);
+}
+
+function tunjukJawapanBetul(n) {
+  const card = document.getElementById('sec' + n);
+  currentAnswerSection = n;
+
+  // Hide this section's "Semak Jawapan" row + the Lihat/Cuba buttons
+  card.querySelector('.action-row').style.display = 'none';
+  const lihatBtn = document.getElementById('lihat' + n);
+  if (lihatBtn) lihatBtn.style.display = 'none';
+  const retryBtn = document.getElementById('retry' + n);
+  if (retryBtn) retryBtn.style.display = 'none';
+
+  document.getElementById('ab' + n).classList.add('show');
+
+  const labelMap = buildLabelMap(n, card);
+
+  if (n === 1) {
+    card.querySelectorAll('.order-slot').forEach(slot => {
+      const dz  = slot.querySelector('.drop-zone');
+      const pi  = dz.querySelector('.placed-item');
+      const ans = slot.dataset.answer;
+      if (!pi || pi.dataset.id !== ans) addAnswerChip(dz, ans, labelMap);
+    });
+  } else if (n === 3) {
+    card.querySelectorAll('.match-table tr').forEach(row => {
+      const dz  = row.querySelector('.drop-zone');
+      if (!dz) return;
+      const pi  = dz.querySelector('.placed-item');
+      const ans = row.dataset.answer;
+      if (!pi || pi.dataset.id !== ans) addAnswerChip(dz, ans, labelMap);
+    });
+  } else {
+    const answerMap = n === 2 ? sec2Answers : n === 4 ? sec4Answers : sec5Answers;
+    for (const [zoneId, correctIds] of Object.entries(answerMap)) {
+      const zone = document.getElementById(zoneId);
+      const placed = new Set(Array.from(zone.querySelectorAll('.placed-item')).map(p => p.dataset.id));
+      correctIds.forEach(id => {
+        if (!placed.has(id)) addAnswerChip(zone, id, labelMap);
+      });
+    }
+  }
+
+  document.getElementById('floatRetryBtn').classList.add('show');
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function cubaSemulaFromAnswer() {
+  if (currentAnswerSection === null) return;
+  resetSection(currentAnswerSection);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANSWER KEY STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let currentAnswerSection = null;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // RESET SECTION (Cuba Semula)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -946,18 +1094,29 @@ function resetSection(n) {
     pi.remove();
   });
 
+  // Remove answer-key chips
+  card.querySelectorAll('.answer-key-chip').forEach(c => c.remove());
+
   // Clear all zone/slot feedback colours and item colours
   card.querySelectorAll('.drop-zone, .order-slot').forEach(z => {
     z.classList.remove('correct','wrong','drag-over');
   });
   card.querySelectorAll('.drag-item').forEach(d => d.classList.remove('placed'));
 
-  // Clear feedback text and remove retry button
+  // Clear feedback text and remove retry/lihat buttons
   const fb = document.getElementById('fb' + n);
   fb.textContent = '';
   fb.className = 'feedback';
   const retryBtn = document.getElementById('retry' + n);
   if (retryBtn) retryBtn.remove();
+  const lihatBtn = document.getElementById('lihat' + n);
+  if (lihatBtn) lihatBtn.remove();
+
+  // Restore the "Semak Jawapan" row and hide the answer-key UI
+  card.querySelector('.action-row').style.display = '';
+  document.getElementById('ab' + n).classList.remove('show');
+  document.getElementById('floatRetryBtn').classList.remove('show');
+  if (currentAnswerSection === n) currentAnswerSection = null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

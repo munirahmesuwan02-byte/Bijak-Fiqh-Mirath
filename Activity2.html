@@ -332,6 +332,18 @@
       display: none;
     }
     .retry-banner.show { display: block; }
+
+    /* ── Floating "Ulang Semula" after viewing answer ── */
+    .float-ulang {
+      display: none;
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 150;
+    }
+    .float-ulang.show {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -361,10 +373,14 @@
     <p class="modal-sub" id="modalSub">Semua jawapan anda betul!</p>
     <div class="countdown-text" id="countdownText"></div>
     <div class="modal-btns">
+      <button class="btn-outline" id="btnLihatJawapan" onclick="lihatJawapan()" style="display:none;">👀 Lihat Jawapan</button>
       <button class="btn-outline" id="btnUlang" onclick="ulangSemula()">🔄 Ulang Semula</button>
     </div>
   </div>
 </div>
+
+<!-- Floating Ulang Semula (shown after viewing the answer) -->
+<button class="btn-gold float-ulang" id="floatUlangBtn" onclick="ulangSemula()">🔄 Ulang Semula</button>
 
 <!-- Title -->
 <div class="title-block">
@@ -376,7 +392,7 @@
 
 <div class="container" style="max-width:760px;margin:0 auto;padding:0 16px 40px;">
   <div class="retry-banner" id="retryBanner">
-    ⚠️ Ada jawapan yang salah. Semak semula soalan yang ditanda merah di bawah.
+    ⚠️ Ada jawapan yang salah. <strong>✅</strong> = jawapan yang betul, <strong>❌</strong> = pilihan anda yang salah. Tekan <strong>Ulang Semula</strong> di bawah untuk cuba lagi.
   </div>
 
   <!-- Section 1: Mirath -->
@@ -504,6 +520,8 @@ function render() {
   userAnswers = {};
   submitted = false;
   document.getElementById('retryBanner').classList.remove('show');
+  document.querySelector('.action-row').style.display = '';
+  document.getElementById('floatUlangBtn').classList.remove('show');
   document.getElementById('progressBar').style.width = '0%';
   document.getElementById('progressLabel').textContent = '0 / 20 dijawab';
 
@@ -615,6 +633,7 @@ function showResult(score) {
   modal.classList.add('show');
 
   if (score === 20) {
+    document.getElementById('btnLihatJawapan').style.display = 'none';
     emoji.textContent = '🎉';
     title.textContent = 'Cemerlang!';
     sub.textContent = 'Tahniah! Anda berjaya menjawab semua soalan dengan betul. Syabas!';
@@ -639,9 +658,18 @@ function showResult(score) {
     sub.textContent = `Anda mendapat ${score} daripada 20. Terdapat ${wrong} soalan yang perlu diperbetulkan. Semak jawapan anda di bawah.`;
     cdown.textContent = '';
     btnUlang.textContent = '🔄 Ulang Semula';
+    document.getElementById('btnLihatJawapan').style.display = '';
     document.getElementById('retryBanner').classList.add('show');
     playWrong();
   }
+}
+
+// ── Lihat Jawapan ──
+function lihatJawapan() {
+  document.getElementById('resultModal').classList.remove('show');
+  document.querySelector('.action-row').style.display = 'none';
+  document.getElementById('floatUlangBtn').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function ulangSemula() {
@@ -649,6 +677,8 @@ function ulangSemula() {
   const modal = document.getElementById('resultModal');
   modal.classList.remove('show');
   document.getElementById('confettiContainer').innerHTML = '';
+  document.querySelector('.action-row').style.display = '';
+  document.getElementById('floatUlangBtn').classList.remove('show');
 
   const score = parseInt(document.getElementById('modalScore').textContent);
   const isAllCorrect = score === 20;

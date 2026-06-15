@@ -223,6 +223,18 @@
       border-color: var(--wrong);
       color: var(--wrong);
     }
+    .fardu-card.correct-answer {
+      outline: 3px dashed var(--gold-dark);
+      outline-offset: 3px;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .fardu-card.correct-answer::after {
+      content: '✓ Jawapan betul';
+      font-size: .68rem;
+      font-weight: 800;
+      color: var(--gold-dark);
+    }
 
     /* ── Action buttons ── */
     .action-row {
@@ -303,6 +315,42 @@
       font-weight: 800;
       font-size: 1.2rem;
       margin-bottom: 18px;
+    }
+    #modalBtns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #modalBtns .btn-outline {
+      width: 100%;
+    }
+
+    /* ── Floating "Ulang Semula" after viewing answer ── */
+    .float-ulang {
+      display: none;
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 150;
+    }
+    .float-ulang.show {
+      display: flex;
+    }
+    .answer-banner {
+      display: none;
+      max-width: 860px;
+      margin: 0 auto 14px;
+      background: #fff8ec;
+      border: 2px dashed var(--gold-dark);
+      border-radius: 12px;
+      padding: 10px 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: .85rem;
+      color: var(--orange-dark);
+    }
+    .answer-banner.show {
+      display: block;
     }
 
     /* ── Instructions ── */
@@ -391,6 +439,13 @@
 
   <p class="instruction">Klik kad <strong>Waris</strong>, kemudian klik kad <strong>Fardu</strong> yang sepadan.</p>
 
+  <!-- Answer reveal banner -->
+  <div class="answer-banner" id="answerBanner">
+    🔴 Garis/kad <strong>merah</strong> = jawapan anda yang <strong>salah</strong>.
+    🟡 Garis putus-putus &amp; kad bertanda <strong>"✓ Jawapan betul"</strong> = padanan yang sebenar.
+    Klik <strong>Ulang Semula</strong> di bawah untuk cuba lagi.
+  </div>
+
   <!-- Activity wrapper -->
   <div class="activity-wrapper">
     <div class="columns">
@@ -426,10 +481,14 @@
       <p id="modalMsg">Semua jawapan betul!</p>
       <div class="score-badge" id="modalScore">10 / 10</div><br/>
       <div id="modalBtns">
-        <button class="btn-outline" onclick="ulangSemula()">Ulang Semula</button>
+        <button class="btn-outline" onclick="lihatJawapan()">👀 Lihat Jawapan Betul</button>
+        <button class="btn-outline" onclick="ulangSemula()">🔄 Ulang Semula</button>
       </div>
     </div>
   </div>
+
+  <!-- Floating Ulang Semula (shown after viewing the answer) -->
+  <button class="btn-gold float-ulang" id="floatUlangBtn" onclick="ulangSemula()">🔄 Ulang Semula</button>
 
 <script>
 // ─── Data ───────────────────────────────────────────────────────────────────
@@ -443,7 +502,7 @@ const DATA = {
     fardu: [
       "1/2 dan 1/4",
       "1/4 dan 1/8",
-      "1/6, 1/6 + asabah dan mahjub",
+      "1/6, 1/6 + asabah dan asabah",
       "1/6, 1/3 dan 1/3 baki",
       "Asabah",
       "1/2, 2/3 dan asabah",
@@ -481,6 +540,7 @@ let selectedFardu = null;
 let pairs = {};
 let checked = false;
 let bahagianAUnlocked = false;
+let showCorrectAnswers = false;
 
 // ─── Shuffle helper ──────────────────────────────────────────────────────────
 function shuffle(arr) {
@@ -506,8 +566,12 @@ function render() {
   warisList.innerHTML = '';
   farduList.innerHTML = '';
   document.getElementById('connector-svg').innerHTML = '';
+  document.getElementById('answerBanner').classList.remove('show');
+  document.getElementById('floatUlangBtn').classList.remove('show');
+  document.querySelector('.action-row').style.display = '';
   pairs = {};
   checked = false;
+  showCorrectAnswers = false;
   selectedWaris = null;
   selectedFardu = null;
 
@@ -579,7 +643,7 @@ function updateHighlights() {
   // Fardu cards — a fardu card is "matched" if ANY waris points to it
   document.querySelectorAll('.fardu-card').forEach(c => {
     const fi = parseInt(c.dataset.fi);
-    c.classList.remove('selected', 'matched-correct', 'matched-wrong');
+    c.classList.remove('selected', 'matched-correct', 'matched-wrong', 'correct-answer');
     const warisForThis = Object.keys(pairs).filter(k => pairs[k] === fi).map(Number);
     if (checked) {
       if (warisForThis.length > 0) {
@@ -592,6 +656,17 @@ function updateHighlights() {
       else if (warisForThis.length > 0) c.classList.add('matched-correct');
     }
   });
+
+  // When showing the answer key, mark each WRONG waris's correct fardu card
+  if (checked && showCorrectAnswers) {
+    Object.keys(pairs).forEach(wi => {
+      wi = parseInt(wi);
+      if (pairs[wi] !== d.correct[wi]) {
+        const correctCard = document.querySelector(`.fardu-card[data-fi="${d.correct[wi]}"]`);
+        if (correctCard) correctCard.classList.add('correct-answer');
+      }
+    });
+  }
 }
 
 // ─── Draw SVG lines ───────────────────────────────────────────────────────────
@@ -644,6 +719,55 @@ function drawLines() {
     path.setAttribute('opacity', '0.85');
     svg.appendChild(path);
   });
+
+  // ── Answer-key overlay: dashed gold lines to the CORRECT fardu for wrong answers ──
+  if (checked && showCorrectAnswers) {
+    const corrCount = {};
+    const corrSeen = {};
+    Object.keys(pairs).forEach(wi => {
+      wi = parseInt(wi);
+      if (pairs[wi] !== d.correct[wi]) {
+        const cfi = d.correct[wi];
+        corrCount[cfi] = (corrCount[cfi] || 0) + 1;
+      }
+    });
+
+    Object.keys(pairs).forEach(wi => {
+      wi = parseInt(wi);
+      if (pairs[wi] === d.correct[wi]) return; // already correct, no overlay needed
+
+      const cfi = d.correct[wi];
+      const wCard = document.querySelector(`.waris-card[data-idx="${wi}"]`);
+      const fCard = document.querySelector(`.fardu-card[data-fi="${cfi}"]`);
+      if (!wCard || !fCard) return;
+
+      const wRect = wCard.getBoundingClientRect();
+      const fRect = fCard.getBoundingClientRect();
+
+      const x1 = wRect.right - svgRect.left;
+      const y1 = wRect.top + wRect.height / 2 - svgRect.top;
+
+      const total = corrCount[cfi] || 1;
+      corrSeen[cfi] = corrSeen[cfi] || 0;
+      const offsetStep = 8;
+      const offsetY = total > 1 ? (corrSeen[cfi] - (total - 1) / 2) * offsetStep : 0;
+      corrSeen[cfi]++;
+
+      const x2 = fRect.left - svgRect.left;
+      const y2 = fRect.top + fRect.height / 2 - svgRect.top + offsetY;
+
+      const cx1 = x1 + 40, cx2 = x2 - 40;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M${x1},${y1} C${cx1},${y1} ${cx2},${y2} ${x2},${y2}`);
+      path.setAttribute('stroke', '#c99a2e');
+      path.setAttribute('stroke-width', '2.5');
+      path.setAttribute('stroke-dasharray', '6,4');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('opacity', '0.95');
+      svg.appendChild(path);
+    });
+  }
 }
 
 // ─── Redraw on resize ─────────────────────────────────────────────────────────
@@ -731,9 +855,27 @@ function closeModal() {
   document.getElementById('resultModal').classList.remove('show');
 }
 
+// ─── Lihat Jawapan Betul ──────────────────────────────────────────────────────
+function lihatJawapan() {
+  closeModal();
+
+  // Keep the student's own (right/wrong) pairing — just overlay the answer key
+  showCorrectAnswers = true;
+  updateHighlights();
+  drawLines();
+
+  document.getElementById('answerBanner').classList.add('show');
+  document.getElementById('floatUlangBtn').classList.add('show');
+  document.querySelector('.action-row').style.display = 'none';
+}
+
 // ─── Ulang Semula ─────────────────────────────────────────────────────────────
 function ulangSemula() {
   closeModal();
+  showCorrectAnswers = false;
+  document.getElementById('answerBanner').classList.remove('show');
+  document.getElementById('floatUlangBtn').classList.remove('show');
+  document.querySelector('.action-row').style.display = '';
   render();
 }
 

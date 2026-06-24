@@ -220,6 +220,112 @@
     color: #4a7c59; vertical-align: middle;
   }
 
+  /* PENILAIAN AUTOMATIK - cell feedback */
+  .jadual-input input.betul {
+    background: #d4edda !important;
+    border-color: #28a745 !important;
+    color: #155724 !important;
+  }
+  .jadual-input input.salah {
+    background: #fde8e8 !important;
+    border-color: #e74c3c !important;
+    color: #7b1c1c !important;
+  }
+
+  /* MODAL MARKAH */
+  .markah-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .markah-overlay.open { display: flex; }
+  .markah-box {
+    background: #fff;
+    border: 2px solid #c9884e;
+    box-shadow: 5px 5px 0 #b5703a;
+    border-radius: 16px;
+    padding: 20px 22px 18px;
+    max-width: 340px;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+  }
+  .markah-judul {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 14px;
+    color: #2d3a2e; margin-bottom: 4px;
+    text-align: center;
+  }
+  .markah-sub {
+    font-size: 12px; color: #888;
+    text-align: center; margin-bottom: 14px;
+  }
+  .markah-bulatan {
+    width: 78px; height: 78px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 4px solid #4a7c59;
+    background: #edf5ef;
+  }
+  .markah-bulatan.sederhana { border-color: #e0a040; background: #fdf3e8; }
+  .markah-bulatan.lemah     { border-color: #e74c3c; background: #fde8e8; }
+  .markah-angka {
+    font-family: 'Nunito', sans-serif;
+    font-size: 26px; font-weight: 900;
+    line-height: 1; color: #4a7c59;
+  }
+  .markah-bulatan.sederhana .markah-angka { color: #b5703a; }
+  .markah-bulatan.lemah     .markah-angka { color: #c0392b; }
+  .markah-daripada { font-size: 11px; font-weight: 700; color: #888; }
+  .markah-gred {
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 800;
+    margin-bottom: 12px; color: #4a7c59;
+  }
+  .markah-gred.sederhana { color: #b5703a; }
+  .markah-gred.lemah     { color: #c0392b; }
+  .markah-butiran {
+    background: #f5faf6;
+    border: 1.5px solid #c9e0cc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+  .markah-baris {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: #2d3a2e;
+    padding: 3px 0;
+    border-bottom: 1px solid #e4f0e6;
+  }
+  .markah-baris:last-child { border-bottom: none; }
+  .markah-baris span:last-child { font-weight: 700; }
+  .markah-baris .betul-txt { color: #28a745; }
+  .markah-baris .salah-txt { color: #e74c3c; }
+  .markah-pesanan {
+    font-size: 12px; color: #4a3020;
+    background: #fdf3e8;
+    border-left: 3px solid #c9884e;
+    border-radius: 0 6px 6px 0;
+    padding: 7px 10px;
+    margin-bottom: 12px;
+    line-height: 1.55;
+  }
+  .markah-tutup {
+    display: block; width: 100%;
+    background: #4a7c59; color: #fff; border: none;
+    padding: 9px; border-radius: 18px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 2px 2px 0 #2e5c3a;
+  }
+  .markah-tutup:hover { background: #3a6347; }
+
   /* BUTANG SEMAK AKHIR */
   .btn-semak-akhir {
     background: #4a7c59; color: #fff; border: none;
@@ -333,6 +439,22 @@
     <div class="alert-title">⚠️ Jawapan Belum Lengkap</div>
     <div class="alert-msg" id="alertMsg"></div>
     <button class="alert-close" onclick="closeAlert()">Faham, saya akan lengkapkan dulu</button>
+  </div>
+</div>
+
+<!-- Modal Markah Soalan 1(c) -->
+<div class="markah-overlay" id="markahOverlay">
+  <div class="markah-box">
+    <div class="markah-judul">&#128202; Keputusan Soalan 1(c)</div>
+    <div class="markah-sub">Pengiraan Faraid &mdash; [10 markah]</div>
+    <div class="markah-bulatan" id="markahBulatan">
+      <div class="markah-angka" id="markahAngka">&mdash;</div>
+      <div class="markah-daripada">/ 10</div>
+    </div>
+    <div class="markah-gred" id="markahGred"></div>
+    <div class="markah-butiran" id="markahButiran"></div>
+    <div class="markah-pesanan" id="markahPesanan"></div>
+    <button class="markah-tutup" onclick="tutupMarkah()">Tutup &amp; Lihat Skema</button>
   </div>
 </div>
 
@@ -730,6 +852,141 @@
     return kosong;
   }
 
+  /* -- Jawapan betul soalan 1(c) 2024
+     3 Isteri | Anak Perempuan | 3 SP Seibu Sebapa | SL Seibu | 3 SP Seibu
+     AM=8, RM720,000, 1 saham=RM90,000
+  */
+  var skema1c = {
+    fardu: {
+      'c-f1': ['1/8'],
+      'c-f2': ['1/2'],
+      'c-f3': ['asabah','asabahmalghair','asabahmaalghair'],
+      'c-f4': ['mahjub','mahjubhirman','terhijab','hijab'],
+      'c-f5': ['mahjub','mahjubhirman','terhijab','hijab']
+    },
+    am: { 'c-am': ['8'] },
+    saham: {
+      'c-j1': ['1'],
+      'c-j2': ['4'],
+      'c-j3': ['3'],
+      'c-j4': ['-','—','x','tiada','0','mahjub'],
+      'c-j5': ['-','—','x','tiada','0','mahjub']
+    },
+    rm: {
+      'c-r1': ['rm90000','rm90,000','90000','90,000','rm90000.00','rm90,000.00','90000.00'],
+      'c-r2': ['rm360000','rm360,000','360000','360,000','rm360000.00','rm360,000.00','360000.00'],
+      'c-r3': ['rm270000','rm270,000','270000','270,000','rm270000.00','rm270,000.00','270000.00'],
+      'c-r4': ['-','—','x','tiada','0','rm0','mahjub'],
+      'c-r5': ['-','—','x','tiada','0','rm0','mahjub']
+    }
+  };
+
+  function norm(s) {
+    return s.toLowerCase().replace(/\s+/g,'').replace(/rm/g,'').replace(/\.00$/,'');
+  }
+
+  function markFeedback(id, ok) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('betul','salah');
+    el.classList.add(ok ? 'betul' : 'salah');
+  }
+
+  function nilaiMarkah1c() {
+    var markah = 0;
+    var detail = [];
+
+    /* Fardu — 5 waris: 4-5 betul=2m, 2-3 betul=1m */
+    var farduBetul = 0;
+    ['c-f1','c-f2','c-f3','c-f4','c-f5'].forEach(function(id) {
+      var val = norm(document.getElementById(id).value);
+      var ok = skema1c.fardu[id].map(norm).some(function(a){ return val===a||val.indexOf(a)!==-1||a.indexOf(val)!==-1; });
+      farduBetul += ok ? 1 : 0;
+      markFeedback(id, ok);
+    });
+    var mFardu = farduBetul >= 4 ? 2 : farduBetul >= 2 ? 1 : 0;
+    markah += mFardu;
+    detail.push({ label: 'Fardu (5 waris)', betul: farduBetul, jumlah: 5, markah: mFardu, max: 2 });
+
+    /* Asal Masalah — 1 markah */
+    var amVal = norm(document.getElementById('c-am').value);
+    var amOk = skema1c.am['c-am'].map(norm).some(function(a){ return amVal===a; });
+    var mAM = amOk ? 1 : 0;
+    markah += mAM;
+    markFeedback('c-am', amOk);
+    detail.push({ label: 'Asal Masalah', betul: amOk?1:0, jumlah: 1, markah: mAM, max: 1 });
+
+    /* Jumlah Saham — 5 waris: 4-5 betul=2m, 2-3 betul=1m */
+    var sahamBetul = 0;
+    ['c-j1','c-j2','c-j3','c-j4','c-j5'].forEach(function(id) {
+      var val = norm(document.getElementById(id).value);
+      var ok = skema1c.saham[id].map(norm).some(function(a){ return val===a; });
+      sahamBetul += ok ? 1 : 0;
+      markFeedback(id, ok);
+    });
+    var mSaham = sahamBetul >= 4 ? 2 : sahamBetul >= 2 ? 1 : 0;
+    markah += mSaham;
+    detail.push({ label: 'Jumlah Saham (5 waris)', betul: sahamBetul, jumlah: 5, markah: mSaham, max: 2 });
+
+    /* RM — 5 entries: 4-5 betul=2m, 2-3 betul=1m */
+    var rmBetul = 0;
+    ['c-r1','c-r2','c-r3','c-r4','c-r5'].forEach(function(id) {
+      var val = norm(document.getElementById(id).value);
+      var ok = skema1c.rm[id].map(norm).some(function(a){ return val===a; });
+      rmBetul += ok ? 1 : 0;
+      markFeedback(id, ok);
+    });
+    var mRM = rmBetul >= 4 ? 2 : rmBetul >= 2 ? 1 : 0;
+    markah += mRM;
+    detail.push({ label: 'Nilai RM (5 waris)', betul: rmBetul, jumlah: 5, markah: mRM, max: 2 });
+
+    /* Huraian / kaedah — 3 markah (pelajar beri sendiri, auto penuh) */
+    markah += 3;
+    detail.push({ label: 'Huraian / Kaedah', betul: 3, jumlah: 3, markah: 3, max: 3 });
+
+    return { markah: markah, detail: detail };
+  }
+
+  function paparMarkah(result) {
+    var m = result.markah;
+    var bulatan = document.getElementById('markahBulatan');
+    var angka   = document.getElementById('markahAngka');
+    var gred    = document.getElementById('markahGred');
+    var butiran = document.getElementById('markahButiran');
+    var pesanan = document.getElementById('markahPesanan');
+    angka.textContent = m;
+    bulatan.className = 'markah-bulatan';
+    gred.className = 'markah-gred';
+    var gredTeks, pesanTeks;
+    if (m >= 9) {
+      gredTeks = 'Cemerlang!';
+      pesanTeks = 'Tahniah! Pengiraan faraid anda hampir sempurna.';
+    } else if (m >= 6) {
+      gredTeks = 'Memuaskan';
+      pesanTeks = 'Bagus! Semak skema jawapan untuk memahami kesilapan anda.';
+      bulatan.classList.add('sederhana');
+      gred.classList.add('sederhana');
+    } else {
+      gredTeks = 'Perlu Latihan';
+      pesanTeks = 'Jangan kecewa! Semak skema jawapan dengan teliti dan cuba lagi.';
+      bulatan.classList.add('lemah');
+      gred.classList.add('lemah');
+    }
+    gred.textContent = gredTeks;
+    pesanan.textContent = pesanTeks;
+    var html = '';
+    result.detail.forEach(function(d) {
+      var sc = d.markah === d.max ? 'betul-txt' : (d.markah > 0 ? '' : 'salah-txt');
+      html += '<div class="markah-baris"><span>' + d.label + ' (' + d.betul + '/' + d.jumlah + ' betul)</span><span class="' + sc + '">' + d.markah + '/' + d.max + 'm</span></div>';
+    });
+    butiran.innerHTML = html;
+    document.getElementById('markahOverlay').classList.add('open');
+  }
+
+  function tutupMarkah() {
+    document.getElementById('markahOverlay').classList.remove('open');
+  }
+
   /* ── Semak SEMUA sekaligus ── */
   function semakSemua() {
     if (!semuaSudahDiisi()) {
@@ -738,15 +995,13 @@
       return;
     }
     playSound('success');
-    // Buka semua skema
+    var result = nilaiMarkah1c();
+    paparMarkah(result);
     ['skema-1a','skema-1b','skema-1c','skema-2a','skema-2b','skema-2c'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.classList.add('open');
     });
-    // Henti masa sementara skema dipaparkan
     pauseTimer();
-    // Scroll ke skema pertama
-    document.getElementById('skema-1a').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function resetSemua() {
@@ -757,13 +1012,14 @@
     });
     allJadualFields.forEach(function(id) {
       var el = document.getElementById(id);
-      if (el) { el.value = ''; el.disabled = false; }
+      if (el) { el.value = ''; el.disabled = false; el.classList.remove('betul','salah'); }
     });
     ['skema-1a','skema-1b','skema-1c','skema-2a','skema-2b','skema-2c'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.classList.remove('open');
     });
-    // Set semula masa ke 30:00 dan mula semula
+    // Henti dulu, kemudian set semula masa ke 30:00 dan mula semula
+    pauseTimer();
     resetTimer();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

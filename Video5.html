@@ -17,14 +17,16 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body { height: 100%; }
     body {
       font-family: 'Nunito Sans', sans-serif;
       background: var(--bg);
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px 16px 60px;
+      padding: 12px 16px;
     }
 
     /* ── Corner Nav ── */
@@ -44,21 +46,22 @@
     .corner-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--orange-dk); }
     .corner-btn svg { fill: none; stroke: var(--orange-dk); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; width: 22px; height: 22px; }
     .btn-home { top: 16px; left: 16px; }
-    .btn-exit { top: 16px; right: 16px; }
+    .btn-home-right { top: 16px; right: 16px; }
 
     /* ── Header ── */
-    .page-header { text-align: center; margin-top: 16px; margin-bottom: 28px; }
+    .page-header { text-align: center; margin: 2px 0 10px; flex-shrink: 0; }
     .page-title {
       font-family: 'Nunito', sans-serif;
-      font-size: 1.7rem; font-weight: 900;
+      font-size: 1.35rem; font-weight: 900;
       color: var(--green); line-height: 1.2;
     }
-    .page-subtitle { font-size: .93rem; color: #5a6e5c; margin-top: 6px; }
+    .page-subtitle { font-size: .85rem; color: #5a6e5c; margin-top: 4px; }
 
     /* ── Part Selector ── */
     .part-selector {
       display: flex; gap: 12px; flex-wrap: wrap;
-      justify-content: center; margin-bottom: 26px;
+      justify-content: center; margin-bottom: 10px;
+      flex-shrink: 0;
     }
     .part-btn {
       font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem;
@@ -80,10 +83,13 @@
       border: 2.5px solid var(--orange);
       border-radius: var(--radius);
       box-shadow: var(--shadow); overflow: hidden;
+      display: flex; flex-direction: column;
+      flex: 1; min-height: 0;
     }
     .video-card-header {
       background: linear-gradient(135deg, var(--orange), var(--orange-dk));
-      padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
     }
     .video-card-header .part-label {
       font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; color: #fff;
@@ -92,13 +98,14 @@
 
     /* ── Video Wrapper ── */
     .video-wrapper {
-      position: relative; width: 100%; padding-top: 56.25%; background: #111;
+      position: relative; width: 100%; background: #111;
+      flex: 1; min-height: 0;
     }
     .video-wrapper iframe,
     .video-wrapper video {
       position: absolute; inset: 0; width: 100%; height: 100%; border: none;
     }
-    .video-wrapper video { display: block; }
+    .video-wrapper video { display: block; object-fit: contain; background:#111; }
 
     /* ── Placeholder ── */
     .video-placeholder {
@@ -114,11 +121,12 @@
       display: none;
       align-items: center;
       gap: 10px;
-      padding: 10px 16px;
+      padding: 8px 16px;
       background: #f9f1e8;
       border-top: 1.5px solid #f0e4d4;
+      flex-shrink: 0;
     }
-    .custom-controls.visible { display: flex; }
+    .custom-controls.visible { display: flex; flex-shrink: 0; }
 
     /* Play/Pause button */
     .ctrl-playpause {
@@ -171,11 +179,11 @@
 <body>
 
 <!-- Corner Buttons -->
-<a href="MenuVideo.html" class="corner-btn btn-home" title="Laman Utama">
-  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+<a href="MenuVideo.html" class="corner-btn btn-home" title="Kembali">
+  <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
 </a>
-<a href="keluar.html" class="corner-btn btn-exit" title="Keluar">
-  <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+<a href="index.html" class="corner-btn btn-home-right" title="Laman Utama">
+  <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
 </a>
 
 <!-- Header -->
